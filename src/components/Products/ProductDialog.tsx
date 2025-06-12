@@ -126,7 +126,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
       transition={{ duration: 0.2 }}
     >
       <motion.div 
-        className="relative flex flex-col w-full max-w-6xl overflow-hidden bg-white shadow-2xl rounded-2xl"
+        className="relative flex flex-col w-full max-w-6xl overflow-hidden bg-white shadow-2xl rounded-2xl max-h-[95vh]"
         onClick={(e) => e.stopPropagation()}
         variants={containerVariants}
         initial="hidden"
@@ -152,12 +152,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
             <X size={24} className="text-primary" />
           </motion.button>
         </div>
-        {/* Divider below header */}
-        <div className="absolute left-0 z-10 hidden w-full h-px top-16 bg-secondary/20 sm:block" />
+        
         <div className="flex flex-col h-full lg:flex-row">
           {/* Image Section */}
           <div className="relative flex items-center justify-center p-2 bg-gradient-to-br lg:w-1/2 from-secondary/30 to-secondary/60 sm:p-6">
-            <div className="w-full h-80 sm:h-96 lg:h-[calc(80vh-64px)] rounded-xl shadow-lg overflow-hidden bg-white">
+            <div className="w-full h-80 sm:h-96 lg:h-[500px] rounded-xl shadow-lg overflow-hidden bg-white">
               <OptimizedCarousel 
                 images={product.images} 
                 alt={product.name}
@@ -176,9 +175,10 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
               </motion.div>
             )}
           </div>
+          
           {/* Content Section */}
           <motion.div 
-            className="flex flex-col bg-white lg:w-1/2"
+            className="flex flex-col bg-white lg:w-1/2 h-full"
             variants={contentVariants}
             initial="hidden"
             animate="visible"
@@ -215,6 +215,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   {product.shortDescription}
                 </p>
               </motion.div>
+              
               {/* Trust Indicators */}
               <motion.div 
                 className="grid grid-cols-3 gap-2 p-3 mb-6 sm:gap-4 sm:p-6 sm:mb-8 rounded-xl bg-secondary/30"
@@ -233,6 +234,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   <p className="text-xs font-medium sm:text-sm text-primary">Premium</p>
                 </div>
               </motion.div>
+              
               {/* Quantity Selector */}
               <motion.div className="mb-6 sm:mb-8" variants={itemVariants}>
                 <label className="block mb-2 text-base font-medium sm:mb-3 sm:text-lg text-primary">
@@ -263,6 +265,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   </span>
                 </div>
               </motion.div>
+              
               {/* Tabs */}
               <motion.div className="mb-6 sm:mb-8" variants={itemVariants}>
                 <div className="flex p-1 mb-4 space-x-1 rounded-lg sm:mb-6 bg-secondary/30">
@@ -287,7 +290,9 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                     </button>
                   ))}
                 </div>
-                <div className="flex-1 min-h-[180px] max-h-[320px] sm:min-h-[220px] sm:max-h-[380px] overflow-y-auto transition-all duration-200">
+                
+                {/* Fixed height container for tab content */}
+                <div className="h-[240px] sm:h-[280px] overflow-y-auto transition-all duration-200 border border-secondary/20 rounded-lg p-4 bg-white">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeTab}
@@ -295,29 +300,60 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
+                      className="h-full"
                     >
                       {activeTab === 'description' && (
-                        <div>
-                          <p className="mb-4 leading-relaxed text-content">
+                        <div className="space-y-4">
+                          <p className="leading-relaxed text-content">
                             {product.detailedDescription}
                           </p>
+                          <div className="p-4 rounded-lg bg-secondary/30">
+                            <h4 className="mb-2 font-medium text-primary">Beneficios Clave:</h4>
+                            <ul className="space-y-2 text-sm text-content">
+                              <li className="flex items-start">
+                                <span className="mr-2 text-accent">•</span>
+                                <span>Hidratación profunda y duradera</span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2 text-accent">•</span>
+                                <span>Ingredientes 100% naturales argentinos</span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2 text-accent">•</span>
+                                <span>Resultados visibles en 2-3 semanas</span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2 text-accent">•</span>
+                                <span>Libre de químicos agresivos</span>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
                       )}
                       {activeTab === 'ingredients' && (
-                        <div>
-                          <h4 className="mb-2 font-medium sm:mb-3 text-primary">Qué incluye:</h4>
-                          <ul className="space-y-2 sm:space-y-3">
+                        <div className="space-y-4">
+                          <h4 className="mb-3 font-medium text-primary">Qué incluye este kit:</h4>
+                          <ul className="space-y-3">
                             {product.contents.map((item, index) => (
                               <li key={index} className="flex items-start">
-                                <ChevronRight size={16} className="flex-shrink-0 mt-1 mr-2 sm:mr-3 text-accent" />
+                                <ChevronRight size={16} className="flex-shrink-0 mt-1 mr-3 text-accent" />
                                 <span className="text-content">{item}</span>
                               </li>
                             ))}
                           </ul>
+                          <div className="p-4 mt-6 rounded-lg bg-green-50">
+                            <h5 className="mb-2 font-medium text-green-800">Ingredientes Destacados:</h5>
+                            <ul className="space-y-1 text-sm text-green-700">
+                              <li>• Aloe Vera patagónico</li>
+                              <li>• Aceite de rosa mosqueta</li>
+                              <li>• Extracto de manzanilla</li>
+                              <li>• Ácido hialurónico natural</li>
+                            </ul>
+                          </div>
                         </div>
                       )}
                       {activeTab === 'reviews' && (
-                        <div className="space-y-2 sm:space-y-4">
+                        <div className="space-y-6">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
                               <div className="flex items-center space-x-1">
@@ -329,10 +365,45 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                             </div>
                             <span className="text-xs sm:text-sm text-content">127 reseñas</span>
                           </div>
-                          <p className="text-content">
-                            "Excelente producto, mi piel se ve increíble después de usarlo por 2 semanas."
-                          </p>
-                          <p className="text-xs sm:text-sm text-content">- María G., Buenos Aires</p>
+                          
+                          <div className="space-y-4">
+                            <div className="p-4 border rounded-lg border-secondary/20">
+                              <div className="flex items-center mb-2 space-x-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} size={14} className="fill-accent text-accent" />
+                                ))}
+                              </div>
+                              <p className="mb-2 text-content">
+                                "Excelente producto, mi piel se ve increíble después de usarlo por 2 semanas. La hidratación es profunda y duradera."
+                              </p>
+                              <p className="text-xs text-content">- María G., Buenos Aires</p>
+                            </div>
+                            
+                            <div className="p-4 border rounded-lg border-secondary/20">
+                              <div className="flex items-center mb-2 space-x-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} size={14} className="fill-accent text-accent" />
+                                ))}
+                              </div>
+                              <p className="mb-2 text-content">
+                                "Los ingredientes naturales se notan desde el primer uso. Mi piel sensible no tuvo ninguna reacción."
+                              </p>
+                              <p className="text-xs text-content">- Ana L., Córdoba</p>
+                            </div>
+                            
+                            <div className="p-4 border rounded-lg border-secondary/20">
+                              <div className="flex items-center mb-2 space-x-1">
+                                {[...Array(4)].map((_, i) => (
+                                  <Star key={i} size={14} className="fill-accent text-accent" />
+                                ))}
+                                <Star size={14} className="text-accent" />
+                              </div>
+                              <p className="mb-2 text-content">
+                                "Muy buen producto, aunque el precio es un poco alto. Los resultados valen la pena."
+                              </p>
+                              <p className="text-xs text-content">- Sofia R., Mendoza</p>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </motion.div>
@@ -340,6 +411,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                 </div>
               </motion.div>
             </div>
+            
             {/* Sticky Footer */}
             <motion.div 
               className="p-4 sm:p-8 bg-white border-t lg:p-10 border-secondary/20 shadow-[0_-2px_16px_-8px_rgba(0,0,0,0.06)] sticky bottom-0"
