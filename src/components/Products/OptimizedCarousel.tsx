@@ -17,7 +17,7 @@ interface TouchState {
 const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({ 
   images, 
   alt, 
-  className = '' 
+  className = 'object-contain' 
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]));
@@ -208,7 +208,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
 
   if (images.length === 0) {
     return (
-      <div className={`aspect-square bg-secondary flex items-center justify-center ${className}`}>
+      <div className={`flex justify-center items-center aspect-square bg-secondary ${className}`}>
         <span className="text-content">No hay imágenes disponibles</span>
       </div>
     );
@@ -217,7 +217,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={`relative overflow-hidden bg-secondary ${className}`}
+      className={`overflow-hidden relative bg-secondary ${className}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       role="region"
@@ -245,7 +245,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
                 ref={el => imageRefs.current[currentIndex] = el}
                 src={images[currentIndex]}
                 alt={`${alt} - Imagen ${currentIndex + 1}`}
-                className="object-cover w-full h-full select-none"
+                className="object-contain w-full h-full scale-150 select-none"
                 onLoad={() => handleImageLoad(currentIndex)}
                 onError={() => handleImageError(currentIndex)}
                 loading="eager"
@@ -253,8 +253,8 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
                 draggable="false"
               />
             ) : (
-              <div className="flex items-center justify-center w-full h-full bg-secondary/50">
-                <div className="w-8 h-8 border-b-2 rounded-full animate-spin border-accent"></div>
+              <div className="flex justify-center items-center w-full h-full bg-secondary/50">
+                <div className="w-8 h-8 rounded-full border-b-2 animate-spin border-accent"></div>
               </div>
             )}
           </motion.div>
@@ -266,7 +266,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
         <>
           <button
             onClick={goToPrevious}
-            className="absolute z-10 p-3 transition-all duration-200 transform -translate-y-1/2 rounded-full shadow-lg top-1/2 left-4 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="absolute left-4 top-1/2 z-10 p-3 rounded-full shadow-lg transition-all duration-200 transform -translate-y-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="Imagen anterior"
             type="button"
           >
@@ -275,7 +275,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
           
           <button
             onClick={goToNext}
-            className="absolute z-10 p-3 transition-all duration-200 transform -translate-y-1/2 rounded-full shadow-lg top-1/2 right-4 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="absolute right-4 top-1/2 z-10 p-3 rounded-full shadow-lg transition-all duration-200 transform -translate-y-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="Siguiente imagen"
             type="button"
           >
@@ -286,7 +286,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
 
       {/* Indicators - only show if more than one image */}
       {images.length > 1 && (
-        <div className="absolute left-0 right-0 z-10 flex justify-center space-x-2 bottom-4">
+        <div className="flex absolute right-0 left-0 bottom-4 z-10 justify-center space-x-2">
           {images.map((_, index) => (
             <button
               key={index}

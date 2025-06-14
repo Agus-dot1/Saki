@@ -18,7 +18,9 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
 
     const interval = setInterval(() => {
       setProgress(prev => {
-        const decrement = (100 / toast.duration!) * 100; // Update every 100ms
+        // 100ms interval, so decrement is (100 / duration) * 100
+        const duration = toast.duration ?? 1000;
+        const decrement = (100 / (duration / 100));
         return Math.max(0, prev - decrement);
       });
     }, 100);
@@ -114,7 +116,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-semibold mb-1 leading-tight">
+            <h4 className="mb-1 text-sm font-semibold leading-tight">
               {toast.title}
             </h4>
             <p className="text-sm leading-relaxed opacity-90">
@@ -125,7 +127,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
             {toast.action && (
               <button
                 onClick={toast.action.onClick}
-                className="mt-3 text-sm font-medium underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current rounded"
+                className="mt-3 text-sm font-medium underline rounded hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current"
               >
                 {toast.action.label}
               </button>
@@ -137,7 +139,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
             <button
               onClick={handleDismiss}
               onKeyDown={handleKeyDown}
-              className="flex-shrink-0 p-1 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current transition-colors"
+              className="flex-shrink-0 p-1 transition-colors rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current"
               aria-label="Cerrar notificación"
               type="button"
             >

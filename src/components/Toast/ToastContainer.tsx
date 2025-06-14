@@ -8,7 +8,7 @@ const ToastContainer: React.FC = () => {
 
   return (
     <div 
-      className="fixed bottom-4 left-4 z-[9999] max-w-sm w-full pointer-events-none"
+      className="fixed bottom-4 left-1/2 transform -translate-x-1/2  z-[9999] max-w-sm w-full pointer-events-none"
       role="region"
       aria-label="Notificaciones"
       aria-live="polite"
@@ -20,17 +20,17 @@ const ToastContainer: React.FC = () => {
             layout
             initial={{ 
               opacity: 0, 
-              x: -100, 
+              y: -100, 
               scale: 0.95 
             }}
             animate={{ 
               opacity: 1, 
-              x: 0, 
+              y: 0, 
               scale: 1 
             }}
             exit={{ 
               opacity: 0, 
-              x: -100, 
+              y: -100, 
               scale: 0.95,
               transition: { duration: 0.2 }
             }}
@@ -45,7 +45,7 @@ const ToastContainer: React.FC = () => {
             }}
             className="mb-3 last:mb-0"
           >
-            <ToastItem toast={toast} />
+            <ToastItem toast={{ ...toast, duration: 2000 }} /> {/* Set duration to 2000ms */}
           </motion.div>
         ))}
       </AnimatePresence>

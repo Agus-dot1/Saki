@@ -9,7 +9,7 @@ export default {
       colors: {
         'primary': '#1D3E21',
         'content': '#4A4A4A',
-        'secondary': '#f3ede5',
+        'secondary': '#FFFFFF',
         'accent': '#2A5A2E',
         'supporting': '#122514',
         'nebula-1': '#FF6B6B',

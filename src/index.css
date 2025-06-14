@@ -5,6 +5,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #264d2a #FFFFFF;
 }
 
 @media (max-width: 768px) {
@@ -255,13 +257,11 @@ body {
 }
 
 .btn-primary {
-  @apply bg-accent text-white hover:bg-accent/90 active:bg-accent/80 
-         disabled:bg-content disabled:cursor-not-allowed;
+  @apply text-white bg-accent hover:bg-accent/90 active:bg-accent/80 disabled:bg-content disabled:cursor-not-allowed;
 }
 
 .btn-secondary {
-  @apply bg-secondary text-primary hover:bg-secondary/80 active:bg-secondary/70
-         disabled:bg-secondary/50 disabled:text-content disabled:cursor-not-allowed;
+  @apply bg-secondary text-primary hover:bg-secondary/80 active:bg-secondary/70 disabled:bg-secondary/50 disabled:text-content disabled:cursor-not-allowed;
 }
 
 /* Form elements with improved touch targets */
@@ -273,26 +273,26 @@ body {
 
 /* Loading spinner */
 .spinner {
-  @apply animate-spin rounded-full border-2 border-secondary;
+  @apply border-2 rounded-full animate-spin border-secondary;
   border-top-color: theme('colors.accent');
 }
 
 /* Error and success messages */
 .alert {
-  @apply p-4 rounded-md mb-4;
+  @apply p-4 mb-4 rounded-md;
 }
 
 .alert-error {
-  @apply bg-red-50 text-red-800 border border-red-200;
+  @apply text-red-800 border border-red-200 bg-red-50;
 }
 
 .alert-success {
-  @apply bg-green-50 text-green-800 border border-green-200;
+  @apply text-green-800 border border-green-200 bg-green-50;
 }
 
 /* Responsive images */
 img {
-  @apply max-w-full h-auto;
+  @apply h-auto max-w-full;
 }
 
 /* Header positioning fixes */

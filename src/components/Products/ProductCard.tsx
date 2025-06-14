@@ -34,14 +34,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   
   return (
     <div 
-      className="bg-secondary rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer h-full flex flex-col"
+      className="flex overflow-hidden flex-col max-w-xl h-full rounded-lg transition-all duration-300 transform cursor-pointer bg-secondary hover:shadow-lg hover:-translate-y-1"
       onClick={onClick}
     >
-      <div className="h-96 overflow-hidden relative">
+      
+      <div className="overflow-hidden relative h-96">
         <img 
           src={product.images[0]} 
           alt={product.name} 
-          className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
+          className="object-contain w-full h-full scale-[1.8]"
         />
         
         {/* Stock indicator */}
@@ -55,32 +56,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         )}
       </div>
       
-      <div className="p-8 flex flex-col flex-grow">
-        <h3 className="text-2xl font-medium text-primary mb-3">{product.name}</h3>
-        <p className="text-content text-lg mb-6">{product.shortDescription}</p>
+      <div className="flex flex-col flex-grow p-8">
+        <h3 className="mb-3 text-2xl font-medium text-primary">{product.name}</h3>
+        <p className="mb-6 text-lg text-content">{product.shortDescription}</p>
         
-        <div className="mb-6 flex-grow">
-          <h4 className="text-lg font-medium text-primary mb-3">Incluye:</h4>
-          <ul className="text-content space-y-2">
-            {product.contents.slice(0, 3).map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-accent mr-2">•</span>
-                <span>{item}</span>
-              </li>
-            ))}
-            {product.contents.length > 3 && (
-              <li className="text-supporting">+ {product.contents.length - 3} más</li>
-            )}
-          </ul>
+        <div className="flex-grow mb-6">
+          <h4 className="mb-3 text-lg font-medium text-primary">Incluye:</h4>
+          <ul className="space-y-3">
+          {product.items && product.items.length > 0 && product.items.slice(0, 4).map((item, idx) => (
+            <li key={idx}>
+              <span className="font-medium text-primary">{item.name}</span>
+              {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+            </li>
+          ))}
+        </ul>
+        <span className="mt-4 text-sm font-medium text-primary">
+          y más...
+        </span>
         </div>
         
-        <div className="flex justify-between items-center mt-auto pt-6 border-t border-supporting/20">
+        <div className="flex justify-between items-center pt-6 mt-auto border-t border-supporting/20">
           <span className="text-2xl font-medium text-primary">${product.price.toFixed(2)}</span>
           
           <button 
             onClick={handleAddToCart}
             disabled={stockStatus?.disabled}
-            className="bg-accent text-white px-6 py-3 rounded-md flex items-center space-x-2 hover:bg-supporting transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="flex items-center px-6 py-3 space-x-2 text-white rounded-md transition-colors bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             <ShoppingCart size={20} />
             <span>{stockStatus?.disabled ? 'Sin Stock' : 'Agregar'}</span>

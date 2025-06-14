@@ -1,5 +1,5 @@
-import React from 'react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Minus, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { CartItem as CartItemType } from '../../types';
 import { useCart } from '../../hooks/useCart';
 
@@ -10,39 +10,78 @@ interface CartItemProps {
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
   const { product, quantity } = item;
-  
+  const [expanded, setExpanded] = useState(false);
+
+  // Check if product is a kit (has items array)
+  const isKit = Array.isArray(product.items) && product.items.length > 0;
+
+  const kitItems = item.selectedItems ?? product.items;
+
   return (
     <div className="flex space-x-4">
       {/* Product image */}
-      <div className="w-20 h-20 bg-secondary rounded-md overflow-hidden flex-shrink-0">
+      <div className="flex-shrink-0 w-20 h-20 overflow-hidden rounded-md bg-secondary">
         <img 
           src={product.images[0]} 
           alt={product.name} 
-          className="w-full h-full object-cover"
+          className="object-cover w-full h-full"
         />
       </div>
       
       {/* Product details */}
       <div className="flex-1">
-        <h3 className="text-primary font-medium">{product.name}</h3>
-        <p className="text-content text-sm">${product.price.toFixed(2)}</p>
+        <div className="flex items-center">
+          <h3 className="font-medium text-primary">{product.name}</h3>
+          {isKit && (
+            <button
+              className="p-1 ml-2 text-primary hover:text-accent"
+              onClick={() => setExpanded(e => !e)}
+              aria-label={expanded ? "Ocultar contenido del kit" : "Mostrar contenido del kit"}
+            >
+              {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            </button>
+          )}
+        </div>
+        <p className="text-sm text-content">${product.price.toFixed(2)}</p>
         
+        {/* Kit items expandable list */}
+        {isKit && kitItems && expanded && (
+          <ul className="pl-2 mt-2 ml-2 space-y-1 text-sm border-l border-accent/30">
+            {kitItems.map((kitItem, idx) => (
+              <li key={idx} className="flex flex-col">
+                <span>
+                  x{('quantity' in kitItem ? kitItem.quantity : 1)} {kitItem.name}
+                  {('size' in kitItem || 'color' in kitItem) && (kitItem.size || kitItem.color) && (
+                    <>
+                      {' ('}
+                      {kitItem.size && <>{kitItem.size}</>}
+                      {kitItem.size && kitItem.color && ', '}
+                      {kitItem.color && <>{kitItem.color}</>}
+                      {')'}
+                    </>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <div className="flex items-center mt-2">
           {/* Quantity controls */}
           <div className="flex items-center space-x-2">
             <button 
               onClick={() => decreaseQuantity(product.id)}
-              className="p-1 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+              className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Disminuir cantidad"
             >
               <Minus size={16} className="text-primary" />
             </button>
             
-            <span className="text-primary w-6 text-center">{quantity}</span>
+            <span className="w-6 text-center text-primary">{quantity}</span>
             
             <button 
               onClick={() => increaseQuantity(product.id)}
-              className="p-1 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+              className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Aumentar cantidad"
             >
               <Plus size={16} className="text-primary" />
@@ -52,7 +91,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
           {/* Remove button */}
           <button 
             onClick={() => removeFromCart(product.id)}
-            className="ml-auto p-2 text-content hover:text-accent transition-colors"
+            className="p-2 ml-auto transition-colors text-content hover:text-accent"
             aria-label="Eliminar producto"
           >
             <Trash2 size={18} />

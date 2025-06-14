@@ -3,30 +3,30 @@ import { Instagram, Facebook, Twitter, CreditCard, MapPin, Mail, Phone } from 'l
 
 const Footer: React.FC = () => {
   return (
-    <footer id="contact" className="bg-secondary py-16 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+    <footer id="contact" className="px-6 py-16 bg-secondary">
+      <div className="grid grid-cols-1 gap-12 mx-auto max-w-7xl md:grid-cols-3">
         <div>
-          <h3 className="text-2xl font-medium text-primary mb-4">Saki</h3>
-          <p className="text-content mb-6">
+          <h3 className="mb-4 text-2xl font-medium text-primary">Saki</h3>
+          <p className="mb-6 text-content">
             Productos premium de cuidado de la piel elaborados con ingredientes naturales de Argentina. 
             Nuestras fórmulas combinan sabiduría ancestral con ciencia moderna para una piel 
             saludable y radiante.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-supporting hover:text-accent transition-colors" aria-label="Instagram">
+            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Instagram">
               <Instagram size={20} />
             </a>
-            <a href="#" className="text-supporting hover:text-accent transition-colors" aria-label="Facebook">
+            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Facebook">
               <Facebook size={20} />
             </a>
-            <a href="#" className="text-supporting hover:text-accent transition-colors" aria-label="Twitter">
+            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Twitter">
               <Twitter size={20} />
             </a>
           </div>
         </div>
         
         <div>
-          <h3 className="text-xl font-medium text-primary mb-4">Contactanos</h3>
+          <h3 className="mb-4 text-xl font-medium text-primary">Contactanos</h3>
           <ul className="space-y-3">
             <li className="flex items-center space-x-2">
               <MapPin size={18} className="text-supporting" />
@@ -44,27 +44,15 @@ const Footer: React.FC = () => {
         </div>
         
         <div>
-          <h3 className="text-xl font-medium text-primary mb-4">Métodos de Pago</h3>
+          <h3 className="mb-4 text-xl font-medium text-primary">Métodos de Pago</h3>
           <div className="flex flex-wrap gap-2 mb-6">
             <CreditCard size={24} className="text-supporting" />
             <span className="text-content">Aceptamos todas las tarjetas principales</span>
           </div>
-          
-          <h3 className="text-xl font-medium text-primary mb-4 mt-8">Newsletter</h3>
-          <div className="flex">
-            <input
-              type="email"
-              placeholder="Tu email"
-              className="px-4 py-2 w-full rounded-l focus:outline-none"
-            />
-            <button className="bg-accent text-white px-4 py-2 rounded-r hover:bg-accent/90 transition-colors">
-              Suscribirse
-            </button>
-          </div>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-supporting/20 text-center text-content">
+      <div className="pt-6 mx-auto mt-12 text-center border-t max-w-7xl border-supporting/20 text-content">
         <p>© {new Date().getFullYear()} Saki Skincare. Todos los derechos reservados.</p>
       </div>
     </footer>

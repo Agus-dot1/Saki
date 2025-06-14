@@ -35,7 +35,7 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     const id = generateId();
     const newToast: Toast = {
       id,
-      duration: 5000,
+      duration: 2000, // <-- Set default to 2 seconds
       dismissible: true,
       ...toast,
     };
@@ -83,6 +83,7 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       type: 'info',
       title,
       message,
+      duration: 2000, // Default duration for info
       ...options,
     });
   }, [addToast]);

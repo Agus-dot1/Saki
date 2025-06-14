@@ -8,13 +8,43 @@ export const products: Product[] = [
     shortDescription: 'Sistema completo de hidratación para piel seca y normal',
     price: 89.99,
     stock: 15,
-    contents: ['Limpiador Suave', 'Tónico Hidratante', 'Sérum Humectante', 'Crema Hidratante Diaria'],
+    contents: [
+      'x1 Limpiador Suave',
+      'x2 Tónico Hidratante',
+      'x1 Sérum Humectante',
+      'x1 Crema Hidratante Diaria 500ml'
+    ],
     images: [
       'https://images.pexels.com/photos/4465821/pexels-photo-4465821.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/5069605/pexels-photo-5069605.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/3737605/pexels-photo-3737605.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
-    detailedDescription: 'Nuestro Kit de Hidratación Esencial proporciona todo lo que necesitás para una rutina completa de cuidado de la piel que se enfoca en mantener niveles óptimos de hidratación. Formulado con ingredientes naturales de diferentes regiones de Argentina, incluyendo botánicos patagónicos y hierbas andinas. Este kit es perfecto para aquellos con piel seca a normal que buscan lograr una tez saludable y radiante. Usá mañana y noche para mejores resultados.'
+    detailedDescription: 'Nuestro Kit de Hidratación Esencial proporciona todo lo que necesitás para una rutina completa de cuidado de la piel que se enfoca en mantener niveles óptimos de hidratación. Formulado con ingredientes naturales de diferentes regiones de Argentina, incluyendo botánicos patagónicos y hierbas andinas. Este kit es perfecto para aquellos con piel seca a normal que buscan lograr una tez saludable y radiante. Usá mañana y noche para mejores resultados.',
+    keyBenefits: [
+      'Hidratación profunda y duradera',
+      'Ingredientes 100% naturales argentinos',
+      'Resultados visibles en 2-3 semanas',
+      'Libre de químicos agresivos'
+    ],
+    featuredIngredients: [
+      'Aloe Vera patagónico',
+      'Aceite de rosa mosqueta',
+      'Extracto de manzanilla',
+      'Ácido hialurónico natural'
+    ],
+    discountPercentage: 17,
+    oldPrice: 108.50,
+    items: [
+      { name: 'Limpiador Suave', quantity: 1 },
+      { name: 'Tónico Hidratante', quantity: 2 },
+      { name: 'Sérum Humectante', quantity: 1 },
+      { 
+        name: 'Crema Hidratante Diaria', 
+        quantity: 1, 
+        colorOptions: ['Rosa', 'Celeste'], 
+        sizeOptions: ['500ml', '1000ml'] 
+      }
+    ]
   },
   {
     id: 2,
@@ -22,14 +52,39 @@ export const products: Product[] = [
     description: 'Rutina especializada para piel grasa y mixta. Controla el aceite y clarifica sin resecar en exceso.',
     shortDescription: 'Sistema de control de grasa y clarificación de poros',
     price: 94.99,
-    stock: 8,
-    contents: ['Limpiador Purificante', 'Tónico Equilibrante', 'Sérum Control de Grasa', 'Crema Hidratante Ligera'],
+    stock: 15,
+    contents: [
+      'Limpiador Purificante',
+      'Tónico Equilibrante',
+      'Sérum Control de Grasa',
+      'Crema Hidratante Ligera'
+    ],
     images: [
       'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/6621339/pexels-photo-6621339.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/5069606/pexels-photo-5069606.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
-    detailedDescription: 'El Set Equilibrio Clarificante está especialmente formulado para aquellos con tipos de piel grasa o mixta. Esta rutina integral ayuda a controlar la producción excesiva de grasa mientras mantiene la hidratación esencial. Nuestros productos contienen arcilla natural de la región de Mendoza y extractos botánicos conocidos por sus propiedades clarificantes. El uso regular ayuda a reducir la apariencia de los poros y previene brotes sin despojar a la piel de la humedad necesaria.'
+    detailedDescription: 'El Set Equilibrio Clarificante está especialmente formulado para aquellos con tipos de piel grasa o mixta. Esta rutina integral ayuda a controlar la producción excesiva de grasa mientras mantiene la hidratación esencial. Nuestros productos contienen arcilla natural de la región de Mendoza y extractos botánicos conocidos por sus propiedades clarificantes. El uso regular ayuda a reducir la apariencia de los poros y previene brotes sin despojar a la piel de la humedad necesaria.',
+    keyBenefits: [
+      'Controla el exceso de grasa',
+      'Reduce la apariencia de poros',
+      'Previene brotes',
+      'Mantiene la hidratación esencial'
+    ],
+    featuredIngredients: [
+      'Arcilla de Mendoza',
+      'Extracto de té verde',
+      'Extracto de hamamelis',
+      'Niacinamida'
+    ],
+    discountPercentage: 10,
+    oldPrice: 105.50,
+    items: [
+      { name: 'Limpiador Purificante', quantity: 1 },
+      { name: 'Tónico Equilibrante', quantity: 1 },
+      { name: 'Sérum Control de Grasa', quantity: 1 },
+      { name: 'Crema Hidratante Ligera', quantity: 1 }
+    ]
   },
   {
     id: 3,
@@ -37,29 +92,61 @@ export const products: Product[] = [
     description: 'Rutina anti-edad avanzada con activos naturales potentes. Reduce líneas finas y mejora la elasticidad de la piel.',
     shortDescription: 'Fórmula avanzada para reducir signos del envejecimiento',
     price: 119.99,
-    stock: 12,
-    contents: ['Limpiador Regenerador', 'Tónico Antioxidante', 'Sérum Complejo Péptidos', 'Crema Reafirmante'],
+    stock: 15,
+    contents: [
+      'Limpiador Regenerador',
+      'Tónico Antioxidante',
+      'Sérum Complejo Péptidos',
+      'Crema Reafirmante'
+    ],
     images: [
       'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/7319158/pexels-photo-7319158.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/6621353/pexels-photo-6621353.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
-    detailedDescription: 'Nuestro Sistema de Recuperación Anti-Edad es un enfoque integral para abordar los signos visibles del envejecimiento. Formulado con péptidos avanzados, antioxidantes y botánicos naturales de las Pampas argentinas conocidos por sus propiedades rejuvenecedoras. Este sistema ayuda a reducir la apariencia de líneas finas, mejora la elasticidad de la piel y proporciona hidratación profunda. Los productos trabajan sinérgicamente para promover la renovación celular y proteger contra los factores estresantes ambientales.'
+    detailedDescription: 'Nuestro Sistema de Recuperación Anti-Edad es un enfoque integral para abordar los signos visibles del envejecimiento. Formulado con péptidos avanzados, antioxidantes y botánicos naturales de las Pampas argentinas conocidos por sus propiedades rejuvenecedoras. Este sistema ayuda a reducir la apariencia de líneas finas, mejora la elasticidad de la piel y proporciona hidratación profunda. Los productos trabajan sinérgicamente para promover la renovación celular y proteger contra los factores estresantes ambientales.',
+    keyBenefits: [
+      'Reduce líneas finas y arrugas',
+      'Mejora la elasticidad de la piel',
+      'Promueve la renovación celular',
+      'Protege contra el estrés ambiental'
+    ],
+    featuredIngredients: [
+      'Péptidos avanzados',
+      'Extracto de uva',
+      'Aceite de jojoba',
+      'Vitamina E'
+    ],
+    discountPercentage: 15,
+    oldPrice: 139.99,
+    items: [
+      { name: 'Limpiador Regenerador', quantity: 1 },
+      { name: 'Tónico Antioxidante', quantity: 1 },
+      { name: 'Sérum Complejo Péptidos', quantity: 1 },
+      { name: 'Crema Reafirmante', quantity: 1 }
+    ]
   },
   {
     id: 4,
-    name: 'Kit Alivio Piel Sensible',
-    description: 'Cuidado suave para piel sensible y reactiva. Calma la irritación y fortalece la barrera cutánea.',
-    shortDescription: 'Fórmula suave para piel sensible y reactiva',
-    price: 99.99,
-    stock: 5,
-    contents: ['Limpiador Ultra-Suave', 'Esencia Calmante', 'Sérum Reparador de Barrera', 'Crema Tranquilizante'],
+    name: 'Anillo Plata 925',
+    description: 'Anillo ajustable de plata 925, elegante y minimalista.',
+    shortDescription: 'Anillo de plata 925, varios tamaños disponibles.',
+    price: 59.99,
+    stock: 10,
+    contents: ['Anillo de plata 925'],
     images: [
-      'https://images.pexels.com/photos/6621329/pexels-photo-6621329.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/6621444/pexels-photo-6621444.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/6621395/pexels-photo-6621395.jpeg?auto=compress&cs=tinysrgb&w=800'
+      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
-    detailedDescription: 'El Kit Alivio Piel Sensible está especialmente desarrollado para aquellos con piel sensible, reactiva o propensa a alergias. Esta rutina suave pero efectiva ayuda a calmar la irritación, reducir el enrojecimiento y fortalecer la barrera natural de la piel. Formulado con aloe vera calmante del norte de Argentina y otros botánicos suaves conocidos por sus propiedades antiinflamatorias. Libre de irritantes comunes, fragancias y químicos agresivos para proporcionar la experiencia de cuidado de la piel más segura.'
+    detailedDescription: 'Anillo de plata 925 hecho a mano, disponible en varios tamaños para un ajuste perfecto.',
+    keyBenefits: [
+      'Plata genuina 925',
+      'Ajuste cómodo',
+      'Diseño elegante'
+    ],
+    featuredIngredients: [],
+    discountPercentage: 0,
+    oldPrice: 59.99,
+    sizes: ['6', '7', '8', '9']
   }
 ];
 

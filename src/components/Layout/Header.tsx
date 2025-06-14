@@ -45,53 +45,45 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <header className="fixed top-0 left-0 z-50 flex-col items-center justify-between hidden w-20 h-screen py-6 bg-white border-r border-secondary/20 md:flex">
-        {/* Logo */}
-        <div className="flex flex-col items-center justify-between h-full">
-          <a href="#" className="text-2xl font-medium transform -rotate-90 text-primary whitespace-nowrap">
-            Saki
-          </a>
-          {/* Desktop Navigation */}
-          <nav className="flex flex-col space-y-2">
-            {menuItems.map(({ icon: Icon, label, href, id }) => (
-              <a
-                key={id}
-                href={href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleMenuClick(href);
-                }}
-                className="relative p-3 transition-colors duration-200 border rounded-lg group text-primary hover:text-accent"
-                aria-label={label}
-                title={label}
-              >
-                <Icon size={24} />
-                
-                {/* Tooltip */}
-                <div className="absolute z-50 px-3 py-2 ml-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 rounded-md opacity-0 pointer-events-none left-full top-1/2 bg-primary whitespace-nowrap group-hover:opacity-100">
-                  {label}
-                  <div className="absolute transform -translate-y-1/2 border-4 border-transparent right-full top-1/2 border-r-primary"></div>
-                </div>
-              </a>
-            ))}
-          </nav>
-                  {/* Desktop Actions */}
-        <div className="flex flex-col space-y-4">
+      <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 left-6 md:block">
+        <nav className="flex flex-col items-center p-4 space-y-3 border shadow-lg bg-white/80 backdrop-blur-md rounded-2xl border-white/20">
+          {menuItems.map(({ icon: Icon, label, href, id }) => (
+            <a
+              key={id}
+              href={href}
+              onClick={(e) => {
+                e.preventDefault();
+                handleMenuClick(href);
+              }}
+              className="relative p-3 text-gray-600 transition-all duration-200 group hover:text-green-700 hover:bg-green-50 rounded-xl"
+              aria-label={label}
+              title={label}
+            >
+              <Icon size={22} />
+              
+              {/* Tooltip */}
+              <div className="absolute z-50 px-3 py-2 ml-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 bg-gray-800 rounded-md opacity-0 pointer-events-none left-full top-1/2 whitespace-nowrap group-hover:opacity-100">
+                {label}
+                <div className="absolute transform -translate-y-1/2 border-4 border-transparent right-full top-1/2 border-r-gray-800"></div>
+              </div>
+            </a>
+          ))}
+          
+          {/* Cart Button */}
           <button 
-            className="relative p-3 transition-colors duration-200 text-primary hover:text-accent"
+            className="relative p-3 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
             onClick={toggleCart}
             aria-label="Abrir carrito"
             title="Carrito de Compras"
           >
-            <ShoppingCart size={24} />
+            <ShoppingCart size={22} />
             {totalItems > 0 && (
-              <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white rounded-full -top-1 -right-1 bg-accent">
+              <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-green-600 rounded-full -top-1 -right-1">
                 {totalItems}
               </span>
             )}
           </button>
-        </div>
-        </div>
+        </nav>
       </header>
 
       {/* Mobile Header */}

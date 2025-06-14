@@ -14,16 +14,12 @@ import ToastContainer from './components/Toast/ToastContainer';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
-import { products } from './data/products';
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
   
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 200);
@@ -64,60 +60,9 @@ function App() {
     };
   }, []);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    filterProducts(query, activeFilters);
-  };
-
-  const handleFilter = (filters: string[]) => {
-    setActiveFilters(filters);
-    filterProducts(searchQuery, filters);
-  };
-
-  const filterProducts = (query: string, filters: string[]) => {
-    let filtered = products;
-
-    // Apply search query
-    if (query) {
-      const searchLower = query.toLowerCase();
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchLower) ||
-        product.description.toLowerCase().includes(searchLower) ||
-        product.shortDescription.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Apply category filters
-    if (filters.length > 0) {
-      filtered = filtered.filter(product => {
-        return filters.some(filter => {
-          switch (filter) {
-            case 'Hidratación':
-              return product.name.toLowerCase().includes('hidratación') || 
-                     product.description.toLowerCase().includes('hidrat');
-            case 'Control de Grasa':
-              return product.name.toLowerCase().includes('equilibrio') || 
-                     product.name.toLowerCase().includes('clarificante') ||
-                     product.description.toLowerCase().includes('grasa');
-            case 'Anti-Edad':
-              return product.name.toLowerCase().includes('anti-edad') ||
-                     product.description.toLowerCase().includes('anti-edad');
-            case 'Piel Sensible':
-              return product.name.toLowerCase().includes('sensible') ||
-                     product.description.toLowerCase().includes('sensible');
-            default:
-              return false;
-          }
-        });
-      });
-    }
-
-    setFilteredProducts(filtered);
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
     );
@@ -127,22 +72,17 @@ function App() {
     <ErrorBoundary>
       <ToastProvider>
         <CartProvider>
-          <div className="min-h-screen text-primary font-jost app-background-nebula">
+          <div className="min-h-screen text-primary font-jost">
             <Header 
               toggleCart={() => setIsCartOpen(!isCartOpen)}
-              onSearch={handleSearch}
-              onFilter={handleFilter}
             />
             
-            <main className="md:ml-20 transition-all duration-300">
+            <main className="transition-all duration-300">
               <div className="max-w-[1920px] mx-auto">
                 <Suspense fallback={<LoadingSpinner />}>
                   <Hero />
                   <ProductsSection 
-                    onProductSelect={setSelectedProduct} 
-                    products={filteredProducts}
-                    searchQuery={searchQuery}
-                    activeFilters={activeFilters}
+                    onProductSelect={setSelectedProduct}
                   />
                   <TestimonialsSection />
                 </Suspense>
@@ -159,7 +99,7 @@ function App() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-black/60 z-40"
+                    className="fixed inset-0 z-40 bg-black/60"
                     onClick={() => setIsCartOpen(false)}
                   />
                   <motion.div
@@ -167,7 +107,7 @@ function App() {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ type: 'tween', duration: 0.3 }}
-                    className="fixed right-0 top-0 h-full w-full max-w-md z-50"
+                    className="fixed top-0 right-0 z-50 w-full h-full max-w-md"
                   >
                     <CartPanel 
                       isOpen={isCartOpen} 
@@ -184,7 +124,7 @@ function App() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-black/60 z-40"
+                    className="fixed inset-0 z-40 bg-black/60"
                     onClick={() => setSelectedProduct(null)}
                   />
                   <motion.div
@@ -197,6 +137,7 @@ function App() {
                     <ProductDialog 
                       product={selectedProduct} 
                       onClose={() => setSelectedProduct(null)} 
+                      onOpenCart={() => setIsCartOpen(true)}
                     />
                   </motion.div>
                 </>
@@ -209,7 +150,7 @@ function App() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-black/60 z-40"
+                    className="fixed inset-0 z-40 bg-black/60"
                     onClick={() => setIsCheckoutOpen(false)}
                   />
                   <motion.div

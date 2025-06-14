@@ -1,3 +1,10 @@
+export interface ProductItemOption {
+  name: string;
+  quantity?: number;
+  colorOptions?: string[]; 
+  sizeOptions?: string[];  
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -7,12 +14,28 @@ export interface Product {
   contents: string[];
   images: string[];
   detailedDescription: string;
-  stock?: number;
+  stock: number;
+  keyBenefits: string[];
+  featuredIngredients: string[];
+  discountPercentage: number;
+  oldPrice: number;
+  sizeGuide?: string;
+  colors?: string[];
+  sizes?: string[];
+  items?: ProductItemOption[];
+}
+
+export interface SelectedKitItem {
+  name: string;
+  quantity?: number;
+  color?: string;
+  size?: string;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedItems?: SelectedKitItem[];
 }
 
 export interface Toast {

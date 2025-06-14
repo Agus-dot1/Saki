@@ -1,30 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingCart, Star, Shield, Truck, Share2, ChevronRight } from 'lucide-react';
+import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import OptimizedCarousel from './OptimizedCarousel';
+import ShippingLocationsModal from './ShippingLocationModal';
 
+// Add this prop to ProductDialogProps:
 interface ProductDialogProps {
   product: Product;
   onClose: () => void;
-}
+  onOpenCart: () => void; 
+} 
 
-const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
+const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenCart }) => {
   const { addToCart } = useCart();
   const { showSuccess } = useToast();
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'reviews'>('description');
-  
+  const [activeTab, setActiveTab] = useState<'description' | 'contenido'>('contenido');
+  const [showShippingModal, setShowShippingModal] = useState(false);
+const [itemSelections, setItemSelections] = useState<{ [itemIdx: number]: { color?: string; size?: string } }>({});
+
+
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    product.colors && product.colors.length > 0 ? product.colors[0] : undefined
+  );
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(
+    product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined
+  );
+
   const handleAddToCart = () => {
-    addToCart(product, selectedQuantity);
+    let selectedItems;
+    if (product.items && product.items.length > 0) {
+      selectedItems = product.items.map((item, idx) => ({
+        name: item.name,
+        quantity: item.quantity ?? 1,
+        color: itemSelections[idx]?.color,
+        size: itemSelections[idx]?.size,
+      }));
+    }
+    addToCart(product, selectedQuantity, selectedItems);
     showSuccess(
       '¡Agregado al Carrito!',
       `${product.name} ${selectedQuantity > 1 ? `(${selectedQuantity} unidades)` : ''}`
     );
+    onClose();
+    onOpenCart();
   };
-  
+
+  useEffect(() => {
+  if (product.items) {
+    const initialSelections: { [itemIdx: number]: { color?: string; size?: string } } = {};
+    product.items.forEach((item, idx) => {
+      initialSelections[idx] = {
+        color: item.colorOptions && item.colorOptions.length > 0 ? item.colorOptions[0] : undefined,
+        size: item.sizeOptions && item.sizeOptions.length > 0 ? item.sizeOptions[0] : undefined,
+      };
+    });
+    setItemSelections(initialSelections);
+  }
+}, [product]);
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -41,7 +78,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
     if (navigator.share) {
       navigator.share({
         title: product.name,
-        text: product.shortDescription,
+        text: product.description,
         url: window.location.href,
       });
     } else {
@@ -114,7 +151,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-4"
+      className="flex overflow-hidden fixed inset-0 z-50 justify-center items-center p-2 min-w-full min-h-screen backdrop-blur-sm bg-black/70 sm:p-4"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -134,13 +171,12 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
         exit="exit"
       >
         {/* Header with close and action buttons */}
-        <div className="absolute z-20 flex items-center space-x-4 top-4 right-4 sm:top-6 sm:right-6">
+        <div className="flex absolute top-4 right-4 z-20 items-center space-x-8 sm:top-6 sm:right-10">
           <motion.button
             onClick={handleShare}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             aria-label="Compartir producto"
-            className="p-2 bg-white/90 rounded-full shadow-lg hover:bg-white"
           >
             <Share2 size={20} className="text-primary" />
           </motion.button>
@@ -149,20 +185,19 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             aria-label="Cerrar diálogo"
-            className="p-2 bg-white/90 rounded-full shadow-lg hover:bg-white"
           >
             <X size={24} className="text-primary" />
           </motion.button>
         </div>
         
         <div className="flex flex-col h-full lg:flex-row">
-          {/* Image Section - Better proportions */}
-          <div className="relative flex items-center justify-center p-4 bg-gradient-to-br lg:w-2/5 from-secondary/30 to-secondary/60 sm:p-8">
-            <div className="w-full max-w-lg aspect-square rounded-xl shadow-lg overflow-hidden bg-white">
+          {/* Image Section */}
+          <div className="flex relative justify-center items-center p-4 bg-gradient-to-br lg:w-2/5 from-secondary/30 to-secondary/60 sm:p-8">
+            <div className="overflow-hidden w-full max-w-lg bg-white rounded-xl shadow-lg aspect-square">
               <OptimizedCarousel 
                 images={product.images} 
                 alt={product.name}
-                className="h-full"
+                className="object-contain h-full"
               />
             </div>
             {/* Floating stock indicator */}
@@ -178,24 +213,16 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
             )}
           </div>
           
-          {/* Content Section - More space for content */}
+          {/* Content Section */}
           <motion.div 
-            className="flex flex-col bg-white lg:w-3/5 h-full"
+            className="flex flex-col h-full bg-white lg:w-3/5"
             variants={contentVariants}
             initial="hidden"
             animate="visible"
           >
-            <div className="flex-1 p-4 overflow-y-auto sm:p-6 lg:p-8">
+            <div className="overflow-y-auto flex-1 p-4 sm:p-6 lg:p-8">
               {/* Product Header */}
               <motion.div className="mb-6" variants={itemVariants}>
-                <div className="flex items-center mb-2 space-x-2">
-                  <div className="flex items-center space-x-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={16} className="fill-accent text-accent" />
-                    ))}
-                  </div>
-                  <span className="text-xs sm:text-sm text-content">(4.9) • 127 reseñas</span>
-                </div>
                 <h2 
                   id="product-dialog-title"
                   className="mb-3 text-2xl font-light leading-tight sm:text-3xl lg:text-4xl text-primary"
@@ -206,34 +233,48 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   <span className="text-3xl font-medium sm:text-4xl text-accent">
                     ${product.price.toFixed(2)}
                   </span>
-                  <span className="text-lg line-through text-content">
-                    ${(product.price * 1.2).toFixed(2)}
-                  </span>
-                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-accent/10 text-accent">
-                    17% OFF
-                  </span>
+                  {product.oldPrice && (
+                    <span className="text-lg line-through text-content">
+                      ${product.oldPrice.toFixed(2)}
+                    </span>
+                  )}
+                  {product.discountPercentage && (
+                    <span className="px-3 py-1 text-sm font-medium rounded-full bg-accent/10 text-accent">
+                      {product.discountPercentage}% OFF
+                    </span>
+                  )}
                 </div>
                 <p className="text-lg leading-relaxed text-content">
-                  {product.shortDescription}
+                  {product.description}
                 </p>
               </motion.div>
               
               {/* Trust Indicators */}
               <motion.div 
-                className="grid grid-cols-3 gap-4 p-4 mb-6 rounded-xl bg-secondary/30"
+                className="grid grid-cols-3 gap-4 p-4 mb-6 rounded-xl bg-accent/10 sm:grid-cols-2 lg:grid-cols-3"
                 variants={itemVariants}
               >
                 <div className="text-center">
-                  <Shield className="w-8 h-8 mx-auto mb-2 text-accent" />
+                  <Leaf className="mx-auto mb-2 w-8 h-8 text-accent" />
                   <p className="text-sm font-medium text-primary">100% Natural</p>
                 </div>
                 <div className="text-center">
-                  <Truck className="w-8 h-8 mx-auto mb-2 text-accent" />
-                  <p className="text-sm font-medium text-primary">Envío Gratis</p>
+                  <Truck className="mx-auto mb-2 w-8 h-8 text-accent" />
+                  <p className="text-sm font-medium text-primary">Entrega Gratis en <br /> 
+                    <span 
+                    className="underline cursor-pointer text-accent"
+                    onClick={() => setShowShippingModal(true)}
+                    tabIndex={0}
+                    role="button"
+                  > zonas seleccionadas</span></p>
                 </div>
+                <ShippingLocationsModal
+                  open={showShippingModal}
+                  onClose={() => setShowShippingModal(false)}
+                />
                 <div className="text-center">
-                  <Star className="w-8 h-8 mx-auto mb-2 text-accent" />
-                  <p className="text-sm font-medium text-primary">Premium</p>
+                  <Star className="mx-auto mb-2 w-8 h-8 text-accent" />
+                  <p className="text-sm font-medium text-primary">Calidad Premium</p>
                 </div>
               </motion.div>
               
@@ -243,20 +284,20 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   Cantidad
                 </label>
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center overflow-hidden border rounded-lg border-secondary">
+                  <div className="flex overflow-hidden items-center rounded-lg border border-accent/10">
                     <button
                       onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
-                      className="px-4 py-3 transition-colors hover:bg-secondary/50"
+                      className="px-4 py-3 transition-colors hover:bg-accent/20"
                       disabled={selectedQuantity <= 1}
                     >
                       -
                     </button>
-                    <span className="px-6 py-3 bg-secondary/30 font-medium min-w-[60px] text-center">
+                    <span className="px-6 py-3 select-none font-medium min-w-[60px] text-center">
                       {selectedQuantity}
                     </span>
                     <button
                       onClick={() => setSelectedQuantity(selectedQuantity + 1)}
-                      className="px-4 py-3 transition-colors hover:bg-secondary/50"
+                      className="px-4 py-3 transition-colors hover:bg-accent/20"
                       disabled={stockStatus?.available === false || (product.stock != null && selectedQuantity >= product.stock)}
                     >
                       +
@@ -268,17 +309,95 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                 </div>
               </motion.div>
               
+              {product.items && product.items.length > 0 && product.items.map((item, idx) => (
+  <motion.div className="mb-6" variants={itemVariants} key={idx}>
+    {item.colorOptions && item.colorOptions.length > 0 && (
+      <div className="mb-3">
+        <span className="block mb-1 text-base text-content">Color</span>
+        <select
+          className="px-4 py-3 w-full rounded-lg border border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+          value={itemSelections[idx]?.color}
+          onChange={e =>
+            setItemSelections(selections => ({
+              ...selections,
+              [idx]: { ...selections[idx], color: e.target.value }
+            }))
+          }
+        >
+          {item.colorOptions.map((color, cidx) => (
+            <option key={cidx} value={color}>{color}</option>
+          ))}
+        </select>
+      </div>
+    )}
+    {item.sizeOptions && item.sizeOptions.length > 0 && (
+      <div>
+        <span className="block mb-1 text-base text-content">Tamaño</span>
+        <select
+          className="px-4 py-3 w-full rounded-lg border border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+          value={itemSelections[idx]?.size}
+          onChange={e =>
+            setItemSelections(selections => ({
+              ...selections,
+              [idx]: { ...selections[idx], size: e.target.value }
+            }))
+          }
+        >
+          {item.sizeOptions.map((size, sidx) => (
+            <option key={sidx} value={size}>{size}</option>
+          ))}
+        </select>
+      </div>
+    )}
+  </motion.div>
+))}
+{!product.items && (
+  <>
+    {product.colors && product.colors.length > 0 && (
+      <motion.div className="mb-6" variants={itemVariants}>
+        <label className="block mb-1 text-lg font-medium text-primary">
+          Color
+        </label>
+        <select
+          className="px-4 py-3 w-full rounded-lg border border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+          value={selectedColor}
+          onChange={e => setSelectedColor(e.target.value)}
+        >
+          {product.colors.map((color, idx) => (
+            <option key={idx} value={color}>{color}</option>
+          ))}
+        </select>
+      </motion.div>
+    )}
+    {product.sizes && product.sizes.length > 0 && (
+      <motion.div className="mb-6" variants={itemVariants}>
+        <label className="block mb-1 text-lg font-medium text-primary">
+          Talle
+        </label>
+        <select
+          className="px-4 py-3 w-full rounded-lg border border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+          value={selectedSize}
+          onChange={e => setSelectedSize(e.target.value)}
+        >
+          {product.sizes.map((size, idx) => (
+            <option key={idx} value={size}>{size}</option>
+          ))}
+        </select>
+      </motion.div>
+    )}
+  </>
+)}
+
               {/* Tabs */}
               <motion.div className="mb-6" variants={itemVariants}>
-                <div className="flex p-1 mb-4 space-x-1 rounded-lg bg-secondary/30">
+                <div className="flex p-1 px-4 mb-4 space-x-1 rounded-lg bg-accent/10">
                   {[
                     { id: 'description', label: 'Descripción' },
-                    { id: 'ingredients', label: 'Ingredientes' },
-                    { id: 'reviews', label: 'Reseñas' }
+                    { id: 'contenido', label: 'Contenido' },
                   ].map((tab) => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id as 'description' | 'ingredients' | 'reviews')}
+                      onClick={() => setActiveTab(tab.id as 'description' | 'contenido')}
                       className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
                         activeTab === tab.id
                           ? 'bg-white text-primary shadow-sm scale-105'
@@ -306,105 +425,45 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                           <p className="text-base leading-relaxed text-content">
                             {product.detailedDescription}
                           </p>
-                          <div className="p-4 rounded-lg bg-secondary/30">
-                            <h4 className="mb-3 font-medium text-primary">Beneficios Clave:</h4>
-                            <ul className="space-y-2 text-content">
-                              <li className="flex items-start">
-                                <span className="mr-2 text-accent">•</span>
-                                <span>Hidratación profunda y duradera</span>
-                              </li>
-                              <li className="flex items-start">
-                                <span className="mr-2 text-accent">•</span>
-                                <span>Ingredientes 100% naturales argentinos</span>
-                              </li>
-                              <li className="flex items-start">
-                                <span className="mr-2 text-accent">•</span>
-                                <span>Resultados visibles en 2-3 semanas</span>
-                              </li>
-                              <li className="flex items-start">
-                                <span className="mr-2 text-accent">•</span>
-                                <span>Libre de químicos agresivos</span>
-                              </li>
-                            </ul>
-                          </div>
+                          {product.keyBenefits && product.keyBenefits.length > 0 && (
+                            <div className="p-4 rounded-lg bg-accent/10">
+                              <h4 className="mb-3 font-medium text-primary">Beneficios Clave:</h4>
+                              <ul className="space-y-2 text-content">
+                                {product.keyBenefits.map((benefit, idx) => (
+                                  <li key={idx} className="flex items-start">
+                                    <span className="mr-2 text-accent">•</span>
+                                    <span>{benefit}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       )}
-                      {activeTab === 'ingredients' && (
+                      {activeTab === 'contenido' && (
                         <div className="space-y-6">
-                          <h4 className="mb-4 text-lg font-medium text-primary">Qué incluye este kit:</h4>
-                          <ul className="space-y-3">
-                            {product.contents.map((item, index) => (
-                              <li key={index} className="flex items-start">
-                                <ChevronRight size={16} className="flex-shrink-0 mt-1 mr-3 text-accent" />
-                                <span className="text-content">{item}</span>
+                            <h4 className="mb-4 text-lg font-medium text-primary">Qué incluye este kit:</h4>
+                            <ul className="space-y-3">
+                            {product.items && product.items.length > 0 && product.items.map((item, idx) => (
+                              <li key={idx}>
+                              <span className="font-medium text-primary">{item.name}</span>
+                              {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
                               </li>
                             ))}
-                          </ul>
-                          <div className="p-4 rounded-lg bg-green-50">
-                            <h5 className="mb-3 font-medium text-green-800">Ingredientes Destacados:</h5>
-                            <ul className="space-y-2 text-green-700">
-                              <li>• Aloe Vera patagónico</li>
-                              <li>• Aceite de rosa mosqueta</li>
-                              <li>• Extracto de manzanilla</li>
-                              <li>• Ácido hialurónico natural</li>
                             </ul>
-                          </div>
+                          {product.featuredIngredients && product.featuredIngredients.length > 0 && (
+                            <div className="p-4 bg-green-50 rounded-lg">
+                              <h5 className="mb-3 font-medium text-green-800">Contenidos Destacados:</h5>
+                              <ul className="space-y-2 text-green-700">
+                                {product.featuredIngredients.map((ingredient, idx) => (
+                                  <li key={idx}>• {ingredient}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       )}
-                      {activeTab === 'reviews' && (
-                        <div className="space-y-6">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <div className="flex items-center space-x-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} size={16} className="fill-accent text-accent" />
-                                ))}
-                              </div>
-                              <span className="font-medium">4.9 de 5</span>
-                            </div>
-                            <span className="text-sm text-content">127 reseñas</span>
-                          </div>
-                          
-                          <div className="space-y-4">
-                            <div className="p-4 border rounded-lg border-secondary/20">
-                              <div className="flex items-center mb-2 space-x-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} size={14} className="fill-accent text-accent" />
-                                ))}
-                              </div>
-                              <p className="mb-2 text-content">
-                                "Excelente producto, mi piel se ve increíble después de usarlo por 2 semanas. La hidratación es profunda y duradera."
-                              </p>
-                              <p className="text-xs text-content">- María G., Buenos Aires</p>
-                            </div>
-                            
-                            <div className="p-4 border rounded-lg border-secondary/20">
-                              <div className="flex items-center mb-2 space-x-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} size={14} className="fill-accent text-accent" />
-                                ))}
-                              </div>
-                              <p className="mb-2 text-content">
-                                "Los ingredientes naturales se notan desde el primer uso. Mi piel sensible no tuvo ninguna reacción."
-                              </p>
-                              <p className="text-xs text-content">- Ana L., Córdoba</p>
-                            </div>
-                            
-                            <div className="p-4 border rounded-lg border-secondary/20">
-                              <div className="flex items-center mb-2 space-x-1">
-                                {[...Array(4)].map((_, i) => (
-                                  <Star key={i} size={14} className="fill-accent text-accent" />
-                                ))}
-                                <Star size={14} className="text-accent" />
-                              </div>
-                              <p className="mb-2 text-content">
-                                "Muy buen producto, aunque el precio es un poco alto. Los resultados valen la pena."
-                              </p>
-                              <p className="text-xs text-content">- Sofia R., Mendoza</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                      
                     </motion.div>
                   </AnimatePresence>
                 </div>
@@ -413,7 +472,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
             
             {/* Sticky Footer */}
             <motion.div 
-              className="p-4 bg-white border-t sm:p-6 lg:p-8 border-secondary/20 shadow-[0_-2px_16px_-8px_rgba(0,0,0,0.06)]"
+              className="p-4 bg-white border-t sm:p-6 lg:p-8 border-accent/10 shadow-[0_-2px_16px_-8px_rgba(0,0,0,0.06)]"
               variants={itemVariants}
             >
               <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row">
@@ -430,17 +489,22 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
                   </span>
                 </motion.button>
                 <motion.button 
-                  className="px-8 py-4 font-medium transition-all duration-200 border-2 rounded-xl sm:w-auto border-accent text-accent hover:bg-accent hover:text-white"
+                  className="px-8 py-4 font-medium rounded-xl border-2 transition-all duration-200 sm:w-auto border-accent text-accent hover:bg-accent hover:text-white"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   Comprar Ahora
                 </motion.button>
               </div>
-              <div className="flex flex-wrap items-center justify-center mt-4 space-x-6 text-sm text-content">
+              <div className="flex flex-wrap justify-center items-center mt-4 space-x-6 text-sm text-content">
                 <span className="flex items-center space-x-1">
                   <Truck size={16} />
-                  <span>Envío gratis en CABA</span>
+                  <span>Entregas gratis en <span 
+                    className="underline cursor-pointer text-accent"
+                    onClick={() => setShowShippingModal(true)}
+                    tabIndex={0}
+                    role="button"
+                  > zonas seleccionadas</span></span>
                 </span>
                 <span className="flex items-center space-x-1">
                   <Shield size={16} />

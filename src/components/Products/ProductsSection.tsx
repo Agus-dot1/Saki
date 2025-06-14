@@ -1,33 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ProductCard from './ProductCard';
 import LoadingSpinner from '../LoadingSpinner';
 import { Product } from '../../types';
+import { Package } from 'lucide-react';
+import { fetchProducts } from '../../services/productService';
 
 interface ProductsSectionProps {
   onProductSelect: (product: Product) => void;
-  products: Product[];
-  searchQuery?: string;
-  activeFilters?: string[];
 }
 
 const ProductsSection: React.FC<ProductsSectionProps> = ({ 
-  onProductSelect, 
-  products, 
-  searchQuery = '', 
-  activeFilters = [] 
+  onProductSelect
 }) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  // Simulate loading state
-  React.useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+  // Fetch products from the server
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => setProducts([]))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const containerVariants = {
@@ -52,69 +51,45 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
 
   if (isLoading) {
     return (
-      <section id="products" className="py-16 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
+      <section id="products" className="px-6 py-16 bg-white">
+        <div className="mx-auto max-w-7xl">
           <LoadingSpinner />
         </div>
       </section>
     );
   }
 
-  const hasActiveSearch = searchQuery || activeFilters.length > 0;
-
   return (
-    <section id="products" className="py-16 px-6 bg-white" ref={ref}>
+    <section id="products" className="px-6 py-16 bg-slate-50" ref={ref}>
       <motion.div
-        className="max-w-7xl mx-auto"
+        className="max-w-5xl mx-auto"
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
         variants={containerVariants}
       >
-        <motion.h2 
-          className="text-3xl md:text-4xl font-medium text-primary mb-3"
-          variants={itemVariants}
-        >
-          {hasActiveSearch ? 'Resultados de Búsqueda' : 'Nuestros Productos'}
-        </motion.h2>
-        <motion.p 
-          className="text-content text-lg mb-12 max-w-2xl"
-          variants={itemVariants}
-        >
-          {hasActiveSearch 
-            ? `Encontramos ${products.length} producto${products.length !== 1 ? 's' : ''} que coincide${products.length !== 1 ? 'n' : ''} con tu búsqueda.`
-            : 'Descubrí nuestras colecciones de cuidado de la piel artesanales, cada una diseñada para abordar necesidades específicas de la piel con los mejores ingredientes naturales de Argentina.'
-          }
-        </motion.p>
-        
-        {/* Active filters display */}
-        {activeFilters.length > 0 && (
-          <motion.div 
-            className="mb-8 flex flex-wrap gap-2"
-            variants={itemVariants}
-          >
-            <span className="text-sm text-content mr-2">Filtros activos:</span>
-            {activeFilters.map(filter => (
-              <span 
-                key={filter}
-                className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-              >
-                {filter}
-              </span>
-            ))}
-          </motion.div>
-        )}
+        <motion.div className="mb-16 text-center" variants={itemVariants}>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Package className=" text-accent" size={24} />
+            <span className="text-lg font-medium">Kits de calidad</span>
+          </div>
+          <h2 className="mb-4 text-4xl font-light text-primary">
+            Nuestros productos
+          </h2>
+          <p className="max-w-2xl mx-auto text-lg text-content">
+            Cada kit combina productos esenciales que potencian tu rutina diaria y te ayudan a lograr una piel radiante y saludable.
+          </p>
+        </motion.div>
         
         {products.length === 0 ? (
           <motion.div 
-            className="text-center py-12"
+            className="py-12 text-center"
             variants={itemVariants}
           >
-            <p className="text-lg text-content mb-4">No encontramos productos que coincidan con tu búsqueda.</p>
-            <p className="text-content">Probá ajustando los términos de búsqueda o filtros.</p>
+            <p className="mb-4 text-lg text-content">No hay productos disponibles en este momento.</p>
           </motion.div>
         ) : (
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            className="grid grid-cols-1 gap-8 md:grid-cols-2"
             variants={containerVariants}
           >
             {products.map(product => (
