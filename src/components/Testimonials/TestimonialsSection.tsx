@@ -40,46 +40,46 @@ const TestimonialsSection: React.FC = () => {
   const marqueeTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section className="relative py-24 overflow-hidden bg-secondary/30">
+    <section className="relative py-16 overflow-hidden lg:py-24 bg-secondary/30">
       {/* Gradient overlay */}
       <div className="pointer-events-none absolute inset-0 z-10 after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-white after:via-transparent after:to-white after:w-full after:h-full" />
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="relative z-20 mb-16 text-center">
+        {/* Header - Better mobile spacing */}
+        <div className="relative z-20 mb-12 text-center lg:mb-16">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Star className="fill-accent text-accent" size={24} />
-            <span className="text-lg font-medium">Confianza de miles</span>
+            <span className="text-base font-medium lg:text-lg">Confianza de miles</span>
           </div>
-          <h2 className="mb-4 text-4xl font-light text-primary">
+          <h2 className="mb-4 text-3xl font-light lg:text-4xl text-primary">
             Palabras de Mis Clientes
           </h2>
-          <p className="max-w-2xl mx-auto text-lg text-content">
+          <p className="max-w-2xl mx-auto text-base leading-relaxed lg:text-lg text-content">
             Descubrí por qué nuestros clientes aman los productos naturales de cuidado de la piel de Saki y sus resultados transformadores.
           </p>
         </div>
 
-        {/* Marquee */}
+        {/* Marquee - Better mobile sizing */}
         <div className="relative w-full overflow-x-hidden">
-          <div className="flex gap-8 marquee w-max">
+          <div className="flex gap-4 marquee w-max lg:gap-8">
             {marqueeTestimonials.map((testimonial, idx) => (
               <div
                 key={idx}
-                className="min-w-[320px] max-w-xs p-8 transition-shadow shadow-sm bg-accent/10 rounded-3xl hover:shadow-md flex flex-col justify-between"
+                className="min-w-[280px] max-w-xs p-6 transition-shadow shadow-sm lg:min-w-[320px] lg:p-8 bg-accent/10 rounded-2xl lg:rounded-3xl hover:shadow-md flex flex-col justify-between"
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 mb-4 lg:gap-4 lg:mb-6">
                   <div>
-                    <h3 className="font-medium text-primary">
-                      <Quote className="inline-block mr-1 text-accent" /> {testimonial.name}
+                    <h3 className="text-base font-medium lg:text-lg text-primary">
+                      <Quote className="inline-block mr-1 text-accent" size={16} /> {testimonial.name}
                     </h3>
                   </div>
                 </div>
-                <blockquote className="leading-relaxed text-content">
+                <blockquote className="text-sm leading-relaxed lg:text-base text-content">
                   "{testimonial.content}"
                 </blockquote>
                 {testimonial.rating && (
-                  <div className="flex items-center mt-4">
+                  <div className="flex items-center mt-3 lg:mt-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="text-accent fill-accent" size={16} />
+                      <Star key={i} className="text-accent fill-accent" size={14} />
                     ))}
                   </div>
                 )}
@@ -88,15 +88,20 @@ const TestimonialsSection: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Marquee animation styles */}
+      {/* Marquee animation styles - Responsive speed */}
       <style>
         {`
           .marquee {
-            animation: marquee 110s linear infinite;
+            animation: marquee 120s linear infinite;
           }
           @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
+          }
+          @media (max-width: 768px) {
+            .marquee {
+              animation: marquee 90s linear infinite;
+            }
           }
         `}
       </style>

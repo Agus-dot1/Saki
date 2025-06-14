@@ -77,7 +77,8 @@ function App() {
               toggleCart={() => setIsCartOpen(!isCartOpen)}
             />
             
-            <main className="transition-all duration-300">
+            {/* Main content with proper mobile spacing */}
+            <main className="transition-all duration-300 pt-16 lg:pt-0 lg:ml-20">
               <div className="max-w-[1920px] mx-auto">
                 <Suspense fallback={<LoadingSpinner />}>
                   <Hero />
@@ -107,7 +108,7 @@ function App() {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ type: 'tween', duration: 0.3 }}
-                    className="fixed top-0 right-0 z-50 w-full h-full max-w-md"
+                    className="fixed top-0 right-0 z-50 w-full h-full max-w-md lg:max-w-lg"
                   >
                     <CartPanel 
                       isOpen={isCartOpen} 
@@ -132,7 +133,7 @@ function App() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-2 lg:p-6"
                   >
                     <ProductDialog 
                       product={selectedProduct} 
@@ -158,7 +159,7 @@ function App() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-2 lg:p-6"
                   >
                     <CheckoutForm onClose={() => setIsCheckoutOpen(false)} />
                   </motion.div>

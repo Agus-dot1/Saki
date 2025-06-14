@@ -3,11 +3,11 @@ import { Instagram, Facebook, Twitter, CreditCard, MapPin, Mail, Phone } from 'l
 
 const Footer: React.FC = () => {
   return (
-    <footer id="contact" className="px-6 py-16 bg-secondary">
-      <div className="grid grid-cols-1 gap-12 mx-auto max-w-7xl md:grid-cols-3">
+    <footer id="contact" className="px-4 py-12 lg:px-6 lg:py-16 bg-secondary">
+      <div className="grid grid-cols-1 gap-8 mx-auto max-w-7xl lg:grid-cols-3 lg:gap-12">
         <div>
-          <h3 className="mb-4 text-2xl font-medium text-primary">Saki</h3>
-          <p className="mb-6 text-content">
+          <h3 className="mb-3 text-xl font-medium lg:mb-4 lg:text-2xl text-primary">Saki</h3>
+          <p className="mb-4 text-sm leading-relaxed lg:mb-6 lg:text-base text-content">
             Productos premium de cuidado de la piel elaborados con ingredientes naturales de Argentina. 
             Nuestras fórmulas combinan sabiduría ancestral con ciencia moderna para una piel 
             saludable y radiante.
@@ -26,34 +26,34 @@ const Footer: React.FC = () => {
         </div>
         
         <div>
-          <h3 className="mb-4 text-xl font-medium text-primary">Contactanos</h3>
-          <ul className="space-y-3">
+          <h3 className="mb-3 text-lg font-medium lg:mb-4 lg:text-xl text-primary">Contactanos</h3>
+          <ul className="space-y-2 lg:space-y-3">
             <li className="flex items-center space-x-2">
-              <MapPin size={18} className="text-supporting" />
-              <span className="text-content">Buenos Aires, Argentina</span>
+              <MapPin size={16} className="text-supporting lg:w-5 lg:h-5" />
+              <span className="text-sm lg:text-base text-content">Buenos Aires, Argentina</span>
             </li>
             <li className="flex items-center space-x-2">
-              <Mail size={18} className="text-supporting" />
-              <span className="text-content">hola@sakiskincare.com</span>
+              <Mail size={16} className="text-supporting lg:w-5 lg:h-5" />
+              <span className="text-sm lg:text-base text-content">hola@sakiskincare.com</span>
             </li>
             <li className="flex items-center space-x-2">
-              <Phone size={18} className="text-supporting" />
-              <span className="text-content">+54 11 1234 5678</span>
+              <Phone size={16} className="text-supporting lg:w-5 lg:h-5" />
+              <span className="text-sm lg:text-base text-content">+54 11 1234 5678</span>
             </li>
           </ul>
         </div>
         
         <div>
-          <h3 className="mb-4 text-xl font-medium text-primary">Métodos de Pago</h3>
-          <div className="flex flex-wrap gap-2 mb-6">
-            <CreditCard size={24} className="text-supporting" />
-            <span className="text-content">Aceptamos todas las tarjetas principales</span>
+          <h3 className="mb-3 text-lg font-medium lg:mb-4 lg:text-xl text-primary">Métodos de Pago</h3>
+          <div className="flex flex-wrap gap-2 mb-4 lg:mb-6">
+            <CreditCard size={20} className="text-supporting lg:w-6 lg:h-6" />
+            <span className="text-sm lg:text-base text-content">Aceptamos todas las tarjetas principales</span>
           </div>
         </div>
       </div>
       
-      <div className="pt-6 mx-auto mt-12 text-center border-t max-w-7xl border-supporting/20 text-content">
-        <p>© {new Date().getFullYear()} Saki Skincare. Todos los derechos reservados.</p>
+      <div className="pt-4 mx-auto mt-8 text-center border-t lg:pt-6 lg:mt-12 max-w-7xl border-supporting/20 text-content">
+        <p className="text-sm lg:text-base">© {new Date().getFullYear()} Saki Skincare. Todos los derechos reservados.</p>
       </div>
     </footer>
   );

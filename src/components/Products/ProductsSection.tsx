@@ -5,7 +5,7 @@ import ProductCard from './ProductCard';
 import LoadingSpinner from '../LoadingSpinner';
 import { Product } from '../../types';
 import { Package } from 'lucide-react';
-import { fetchProducts } from '../../services/productService';
+import { products } from '../../data/products';
 
 interface ProductsSectionProps {
   onProductSelect: (product: Product) => void;
@@ -14,19 +14,21 @@ interface ProductsSectionProps {
 const ProductsSection: React.FC<ProductsSectionProps> = ({ 
   onProductSelect
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  // Fetch products from the server
+  // Use mock data for now
   useEffect(() => {
-    fetchProducts()
-      .then(setProducts)
-      .catch(() => setProducts([]))
-      .finally(() => setIsLoading(false));
+    const timer = setTimeout(() => {
+      setProductList(products);
+      setIsLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const containerVariants = {
@@ -51,7 +53,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
 
   if (isLoading) {
     return (
-      <section id="products" className="px-6 py-16 bg-white">
+      <section id="products" className="px-4 py-12 bg-white lg:px-6 lg:py-16">
         <div className="mx-auto max-w-7xl">
           <LoadingSpinner />
         </div>
@@ -60,39 +62,39 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   }
 
   return (
-    <section id="products" className="px-6 py-16 bg-slate-50" ref={ref}>
+    <section id="products" className="px-4 py-12 bg-slate-50 lg:px-6 lg:py-16" ref={ref}>
       <motion.div
-        className="max-w-5xl mx-auto"
+        className="max-w-6xl mx-auto"
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
         variants={containerVariants}
       >
-        <motion.div className="mb-16 text-center" variants={itemVariants}>
+        <motion.div className="mb-12 text-center lg:mb-16" variants={itemVariants}>
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Package className=" text-accent" size={24} />
-            <span className="text-lg font-medium">Kits de calidad</span>
+            <Package className="text-accent" size={24} />
+            <span className="text-base font-medium lg:text-lg">Kits de calidad</span>
           </div>
-          <h2 className="mb-4 text-4xl font-light text-primary">
+          <h2 className="mb-4 text-3xl font-light lg:text-4xl text-primary">
             Nuestros productos
           </h2>
-          <p className="max-w-2xl mx-auto text-lg text-content">
+          <p className="max-w-2xl mx-auto text-base leading-relaxed lg:text-lg text-content">
             Cada kit combina productos esenciales que potencian tu rutina diaria y te ayudan a lograr una piel radiante y saludable.
           </p>
         </motion.div>
         
-        {products.length === 0 ? (
+        {productList.length === 0 ? (
           <motion.div 
             className="py-12 text-center"
             variants={itemVariants}
           >
-            <p className="mb-4 text-lg text-content">No hay productos disponibles en este momento.</p>
+            <p className="mb-4 text-base lg:text-lg text-content">No hay productos disponibles en este momento.</p>
           </motion.div>
         ) : (
           <motion.div 
-            className="grid grid-cols-1 gap-8 md:grid-cols-2"
+            className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8"
             variants={containerVariants}
           >
-            {products.map(product => (
+            {productList.map(product => (
               <motion.div key={product.id} variants={itemVariants}>
                 <ProductCard 
                   product={product}

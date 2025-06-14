@@ -7,7 +7,6 @@ interface HeaderProps {
   toggleCart: () => void;
 }
 
-
 const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -44,9 +43,9 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   
   return (
     <>
-      {/* Desktop Sidebar */}
-      <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 left-6 md:block">
-        <nav className="flex flex-col items-center p-4 space-y-3 border shadow-lg bg-white/80 backdrop-blur-md rounded-2xl border-white/20">
+      {/* Desktop Sidebar - Hidden on mobile */}
+      <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 left-4 xl:left-6 lg:block">
+        <nav className="flex flex-col items-center p-3 space-y-2 border shadow-lg bg-white/90 backdrop-blur-md rounded-2xl border-white/20">
           {menuItems.map(({ icon: Icon, label, href, id }) => (
             <a
               key={id}
@@ -59,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               aria-label={label}
               title={label}
             >
-              <Icon size={22} />
+              <Icon size={20} />
               
               {/* Tooltip */}
               <div className="absolute z-50 px-3 py-2 ml-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 bg-gray-800 rounded-md opacity-0 pointer-events-none left-full top-1/2 whitespace-nowrap group-hover:opacity-100">
@@ -76,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
             aria-label="Abrir carrito"
             title="Carrito de Compras"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={20} />
             {totalItems > 0 && (
               <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-green-600 rounded-full -top-1 -right-1">
                 {totalItems}
@@ -86,18 +85,17 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
         </nav>
       </header>
 
-      {/* Mobile Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 bg-white border-b border-secondary/20 md:hidden">
+      {/* Mobile Header - Improved spacing and touch targets */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 bg-white/95 backdrop-blur-md border-b border-secondary/20 lg:hidden">
         {/* Mobile Logo */}
         <a href="#" className="text-xl font-medium text-primary">
           Saki
         </a>
 
-        {/* Mobile Actions */}
-        <div className="flex items-center space-x-2">
-          
+        {/* Mobile Actions - Improved spacing */}
+        <div className="flex items-center space-x-1">
           <button 
-            className="relative p-2 transition-colors duration-200 text-primary hover:text-accent"
+            className="relative p-3 transition-colors duration-200 text-primary hover:text-accent rounded-xl"
             onClick={toggleCart}
             aria-label="Abrir carrito"
           >
@@ -110,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
           </button>
 
           <button
-            className="p-2 transition-colors duration-200 text-primary hover:text-accent"
+            className="p-3 transition-colors duration-200 text-primary hover:text-accent rounded-xl"
             onClick={toggleMobileMenu}
             aria-label="Abrir menú"
           >
@@ -129,7 +127,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60 md:hidden"
+              className="fixed inset-0 z-40 bg-black/60 lg:hidden"
               onClick={closeMobileMenu}
             />
             
@@ -139,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed right-0 top-0 h-full w-80 max-w-[85vw] bg-white z-50 md:hidden shadow-xl"
+              className="fixed right-0 top-0 h-full w-80 max-w-[85vw] bg-white z-50 lg:hidden shadow-xl"
             >
               <div className="flex flex-col h-full">
                 {/* Mobile Menu Header */}
@@ -147,7 +145,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                   <span className="text-xl font-medium text-primary">Menú</span>
                   <button
                     onClick={closeMobileMenu}
-                    className="p-2 transition-colors duration-200 text-primary hover:text-accent"
+                    className="p-2 transition-colors duration-200 text-primary hover:text-accent rounded-xl"
                     aria-label="Cerrar menú"
                   >
                     <X size={24} />
@@ -165,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                             e.preventDefault();
                             handleMenuClick(href);
                           }}
-                          className="flex items-center px-6 py-4 space-x-4 transition-all duration-200 text-primary hover:text-accent hover:bg-secondary/30"
+                          className="flex items-center px-6 py-4 space-x-4 transition-all duration-200 text-primary hover:text-accent hover:bg-secondary/30 rounded-xl mx-3"
                         >
                           <Icon size={24} />
                           <span className="text-lg font-medium">{label}</span>

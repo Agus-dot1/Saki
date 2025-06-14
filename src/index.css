@@ -21,234 +21,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Nebula Background */
-.app-background-nebula {
-  position: relative;
-  isolation: isolate;
-  background: transparent;
-}
-
-.app-background-nebula::before,
-.app-background-nebula::after {
-  content: '';
-  position: fixed;
-  inset: -20%;
-  width: 140%;
-  height: 140%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.app-background-nebula::before {
-  background: 
-    radial-gradient(circle at 20% 30%, rgb(from theme('colors.nebula-3') / 15%), transparent 40%),
-    radial-gradient(circle at 80% 10%, rgb(from theme('colors.nebula-2') / 20%), transparent 50%),
-    radial-gradient(circle at 10% 70%, rgb(from theme('colors.nebula-4') / 10%), transparent 45%),
-    radial-gradient(circle at 90% 90%, rgb(from theme('colors.nebula-1') / 15%), transparent 35%);
-  filter: blur(80px);
-  animation: nebula-float 20s ease-in-out infinite;
-  opacity: 0.8;
-}
-
-.app-background-nebula::after {
-  background: 
-    radial-gradient(circle at 70% 64%, rgb(from theme('colors.nebula-2') / 12%), transparent 45%),
-    radial-gradient(circle at 30% 40%, rgb(from theme('colors.nebula-3') / 18%), transparent 55%),
-    radial-gradient(circle at 60% 20%, rgb(from theme('colors.nebula-4') / 15%), transparent 40%);
-  filter: blur(100px);
-  animation: nebula-float 25s ease-in-out infinite reverse;
-  opacity: 0.6;
-}
-
-@keyframes nebula-float {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(30px, -30px) rotate(120deg);
-  }
-  66% {
-    transform: translate(-20px, 20px) rotate(240deg);
-  }
-}
-
-/* Navigation Styles */
-.nav-tooltip {
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 1rem;
-  background: theme('colors.primary');
-  color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 1000;
-}
-
-.nav-tooltip::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 4px solid transparent;
-  border-right-color: theme('colors.primary');
-}
-
-.nav-item:hover .nav-tooltip {
-  opacity: 1;
-}
-
-/* Mobile Menu Styles */
-.mobile-menu-backdrop {
-  backdrop-filter: blur(4px);
-}
-
-.mobile-menu-panel {
-  box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-/* Search Bar Styles */
-.search-overlay {
-  backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.95);
-}
-
-/* Carousel Optimizations */
-.carousel-container {
-  contain: layout style paint;
-  will-change: transform;
-}
-
-.carousel-slide {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
-
-.carousel-image {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  transform: translateZ(0);
-}
-
-/* Touch optimizations */
-.carousel-drag {
-  touch-action: pan-y pinch-zoom;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Toast Notification Styles */
-.toast-container {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  z-index: 9999;
-  max-width: 24rem;
-  width: 100%;
-  pointer-events: none;
-}
-
-.toast-item {
-  pointer-events: auto;
-  margin-bottom: 0.75rem;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.toast-item:last-child {
-  margin-bottom: 0;
-}
-
-/* Toast animations */
-@keyframes toast-slide-in {
-  from {
-    transform: translateX(-100%) scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes toast-slide-out {
-  from {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-100%) scale(0.95);
-    opacity: 0;
-  }
-}
-
-.toast-enter {
-  animation: toast-slide-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.toast-exit {
-  animation: toast-slide-out 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Mobile toast adjustments */
-@media (max-width: 640px) {
-  .toast-container {
-    left: 0.5rem;
-    right: 0.5rem;
-    max-width: none;
-    width: auto;
-  }
-  
-  .toast-item {
-    margin-bottom: 0.5rem;
-  }
-}
-
-/* Toast progress bar animation */
-@keyframes toast-progress {
-  from {
-    width: 100%;
-  }
-  to {
-    width: 0%;
-  }
-}
-
-.toast-progress {
-  animation: toast-progress linear;
-}
-
 /* Improved focus styles for better accessibility */
 :focus-visible {
   outline: 2px solid theme('colors.accent');
   outline-offset: 2px;
   border-radius: 0.25rem;
-}
-
-/* Skip to main content link for keyboard users */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: theme('colors.primary');
-  color: white;
-  padding: 8px;
-  z-index: 100;
-  transition: top 0.2s ease;
-}
-
-.skip-link:focus {
-  top: 0;
 }
 
 /* Button states with improved touch targets */
@@ -295,38 +72,8 @@ img {
   @apply h-auto max-w-full;
 }
 
-/* Header positioning fixes */
-.header-desktop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 5rem;
-  z-index: 50;
-}
-
-.header-mobile {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4rem;
-  z-index: 50;
-}
-
-.main-content {
-  padding-top: 4rem;
-}
-
-@media (min-width: 768px) {
-  .main-content {
-    margin-left: 5rem;
-    padding-top: 0;
-  }
-}
-
 /* Mobile navigation improvements */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .section-padding {
     @apply px-4 py-12;
   }
@@ -338,19 +85,19 @@ img {
 
 /* Responsive typography */
 h1 {
-  @apply text-4xl md:text-5xl lg:text-6xl;
+  @apply text-3xl sm:text-4xl lg:text-5xl xl:text-6xl;
 }
 
 h2 {
-  @apply text-3xl md:text-4xl lg:text-5xl;
+  @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl;
 }
 
 h3 {
-  @apply text-2xl md:text-3xl;
+  @apply text-xl sm:text-2xl lg:text-3xl;
 }
 
 p {
-  @apply text-base md:text-lg;
+  @apply text-sm sm:text-base lg:text-lg;
 }
 
 /* Improved tap target sizes for mobile */
@@ -377,16 +124,6 @@ p {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
-  /* Disable toast animations for reduced motion */
-  .toast-enter,
-  .toast-exit {
-    animation: none;
-  }
-  
-  .toast-progress {
-    animation: none;
-  }
 }
 
 /* GPU acceleration for smooth animations */
@@ -412,10 +149,6 @@ p {
   .toast-item {
     border: 2px solid currentColor;
   }
-  
-  .toast-progress {
-    border: 1px solid currentColor;
-  }
 }
 
 /* Reduced transparency for better readability */
@@ -423,5 +156,121 @@ p {
   .toast-item {
     background: white !important;
     backdrop-filter: none;
+  }
+}
+
+/* Mobile-first responsive utilities */
+.mobile-hidden {
+  @apply hidden lg:block;
+}
+
+.mobile-only {
+  @apply block lg:hidden;
+}
+
+/* Better mobile spacing utilities */
+.mobile-px {
+  @apply px-4 lg:px-6;
+}
+
+.mobile-py {
+  @apply py-8 lg:py-12;
+}
+
+.mobile-gap {
+  @apply gap-4 lg:gap-6;
+}
+
+/* Touch-friendly interactive elements */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+}
+
+/* Improved mobile text readability */
+@media (max-width: 768px) {
+  .mobile-text-sm {
+    @apply text-sm leading-relaxed;
+  }
+  
+  .mobile-text-base {
+    @apply text-base leading-relaxed;
+  }
+  
+  .mobile-text-lg {
+    @apply text-lg leading-relaxed;
+  }
+}
+
+/* Better mobile form styling */
+@media (max-width: 768px) {
+  input, select, textarea {
+    @apply text-base; /* Prevents zoom on iOS */
+  }
+}
+
+/* Smooth scrolling for mobile */
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile-optimized animations */
+@media (max-width: 768px) {
+  .mobile-animate {
+    animation-duration: 0.2s;
+    transition-duration: 0.2s;
+  }
+}
+
+/* Better mobile modal/dialog styling */
+@media (max-width: 768px) {
+  .mobile-modal {
+    @apply rounded-t-2xl rounded-b-none;
+    max-height: 95vh;
+  }
+  
+  .mobile-modal-content {
+    @apply p-4;
+  }
+}
+
+/* Mobile-friendly grid layouts */
+.mobile-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.mobile-flex {
+  @apply flex flex-col gap-4 sm:flex-row sm:items-center;
+}
+
+/* Better mobile card styling */
+.mobile-card {
+  @apply rounded-lg shadow-sm border border-gray-100 p-4 lg:p-6;
+}
+
+/* Mobile-optimized button groups */
+.mobile-button-group {
+  @apply flex flex-col gap-3 sm:flex-row sm:gap-4;
+}
+
+/* Improved mobile navigation */
+.mobile-nav {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4;
+}
+
+/* Better mobile typography scale */
+@media (max-width: 640px) {
+  .mobile-heading-xl {
+    @apply text-2xl font-bold leading-tight;
+  }
+  
+  .mobile-heading-lg {
+    @apply text-xl font-semibold leading-tight;
+  }
+  
+  .mobile-heading-md {
+    @apply text-lg font-medium leading-tight;
   }
 }
