@@ -1,31 +1,58 @@
 import supabase from '../utils/supabase';
 import { Product } from '../types';
+import { products } from '../data/products';
 
 export async function fetchProducts(): Promise<Product[]> {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('id', { ascending: true });
-
-  if (error) {
-    console.error('Error fetching products:', error.message);
-    throw new Error('Failed to fetch products');
+  // If Supabase is not configured, return mock data
+  if (!supabase) {
+    console.log('Supabase not configured, using mock data');
+    return products;
   }
 
-  return data || [];
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching products:', error.message);
+      // Fallback to mock data on error
+      return products;
+    }
+
+    return data || products;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    // Fallback to mock data on error
+    return products;
+  }
 }
 
 export async function fetchProductById(id: number): Promise<Product | null> {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching product:', error.message);
-    throw new Error('Failed to fetch product');
+  // If Supabase is not configured, return mock data
+  if (!supabase) {
+    console.log('Supabase not configured, using mock data');
+    return products.find(p => p.id === id) || null;
   }
 
-  return data;
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching product:', error.message);
+      // Fallback to mock data on error
+      return products.find(p => p.id === id) || null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    // Fallback to mock data on error
+    return products.find(p => p.id === id) || null;
+  }
 }
