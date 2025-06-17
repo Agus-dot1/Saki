@@ -14,7 +14,7 @@ import ToastContainer from './components/Toast/ToastContainer';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
-import JewelrySection from './components/Jewelry';
+import JewelrySection from './components/Jewelry/JewelrySection';
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
