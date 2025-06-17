@@ -9,7 +9,7 @@ const ShippingLocationsModal: React.FC<ShippingLocationsModalProps> = ({ open, o
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center px-5 bg-black/40 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -20,9 +20,9 @@ const ShippingLocationsModal: React.FC<ShippingLocationsModalProps> = ({ open, o
       >
         <h3 className="mb-4 text-lg font-semibold text-primary">Zonas con envío gratis</h3>
         <ul className="mb-6 space-y-2 text-content">
-          <li>• CABA</li>
-          <li>• Zona Norte GBA</li>
-          <li>• Zona Oeste GBA</li>
+          <li>• Ituzaingó</li>
+          <li>• Morón</li>
+          <li>• Castelar</li>
           <li>
           <a href="https://api.whatsapp.com/send?phone=541132170664&text=Hola%2C%20quiero%20consultar%20sobre%20el%20env%C3%ADo%20a%20mi%20zona" className="text-accent hover:underline" target="_blank" rel="noopener noreferrer">Consultar otras zonas</a>
           </li>

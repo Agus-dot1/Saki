@@ -9,16 +9,9 @@ interface CartPanelProps {
   onClose: () => void;
 }
 
-const shippingOptions = [
-  { value: 'punto', label: 'Punto de Entrega gratis (Ituzaingó, Morón, Castelar)' },
-  { value: 'caba', label: 'CABA' },
-  { value: 'interior', label: 'Interior' },
-];
-
 const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
   const { 
-    cartItems, totalPrice, clearCart, processCheckout, isProcessingCheckout, 
-    shippingLocation, setShippingLocation, shippingCost 
+    cartItems, totalPrice, clearCart, processCheckout, isProcessingCheckout
   } = useCart();
   const { showInfo } = useToast();
   
@@ -66,11 +59,11 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
   return (
     <div className="flex flex-col h-full bg-white shadow-xl">
       {/* Header - Better mobile spacing */}
-      <div className="flex items-center justify-between p-4 border-b lg:p-6 border-secondary/20">
+      <div className="flex justify-between items-center p-4 border-b lg:p-6 border-secondary/20">
         <h2 className="text-xl font-medium lg:text-2xl text-primary">Tu Carrito</h2>
         <button 
           onClick={onClose}
-          className="p-2 transition-colors text-primary hover:text-accent rounded-xl"
+          className="p-2 rounded-xl transition-colors text-primary hover:text-accent"
           aria-label="Cerrar carrito"
           disabled={isProcessingCheckout}
         >
@@ -79,13 +72,13 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       </div>
       
       {/* Cart items - Better mobile scrolling */}
-      <div className="flex-1 p-4 overflow-y-auto lg:p-6">
+      <div className="overflow-y-auto flex-1 p-4 lg:p-6">
         {cartItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col justify-center items-center h-full text-center">
             <p className="mb-6 text-base lg:text-lg text-content">Tu carrito está vacío</p>
             <button 
               onClick={onClose}
-              className="px-6 py-3 text-white transition-colors rounded-md bg-accent hover:bg-supporting"
+              className="px-6 py-3 text-white rounded-md transition-colors bg-accent hover:bg-supporting"
             >
               Seguir Comprando
             </button>
@@ -102,50 +95,16 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       {/* Footer - Better mobile layout */}
       {cartItems.length > 0 && (
         <div className="p-4 border-t lg:p-6 border-secondary/20">
-          {/* Shipping location selector - Better mobile design */}
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium lg:text-base text-primary">Método de entrega</label>
-            <select
-              className="w-full px-3 py-2 text-sm border rounded-lg lg:px-4 lg:py-3 lg:text-base border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
-              value={shippingLocation}
-              onChange={e => setShippingLocation(e.target.value)}
-            >
-              {shippingOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-            {shippingLocation === 'punto' && (
-              <div className="mt-2 text-xs text-green-700 lg:text-sm">
-                Entrega gratis en Ituzaingó, Morón y Castelar.
-              </div>
-            )}
-            {shippingLocation === 'caba' && (
-              <div className="mt-2 text-xs lg:text-sm text-primary">
-                Envío por Correo Argentino a CABA ($6000).
-              </div>
-            )}
-            {shippingLocation === 'interior' && (
-              <div className="mt-2 text-xs lg:text-sm text-primary">
-                Envío por Correo Argentino al interior ($2500).
-              </div>
-            )}
-          </div>
 
           {/* Price breakdown - Better mobile typography */}
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex justify-between items-center mb-2">
             <span className="text-base lg:text-lg text-primary">Subtotal</span>
-            <span className="text-base lg:text-lg text-primary">${totalPrice.toFixed(2)}</span>
+            <span className="text-base lg:text-lg text-primary">${totalPrice}</span>
           </div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-base lg:text-lg text-primary">Envío</span>
-            <span className="text-base lg:text-lg text-primary">
-              {shippingCost === 0 ? 'Gratis' : `$${shippingCost.toFixed(2)}`}
-            </span>
-          </div>
-          <div className="flex items-center justify-between mb-4 font-bold lg:mb-6">
+          <div className="flex justify-between items-center mb-4 font-bold lg:mb-6">
             <span className="text-base lg:text-lg text-primary">Total</span>
             <span className="text-xl font-medium lg:text-2xl text-primary">
-              ${(totalPrice + shippingCost).toFixed(2)}
+              ${totalPrice}
             </span>
           </div>
           
@@ -155,7 +114,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             <button 
               onClick={handleCheckout}
               disabled={isProcessingCheckout}
-              className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium text-white transition-colors rounded-md lg:text-lg bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex justify-center items-center px-4 py-3 space-x-2 w-full text-base font-medium text-white rounded-md transition-colors lg:text-lg bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessingCheckout ? (
                 <>
@@ -174,7 +133,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             <button 
               onClick={handleWhatsAppCheckout}
               disabled={isProcessingCheckout}
-              className="w-full px-4 py-3 text-base font-medium transition-colors border rounded-md lg:text-lg border-accent text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 w-full text-base font-medium rounded-md border transition-colors lg:text-lg border-accent text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Pedir por WhatsApp
             </button>

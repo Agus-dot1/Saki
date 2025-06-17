@@ -5,7 +5,6 @@ import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import OptimizedCarousel from './OptimizedCarousel';
-import ShippingLocationsModal from './ShippingLocationModal';
 
 interface ProductDialogProps {
   product: Product;
@@ -39,10 +38,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       }));
     }
     addToCart(product, selectedQuantity, selectedItems);
-    showSuccess(
-      '¡Agregado al Carrito!',
-      `${product.name} ${selectedQuantity > 1 ? `(${selectedQuantity} unidades)` : ''}`
-    );
     onClose();
     onOpenCart();
   };
@@ -115,7 +110,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       opacity: 1, 
       scale: 1,
       transition: {
-        duration: 0.3,
+        duration: 0.1,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
@@ -135,8 +130,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       opacity: 1, 
       y: 0,
       transition: {
-        delay: 0.1,
-        duration: 0.4,
+        duration: 0.1,
         staggerChildren: 0.1
       }
     }
@@ -174,19 +168,19 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
             onClick={handleShare}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 bg-white/90 rounded-full shadow-md lg:p-3"
+            className="p-2 lg:p-3"
             aria-label="Compartir producto"
           >
-            <Share2 size={18} className="text-primary lg:w-5 lg:h-5" />
+            <Share2 size={18} className="text-white lg:text-primary lg:w-5 lg:h-5" />
           </motion.button>
           <motion.button 
             onClick={onClose}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 bg-white/90 rounded-full shadow-md lg:p-3"
+            className="p-2 lg:p-3"
             aria-label="Cerrar diálogo"
           >
-            <X size={20} className="text-primary lg:w-6 lg:h-6" />
+            <X size={20} className="text-white lg:text-primary lg:w-6 lg:h-6" />
           </motion.button>
         </div>
         
@@ -203,7 +197,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
             {/* Floating stock indicator - Better mobile positioning */}
             {stockStatus && (
               <motion.div 
-                className={`absolute top-4 left-4 lg:top-6 lg:left-6 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium border ${stockStatus.color} backdrop-blur-sm shadow`}
+                className={`absolute top-5 left-5 lg:top-6 lg:left-6 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium border ${stockStatus.color} backdrop-blur-sm shadow`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 }}
@@ -220,7 +214,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
             initial="hidden"
             animate="visible"
           >
-            <div className="overflow-y-auto flex-1 p-4 lg:p-6">
+            <div className="flex-1 p-4 overflow-y-auto pb-[120px] lg:pb-6 lg:p-6">
               {/* Product Header - Better mobile typography */}
               <motion.div className="mb-4 lg:mb-6" variants={itemVariants}>
                 <h2 
@@ -229,7 +223,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 >
                   {product.name}
                 </h2>
-                <div className="flex flex-wrap items-baseline gap-2 mb-3 lg:gap-3 lg:mb-4">
+                <div className="flex flex-wrap gap-2 items-baseline mb-3 lg:gap-3 lg:mb-4">
                   <span className="text-2xl font-medium lg:text-3xl xl:text-4xl text-accent">
                     ${product.price.toFixed(2)}
                   </span>
@@ -272,10 +266,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     </span>
                   </p>
                 </div>
-                <ShippingLocationsModal
-                  open={showShippingModal}
-                  onClose={() => setShowShippingModal(false)}
-                />
                 <div className="text-center">
                   <Star className="mx-auto mb-1 w-6 h-6 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
                   <p className="text-xs font-medium lg:text-sm text-primary">Calidad Premium</p>
@@ -283,11 +273,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               </motion.div>
               
               {/* Quantity Selector - Better mobile layout */}
-              <motion.div className="mb-4 lg:mb-6" variants={itemVariants}>
+              <motion.div className="mb-4 lg:mb-6" >
                 <label className="block mb-2 text-base font-medium lg:mb-3 lg:text-lg text-primary">
                   Cantidad
                 </label>
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:space-x-4">
+                <div className="flex flex-col gap-3 w-fit lg:flex-row lg:items-center lg:space-x-4">
                   <div className="flex overflow-hidden items-center rounded-lg border border-accent/10">
                     <button
                       onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
@@ -315,7 +305,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               
               {/* Product options - Better mobile layout */}
               {product.items && product.items.length > 0 && product.items.map((item, idx) => (
-                <motion.div className="mb-4 lg:mb-6" variants={itemVariants} key={idx}>
+                <motion.div className="mb-4 lg:mb-6"  key={idx}>
                   {item.colorOptions && item.colorOptions.length > 0 && (
                     <div className="mb-3">
                       <span className="block mb-1 text-sm font-medium lg:text-base text-content">Color para {item.name}</span>
@@ -360,7 +350,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               {!product.items && (
                 <>
                   {product.colors && product.colors.length > 0 && (
-                    <motion.div className="mb-4 lg:mb-6" variants={itemVariants}>
+                    <motion.div className="mb-4 lg:mb-6" >
                       <label className="block mb-1 text-base font-medium lg:text-lg text-primary">
                         Color
                       </label>
@@ -376,7 +366,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     </motion.div>
                   )}
                   {product.sizes && product.sizes.length > 0 && (
-                    <motion.div className="mb-4 lg:mb-6" variants={itemVariants}>
+                    <motion.div className="mb-4 lg:mb-6">
                       <label className="block mb-1 text-base font-medium lg:text-lg text-primary">
                         Talle
                       </label>
@@ -394,9 +384,9 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </>
               )}
 
-              {/* Tabs - Better mobile design */}
-              <motion.div className="mb-4 lg:mb-6" variants={itemVariants}>
-                <div className="flex p-1 mb-3 space-x-1 rounded-lg lg:mb-4 bg-accent/10">
+              {/* Tabs - Only visible on desktop */}
+              <motion.div className="hidden mb-4 lg:block lg:mb-6" >
+                <div className="flex p-2 px-4 mb-3 space-x-1 rounded-lg lg:mb-4 bg-accent/10">
                   {[
                     { id: 'description', label: 'Descripción' },
                     { id: 'contenido', label: 'Contenido' },
@@ -415,8 +405,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                   ))}
                 </div>
                 
-                {/* Fixed height container for tab content - Mobile optimized */}
-                <div className="h-48 lg:h-64 overflow-y-auto transition-all duration-200 border border-secondary/20 rounded-lg p-4 lg:p-6 bg-white">
+                {/* Fixed height container for tab content - Desktop only */}
+                <div className="overflow-y-auto p-4 h-48 bg-white rounded-lg border transition-all duration-200 lg:h-64 border-secondary/20 lg:p-6">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeTab}
@@ -473,12 +463,56 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                   </AnimatePresence>
                 </div>
               </motion.div>
+
+              {/* Mobile content - Shows both sections stacked */}
+              <div className="space-y-6 lg:hidden">
+                <div className="space-y-4">
+                                    <h4 className="text-base font-medium text-primary">Contenido del Kit</h4>
+                  <ul className="space-y-2">
+                    {product.items && product.items.length > 0 && product.items.map((item, idx) => (
+                      <li key={idx} className="text-sm">
+                        <span className="font-medium text-primary">{item.name}</span>
+                        {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="text-base font-medium text-primary">Descripción</h4>
+                  <p className="text-sm leading-relaxed text-content">
+                    {product.detailedDescription}
+                  </p>
+                  {product.featuredIngredients && product.featuredIngredients.length > 0 && (
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <h5 className="mb-2 font-medium text-green-800">Contenidos Destacados:</h5>
+                      <ul className="space-y-1 text-green-700">
+                        {product.featuredIngredients.map((ingredient, idx) => (
+                          <li key={idx} className="text-sm">• {ingredient}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                                    {product.keyBenefits && product.keyBenefits.length > 0 && (
+                    <div className="p-3 rounded-lg lg:block bg-accent/10">
+                      <h4 className="mb-2 font-medium text-primary">Beneficios Clave:</h4>
+                      <ul className="space-y-1 text-content">
+                        {product.keyBenefits.map((benefit, idx) => (
+                          <li key={idx} className="flex items-start text-sm">
+                            <span className="mr-2 text-accent">•</span>
+                            <span>{benefit}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
             
             {/* Sticky Footer - Better mobile layout */}
             <motion.div 
-              className="p-4 bg-white border-t lg:p-6 border-accent/10 shadow-[0_-2px_16px_-8px_rgba(0,0,0,0.06)]"
-              variants={itemVariants}
+              className="p-4 bg-white border-t lg:p-6 border-accent/10 shadow-[0_-2px_16px_-8px_rgba(0,0,0,0.06)] sticky bottom-0 z-10"
             >
               <div className="flex flex-col gap-3 lg:gap-4 lg:flex-row">
                 <motion.button 

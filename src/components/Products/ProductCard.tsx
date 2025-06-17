@@ -34,15 +34,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   
   return (
     <div 
-      className="flex overflow-hidden flex-col w-full h-full rounded-lg transition-all duration-300 transform cursor-pointer bg-secondary hover:shadow-lg hover:-translate-y-1"
+      className="flex flex-col w-full h-full overflow-hidden transition-all duration-300 transform cursor-pointer rounded-3xl bg-secondary hover:shadow-lg hover:-translate-y-1"
       onClick={onClick}
     >
       {/* Image container - Better mobile aspect ratio */}
-      <div className="overflow-hidden relative h-64 lg:h-80">
+      <div className="relative h-64 overflow-hidden lg:h-80">
         <img 
           src={product.images[0]} 
           alt={product.name} 
-          className="object-contain w-full h-full scale-150 lg:scale-[1.8]"
+          className="object-contain w-full h-full scale-150 lg:scale-[2.1]"
         />
         
         {/* Stock indicator - Better mobile positioning */}
@@ -64,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {/* Items list - Improved mobile layout */}
         <div className="flex-grow mb-4 lg:mb-6">
           <h4 className="mb-2 text-base font-medium lg:mb-3 lg:text-lg text-primary">Incluye:</h4>
-          <ul className="space-y-2 lg:space-y-3">
+          <ul className="space-y-2 lg:space-y-1">
             {product.items && product.items.length > 0 && product.items.slice(0, 4).map((item, idx) => (
               <li key={idx} className="text-sm lg:text-base">
                 <span className="font-medium text-primary">{item.name}</span>
@@ -84,7 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           <button 
             onClick={handleAddToCart}
             disabled={stockStatus?.disabled}
-            className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-white rounded-md transition-colors lg:w-auto lg:px-6 bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-white transition-colors rounded-2xl lg:w-auto lg:px-6 bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             <ShoppingCart size={18} />
             <span>{stockStatus?.disabled ? 'Sin Stock' : 'Agregar'}</span>

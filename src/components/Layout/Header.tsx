@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Home, Package, Mail, Menu, X } from 'lucide-react';
+import { ShoppingCart, Home, Package, Mail, X } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,15 +10,6 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-    if (!isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -40,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
       }
     }
   };
-  
+
   return (
     <>
       {/* Desktop Sidebar - Hidden on mobile */}
@@ -59,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               title={label}
             >
               <Icon size={20} />
-              
+
               {/* Tooltip */}
               <div className="absolute z-50 px-3 py-2 ml-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 bg-gray-800 rounded-md opacity-0 pointer-events-none left-full top-1/2 whitespace-nowrap group-hover:opacity-100">
                 {label}
@@ -67,9 +58,9 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               </div>
             </a>
           ))}
-          
+
           {/* Cart Button */}
-          <button 
+          <button
             className="relative p-3 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
             onClick={toggleCart}
             aria-label="Abrir carrito"
@@ -85,37 +76,64 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
         </nav>
       </header>
 
-      {/* Mobile Header - Improved spacing and touch targets */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 bg-white/95 backdrop-blur-md border-b border-secondary/20 lg:hidden">
-        {/* Mobile Logo */}
-        <a href="#" className="text-xl font-medium text-primary">
-          Saki
-        </a>
-
-        {/* Mobile Actions - Improved spacing */}
-        <div className="flex items-center space-x-1">
-          <button 
-            className="relative p-3 transition-colors duration-200 text-primary hover:text-accent rounded-xl"
-            onClick={toggleCart}
-            aria-label="Abrir carrito"
+      {/* Floating Bottom Nav for Mobile */}
+      <nav
+        className="
+          fixed
+          z-50
+          bottom-4
+          left-1/2
+          -translate-x-1/2
+          flex
+          items-center
+          justify-between
+          px-3
+          py-2
+          bg-white/90
+          backdrop-blur-md
+          border
+          border-white/20
+          shadow-lg
+          rounded-2xl
+          w-[95vw]
+          max-w-md
+          mx-auto
+          lg:hidden
+        "
+        style={{ pointerEvents: isMobileMenuOpen ? 'none' : 'auto' }}
+      >
+        {menuItems.map(({ icon: Icon, label, href, id }) => (
+          <a
+            key={id}
+            href={href}
+            onClick={e => {
+              e.preventDefault();
+              handleMenuClick(href);
+            }}
+            className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 group hover:text-green-700 hover:bg-green-50 rounded-xl"
+            aria-label={label}
+            title={label}
           >
-            <ShoppingCart size={24} />
-            {totalItems > 0 && (
-              <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white rounded-full -top-1 -right-1 bg-accent">
-                {totalItems}
-              </span>
-            )}
-          </button>
+            <Icon size={22} />
+          </a>
+        ))}
 
-          <button
-            className="p-3 transition-colors duration-200 text-primary hover:text-accent rounded-xl"
-            onClick={toggleMobileMenu}
-            aria-label="Abrir menú"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </header>
+        {/* Cart Button */}
+        <button
+          className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
+          onClick={toggleCart}
+          aria-label="Abrir carrito"
+          title="Carrito de Compras"
+        >
+          <ShoppingCart size={22} />
+          {totalItems > 0 && (
+            <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-green-600 rounded-full -top-1 -right-1">
+              {totalItems}
+            </span>
+          )}
+        </button>
+
+      </nav>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -130,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               className="fixed inset-0 z-40 bg-black/60 lg:hidden"
               onClick={closeMobileMenu}
             />
-            
+
             {/* Mobile Menu */}
             <motion.div
               initial={{ x: '100%' }}
@@ -159,11 +177,11 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                       <li key={id}>
                         <a
                           href={href}
-                          onClick={(e) => {
+                          onClick={e => {
                             e.preventDefault();
                             handleMenuClick(href);
                           }}
-                          className="flex items-center px-6 py-4 space-x-4 transition-all duration-200 text-primary hover:text-accent hover:bg-secondary/30 rounded-xl mx-3"
+                          className="flex items-center px-6 py-4 mx-3 space-x-4 transition-all duration-200 text-primary hover:text-accent hover:bg-secondary/30 rounded-xl"
                         >
                           <Icon size={24} />
                           <span className="text-lg font-medium">{label}</span>

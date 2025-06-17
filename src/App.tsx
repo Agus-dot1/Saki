@@ -78,7 +78,7 @@ function App() {
             />
             
             {/* Main content with proper mobile spacing */}
-            <main className="transition-all duration-300 pt-16 lg:pt-0 lg:ml-20">
+            <main className="pt-5 transition-all duration-300">
               <div className="max-w-[1920px] mx-auto">
                 <Suspense fallback={<LoadingSpinner />}>
                   <Hero />

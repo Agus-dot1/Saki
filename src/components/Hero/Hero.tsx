@@ -11,10 +11,10 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" className="overflow-hidden relative px-4 py-16 mx-auto max-w-7xl min-h-screen lg:px-6 lg:py-24">
+    <section id="home" className="relative min-h-screen px-4 mx-auto overflow-hidden max-w-7xl lg:px-6 lg:py-24">
       {/* Background elements - adjusted for mobile */}
-      <div className="absolute left-4 top-16 w-48 h-48 lg:left-10 lg:top-20 lg:w-72 lg:h-72 rounded-full blur-3xl animate-pulse bg-emerald-200/20"></div>
-      <div className="absolute right-4 bottom-16 w-64 h-64 lg:right-10 lg:bottom-20 lg:w-96 lg:h-96 rounded-full blur-3xl delay-1000 animate-pulse bg-sage-300/20"></div>
+      <div className="absolute w-48 h-48 rounded-full left-4 top-16 lg:left-10 lg:top-20 lg:w-72 lg:h-72 blur-3xl animate-pulse bg-emerald-200/20"></div>
+      <div className="absolute w-64 h-64 delay-1000 rounded-full right-4 bottom-16 lg:right-10 lg:bottom-20 lg:w-96 lg:h-96 blur-3xl animate-pulse bg-sage-300/20"></div>
       
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Left Content - Improved mobile spacing */}
@@ -24,13 +24,13 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="space-y-6 max-w-xl lg:space-y-8">
+          <div className="max-w-xl space-y-6 lg:space-y-8">
             {/* Trust Indicators - Better mobile layout */}
-            <div className="flex gap-2 items-center text-supporting">
+            <div className="flex items-center gap-2 text-supporting">
               <Star className="fill-accent text-accent" size={18} />
-              <span className="font-medium text-primary text-sm lg:text-base">4.9</span>
+              <span className="text-sm font-medium text-primary lg:text-base">4.9</span>
               <Users className="text-content" size={18} />
-              <span className="text-content text-sm lg:text-base">12K Confían</span>
+              <span className="text-sm text-content lg:text-base">12K Confían</span>
             </div>
             
             {/* Main Heading - Responsive typography */}
@@ -52,7 +52,7 @@ const Hero: React.FC = () => {
             {/* CTA Button - Better mobile sizing */}
             <motion.button 
               onClick={scrollToProducts}
-              className="px-6 py-3 text-base font-medium text-white rounded-full transition-all transform lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
+              className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
         </motion.div>
 
         {/* Right Content - Better mobile layout */}
-        <motion.div className="flex justify-center items-center p-4 lg:p-6">
+        <motion.div className="flex items-center justify-center p-4 lg:p-6">
           <VideoPackagingShowcase />
         </motion.div>
       </div>
@@ -161,7 +161,7 @@ const VideoPackagingShowcase = () => {
           <video
             ref={videoRef}
             src={videos[currentVideo].videoUrl}
-            className="object-cover w-full h-full brightness-75 transition-all duration-700 scale-105 cursor-pointer"
+            className="object-cover w-full h-full transition-all duration-700 scale-105 cursor-pointer brightness-75"
             muted={isMuted}
             controls={false}
             onClick={isPlaying ? handlePlayPause : undefined}
@@ -173,7 +173,7 @@ const VideoPackagingShowcase = () => {
             <img 
               src={videos[currentVideo].thumbnail}
               alt={videos[currentVideo].title}
-              className="object-cover absolute inset-0 w-full h-full transition-all duration-700 pointer-events-none group-hover:scale-105"
+              className="absolute inset-0 object-cover w-full h-full transition-all duration-700 pointer-events-none group-hover:scale-105"
               draggable={false}
             />
           )}
@@ -185,19 +185,19 @@ const VideoPackagingShowcase = () => {
           
           {/* Play/Pause Button - Responsive sizing */}
           {!isPlaying ? (
-            <div className="flex absolute inset-0 justify-center items-center">
+            <div className="absolute inset-0 flex items-center justify-center">
               <button
                 onClick={handlePlayPause}
-                className="flex justify-center items-center w-16 h-16 lg:w-20 lg:h-20 rounded-full shadow-xl transition-all duration-300 bg-white/90 group-hover:bg-white group-hover:scale-110"
+                className="flex items-center justify-center w-16 h-16 transition-all duration-300 rounded-full shadow-xl lg:w-20 lg:h-20 bg-white/90 group-hover:bg-white group-hover:scale-110"
               >
-                <Play className="ml-1 w-6 h-6 lg:w-8 lg:h-8 text-primary" />
+                <Play className="w-6 h-6 ml-1 lg:w-8 lg:h-8 text-primary" />
               </button>
             </div>
           ) : (
-            <div className="absolute bottom-4 left-1/2 z-10 transform -translate-x-1/2">
+            <div className="absolute z-10 transform -translate-x-1/2 bottom-4 left-1/2">
               <button
                 onClick={handlePlayPause}
-                className="flex justify-center items-center w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow transition-all duration-300 bg-white/80 hover:bg-white"
+                className="flex items-center justify-center w-8 h-8 transition-all duration-300 rounded-full shadow lg:w-10 lg:h-10 bg-white/80 hover:bg-white"
                 title="Pausar video"
               >
                 <svg className="w-4 h-4 lg:w-6 lg:h-6 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -209,27 +209,27 @@ const VideoPackagingShowcase = () => {
           )}
 
           {/* Video Controls - Responsive positioning */}
-          <div className="flex absolute top-2 right-2 lg:top-4 lg:right-4 space-x-2">
+          <div className="absolute flex space-x-2 top-2 right-2 lg:top-4 lg:right-4">
             <button
               onClick={toggleMute}
-              className="flex justify-center items-center w-8 h-8 lg:w-10 lg:h-10 text-white rounded-full backdrop-blur-sm transition-colors bg-black/30 hover:bg-black/50"
+              className="flex items-center justify-center w-8 h-8 text-white transition-colors rounded-full lg:w-10 lg:h-10 backdrop-blur-sm bg-black/30 hover:bg-black/50"
             >
               {isMuted ? <VolumeX className="w-4 h-4 lg:w-5 lg:h-5" /> : <Volume2 className="w-4 h-4 lg:w-5 lg:h-5" />}
             </button>
           </div>
           
           {/* Video Info Overlay - Responsive text */}
-          <div className="absolute right-0 bottom-0 left-0 p-4 lg:p-6 bg-gradient-to-t to-transparent from-black/60">
+          <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t to-transparent from-black/60">
             <div className="text-white">
-              <div className="flex justify-between items-center mb-2">
-                <span className="px-2 py-1 text-xs lg:text-sm font-medium rounded-full bg-primary">
+              <div className="flex items-center justify-between mb-2">
+                <span className="px-2 py-1 text-xs font-medium rounded-full lg:text-sm bg-primary">
                   {videos[currentVideo].category}
                 </span>
-                <span className="px-2 py-1 font-mono text-xs lg:text-sm rounded bg-black/30">
+                <span className="px-2 py-1 font-mono text-xs rounded lg:text-sm bg-black/30">
                   {videos[currentVideo].duration}
                 </span>
               </div>
-              <h3 className="mb-1 text-lg lg:text-xl font-semibold">{videos[currentVideo].title}</h3>
+              <h3 className="mb-1 text-lg font-semibold lg:text-xl">{videos[currentVideo].title}</h3>
               <p className="text-sm text-white/80">{videos[currentVideo].description}</p>
             </div>
           </div>
@@ -260,7 +260,7 @@ const VideoPackagingShowcase = () => {
             }`}></div>
             
             {/* Mini Play Button - Responsive sizing */}
-            <div className="flex absolute inset-0 justify-center items-center">
+            <div className="absolute inset-0 flex items-center justify-center">
               <div className={`w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center transition-all ${
                 index === currentVideo 
                   ? 'bg-accent text-white' 

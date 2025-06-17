@@ -14,16 +14,7 @@ interface CartContextType {
   isProcessingCheckout: boolean;
   processCheckout: () => Promise<boolean>;
   openCheckoutForm: () => void;
-  shippingLocation: string;
-  setShippingLocation: (location: string) => void;
-  shippingCost: number;
 }
-
-const shippingRates: { [key: string]: number } = {
-  punto: 0,
-  caba: 6000,
-  interior: 2500,
-};
 
 export const CartContext = createContext<CartContextType>({
   cartItems: [],
@@ -37,16 +28,11 @@ export const CartContext = createContext<CartContextType>({
   isProcessingCheckout: false,
   processCheckout: async () => false,
   openCheckoutForm: () => {},
-  shippingLocation: 'punto',
-  setShippingLocation: () => {},
-  shippingCost: 0,
 });
 
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isProcessingCheckout] = useState(false);
-  const [shippingLocation, setShippingLocation] = useState<string>('punto');
-  const [shippingCost, setShippingCost] = useState<number>(shippingRates['punto']);
   const { showSuccess, showError, showInfo, showWarning } = useToast();
   
   // Load cart from localStorage on initial render
@@ -66,11 +52,6 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
-  
-  // Update shipping cost when location or option changes
-  useEffect(() => {
-    setShippingCost(shippingRates[shippingLocation] ?? shippingRates['interior']);
-  }, [shippingLocation]);
 
   const checkStock = (product: Product, requestedQuantity: number): boolean => {
     const currentQuantity = cartItems.find(item => item.product.id === product.id)?.quantity || 0;
@@ -222,9 +203,6 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     isProcessingCheckout,
     processCheckout,
     openCheckoutForm,
-    shippingLocation,
-    setShippingLocation,
-    shippingCost,
   };
   
   return (

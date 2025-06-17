@@ -253,8 +253,8 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
                 draggable="false"
               />
             ) : (
-              <div className="flex justify-center items-center w-full h-full bg-secondary/50">
-                <div className="w-8 h-8 rounded-full border-b-2 animate-spin border-accent"></div>
+              <div className="flex items-center justify-center w-full h-full bg-secondary/50">
+                <div className="w-8 h-8 border-b-2 rounded-full animate-spin border-accent"></div>
               </div>
             )}
           </motion.div>
@@ -266,7 +266,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-4 top-1/2 z-10 p-3 rounded-full shadow-lg transition-all duration-200 transform -translate-y-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="absolute z-10 flex items-center justify-center p-2 transition-all duration-200 transform -translate-y-1/2 rounded-full shadow-lg left-4 top-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="Imagen anterior"
             type="button"
           >
@@ -275,7 +275,7 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
           
           <button
             onClick={goToNext}
-            className="absolute right-4 top-1/2 z-10 p-3 rounded-full shadow-lg transition-all duration-200 transform -translate-y-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="absolute z-10 flex items-center justify-center p-2 transition-all duration-200 transform -translate-y-1/2 rounded-full shadow-lg right-4 top-1/2 bg-white/90 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="Siguiente imagen"
             type="button"
           >
@@ -286,15 +286,15 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
 
       {/* Indicators - only show if more than one image */}
       {images.length > 1 && (
-        <div className="flex absolute right-0 left-0 bottom-4 z-10 justify-center space-x-2">
+        <div className="absolute left-0 right-0 z-10 flex justify-center bottom-4">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
+              className={`w-2 h-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-accent focus:ring-offset-1 ${
                 index === currentIndex 
-                  ? 'bg-accent scale-125' 
-                  : 'bg-white/60 hover:bg-white/80'
+                  ? 'bg-accent scale-50 lg:scale-100' 
+                  : 'bg-white/60 hover:bg-white/80 scale-50 lg:scale-95'
               }`}
               aria-label={`Ir a imagen ${index + 1}`}
               type="button"

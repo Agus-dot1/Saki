@@ -8,9 +8,7 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="mb-3 text-xl font-medium lg:mb-4 lg:text-2xl text-primary">Saki</h3>
           <p className="mb-4 text-sm leading-relaxed lg:mb-6 lg:text-base text-content">
-            Productos premium de cuidado de la piel elaborados con ingredientes naturales de Argentina. 
-            Nuestras fórmulas combinan sabiduría ancestral con ciencia moderna para una piel 
-            saludable y radiante.
+            Creamos kits pensados para que cada persona se tome un momento para sí. Combinamos cuidado personal y maquillaje con productos seleccionados para hacerte sentir bien, por dentro y por fuera.
           </p>
           <div className="flex space-x-4">
             <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Instagram">

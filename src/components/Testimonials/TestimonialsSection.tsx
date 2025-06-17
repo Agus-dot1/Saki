@@ -40,9 +40,9 @@ const TestimonialsSection: React.FC = () => {
   const marqueeTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section className="relative py-16 overflow-hidden lg:py-24 bg-secondary/30">
+    <section className="relative px-5 py-16 overflow-hidden lg:py-24 bg-secondary/30">
       {/* Gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 z-10 after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-white after:via-transparent after:to-white after:w-full after:h-full" />
+      <div className="pointer-events-none lg:absolute inset-0 z-10 after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-white after:via-transparent after:to-white after:w-full after:h-full" />
       <div className="mx-auto max-w-7xl">
         {/* Header - Better mobile spacing */}
         <div className="relative z-20 mb-12 text-center lg:mb-16">
@@ -60,7 +60,7 @@ const TestimonialsSection: React.FC = () => {
 
         {/* Marquee - Better mobile sizing */}
         <div className="relative w-full overflow-x-hidden">
-          <div className="flex gap-4 marquee w-max lg:gap-8">
+          <div className="flex gap-4 w-max marquee lg:gap-8">
             {marqueeTestimonials.map((testimonial, idx) => (
               <div
                 key={idx}
