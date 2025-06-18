@@ -20,10 +20,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
   return (
     <div className="flex space-x-4">
       {/* Product image */}
-      <div className="flex-shrink-0 w-20 h-20 overflow-hidden rounded-md bg-secondary">
+      <div className="w-20 h-20 overflow-hidden rounded-lg">
         <img 
-          src={product.images[0]} 
-          alt={product.name} 
+          src={item.product.images[0]} 
+          alt={item.product.name}
           className="object-cover w-full h-full"
         />
       </div>
@@ -43,6 +43,15 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
           )}
         </div>
         <p className="text-sm text-content">${product.price.toFixed(2)}</p>
+
+        {/* Display selected model and size */}
+        {(product.modelNumber || product.selectedSize) && (
+          <p className="text-sm text-content">
+            {product.modelNumber && <span>Modelo: {product.modelNumber}</span>}
+            {product.modelNumber && product.selectedSize && <span> | </span>}
+            {product.selectedSize && <span>Tamaño: {product.selectedSize}</span>}
+          </p>
+        )}
         
         {/* Kit items expandable list */}
         {isKit && kitItems && expanded && (
@@ -67,10 +76,13 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         )}
 
         <div className="flex items-center mt-2">
-          {/* Quantity controls */}
           <div className="flex items-center space-x-2">
             <button 
-              onClick={() => decreaseQuantity(product.id)}
+              onClick={() => decreaseQuantity(
+                product.id,
+                product.modelNumber,
+                product.selectedSize
+              )}
               className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Disminuir cantidad"
             >
@@ -80,7 +92,11 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             <span className="w-6 text-center text-primary">{quantity}</span>
             
             <button 
-              onClick={() => increaseQuantity(product.id)}
+              onClick={() => increaseQuantity(
+                product.id,
+                product.modelNumber,
+                product.selectedSize
+              )}
               className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Aumentar cantidad"
             >
@@ -88,9 +104,12 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             </button>
           </div>
           
-          {/* Remove button */}
           <button 
-            onClick={() => removeFromCart(product.id)}
+            onClick={() => removeFromCart(
+              product.id,
+              product.modelNumber,
+              product.selectedSize
+            )}
             className="p-2 ml-auto transition-colors text-content hover:text-accent"
             aria-label="Eliminar producto"
           >
