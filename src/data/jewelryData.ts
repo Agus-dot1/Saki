@@ -4,14 +4,15 @@ export const jewelryItems: JewelryItem[] = [
   {
     id: 1,
     name: 'Anillo Minimalista Plata 925',
-    category: 'rings',
+    category: 'anillo',
     price: 59.99,
     oldPrice: 69.99,
     discountPercentage: 14,
+    coverImage: 'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800',
     images: [
-      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/1454171/pexels-photo-1454171.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1454172/pexels-photo-1454172.jpeg?auto=compress&cs=tinysrgb&w=800'
+      'https://images.pexels.com/photos/1454172/pexels-photo-1454172.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     description: 'Anillo elegante y minimalista de plata 925, perfecto para uso diario.',
     detailedDescription: 'Nuestro anillo minimalista está crafteado en plata 925 de la más alta calidad. Su diseño atemporal lo convierte en la pieza perfecta para cualquier ocasión, desde el uso diario hasta eventos especiales. La superficie pulida refleja la luz de manera hermosa, mientras que el diseño ergonómico asegura comodidad durante todo el día.',
@@ -38,44 +39,16 @@ export const jewelryItems: JewelryItem[] = [
   },
   {
     id: 2,
-    name: 'Collar Cadena Delicada Oro',
-    category: 'necklaces',
-    price: 89.99,
-    images: [
-      'https://images.pexels.com/photos/1454171/pexels-photo-1454171.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
-    ],
-    description: 'Collar de cadena delicada bañado en oro de 18k, ideal para layering.',
-    detailedDescription: 'Esta hermosa cadena delicada está bañada en oro de 18k sobre una base de plata 925. Su diseño sutil y elegante la hace perfecta para usar sola o en combinación con otros collares. La longitud ajustable permite versatilidad en el styling.',
-    material: 'Plata 925 bañada en oro 18k',
-    weight: '2.8g',
-    dimensions: 'Largo: 40-45cm (ajustable)',
-    stock: 18,
-    careInstructions: [
-      'Evitar contacto con agua',
-      'Limpiar con paño suave',
-      'Guardar separado de otras joyas',
-      'No usar productos químicos'
-    ],
-    features: [
-      'Baño de oro 18k',
-      'Base de plata 925',
-      'Longitud ajustable',
-      'Perfecto para layering',
-      'Cierre seguro'
-    ],
-    plating: 'Oro 18k',
-    warranty: '6 meses contra defectos de fabricación'
-  },
-  {
-    id: 3,
     name: 'Pulsera Eslabones Plata',
-    category: 'bracelets',
+    category: 'pulsera',
     price: 74.99,
     oldPrice: 84.99,
     discountPercentage: 12,
+    coverImage: 'https://images.pexels.com/photos/1454172/pexels-photo-1454172.jpeg?auto=compress&cs=tinysrgb&w=800',
     images: [
-      'https://images.pexels.com/photos/1454172/pexels-photo-1454172.jpeg?auto=compress&cs=tinysrgb&w=800'
+      'https://images.pexels.com/photos/1454171/pexels-photo-1454171.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1454172/pexels-photo-1454172.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     description: 'Pulsera de eslabones en plata 925 con diseño moderno y sofisticado.',
     detailedDescription: 'Pulsera de eslabones crafteada en plata 925 pura. Cada eslabón está cuidadosamente pulido para crear un efecto de luz único. El diseño moderno combina perfectamente con cualquier estilo, desde casual hasta formal.',
@@ -98,36 +71,6 @@ export const jewelryItems: JewelryItem[] = [
     ],
     warranty: '1 año contra defectos de fabricación'
   },
-  {
-    id: 4,
-    name: 'Aretes Perla Cultivada',
-    category: 'earrings',
-    price: 49.99,
-    images: [
-      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
-    ],
-    description: 'Aretes clásicos con perlas cultivadas y base de plata 925.',
-    detailedDescription: 'Estos elegantes aretes presentan perlas cultivadas de agua dulce montadas en bases de plata 925. Las perlas han sido seleccionadas por su lustre excepcional y forma perfecta. Un clásico atemporal que complementa cualquier look.',
-    material: 'Plata 925 con perlas cultivadas',
-    weight: '2.1g (par)',
-    dimensions: 'Diámetro perla: 8mm',
-    stock: 30,
-    careInstructions: [
-      'Limpiar perlas con paño húmedo suave',
-      'Evitar perfumes directos sobre las perlas',
-      'Guardar separado de otras joyas',
-      'No sumergir en agua'
-    ],
-    features: [
-      'Perlas cultivadas de agua dulce',
-      'Base de plata 925',
-      'Cierre de presión seguro',
-      'Lustre natural',
-      'Hipoalergénico'
-    ],
-    gemstones: ['Perla cultivada'],
-    warranty: '6 meses contra defectos de fabricación'
-  }
 ];
 
 export const ringSizes: RingSize[] = [
