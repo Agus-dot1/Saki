@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Ruler, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ringSizes, sizeGuideSteps } from '../../data/jewelryData';
-import { RingSize, SizeGuideStep } from '../../types/jewelry';
+import { RingSize } from '../../types/jewelry';
 
 interface RingSizeGuideProps {
   isOpen: boolean;
@@ -100,7 +100,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
 
   return (
     <motion.div 
-      className="flex overflow-hidden fixed inset-0 z-50 justify-center items-center p-2 min-w-full min-h-screen backdrop-blur-sm bg-black/70 sm:p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-4"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -130,7 +130,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrintGuide}
-              className="flex items-center space-x-2 px-3 py-2 text-sm font-medium transition-colors rounded-lg lg:px-4 lg:py-2 lg:text-base text-accent hover:bg-accent/10"
+              className="flex items-center px-3 py-2 space-x-2 text-sm font-medium transition-colors rounded-lg lg:px-4 lg:py-2 lg:text-base text-accent hover:bg-accent/10"
             >
               <Download size={16} />
               <span>Imprimir</span>
@@ -229,7 +229,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
                   >
                     <div className="text-center">
                       <h3 className="mb-2 text-lg font-medium lg:text-xl text-primary">
-                        Paso {activeStep + 1}: {sizeGuideSteps[activeStep].title}
+                        {sizeGuideSteps[activeStep].title}
                       </h3>
                       <p className="text-base leading-relaxed lg:text-lg text-content">
                         {sizeGuideSteps[activeStep].description}
@@ -239,7 +239,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
                     {/* Step Image */}
                     {sizeGuideSteps[activeStep].image && (
                       <div className="flex justify-center">
-                        <div className="overflow-hidden w-full max-w-md rounded-xl shadow-lg aspect-video">
+                        <div className="w-full max-w-md overflow-hidden shadow-lg rounded-xl aspect-video">
                           <img
                             src={sizeGuideSteps[activeStep].image}
                             alt={sizeGuideSteps[activeStep].title}
@@ -271,7 +271,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
                   <button
                     onClick={prevStep}
                     disabled={activeStep === 0}
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium transition-colors rounded-lg lg:px-6 lg:py-3 lg:text-base disabled:opacity-50 disabled:cursor-not-allowed text-content hover:text-primary hover:bg-secondary/50"
+                    className="flex items-center px-4 py-2 space-x-2 text-sm font-medium transition-colors rounded-lg lg:px-6 lg:py-3 lg:text-base disabled:opacity-50 disabled:cursor-not-allowed text-content hover:text-primary hover:bg-secondary/50"
                   >
                     <ChevronLeft size={16} />
                     <span>Anterior</span>
@@ -279,7 +279,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
                   <button
                     onClick={nextStep}
                     disabled={activeStep === sizeGuideSteps.length - 1}
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-lg lg:px-6 lg:py-3 lg:text-base disabled:opacity-50 disabled:cursor-not-allowed bg-accent hover:bg-supporting"
+                    className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white transition-colors rounded-lg lg:px-6 lg:py-3 lg:text-base disabled:opacity-50 disabled:cursor-not-allowed bg-accent hover:bg-supporting"
                   >
                     <span>Siguiente</span>
                     <ChevronRight size={16} />
