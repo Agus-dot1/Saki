@@ -11,7 +11,7 @@ interface JewelrySectionProps {
   onItemSelect: (item: JewelryItem) => void;
 }
 
-type CategoryFilter = 'all' | 'rings' | 'necklaces' | 'bracelets' | 'earrings';
+type CategoryFilter = 'all' | 'rings' | 'bracelets';
 
 const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
   const [items, setItems] = useState<JewelryItem[]>([]);
@@ -39,19 +39,23 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
 
   // Filter items based on category
   useEffect(() => {
+    const filterMap: Record<CategoryFilter, string | null> = {
+      all: 'todos',
+      rings: 'anillo',
+      bracelets: 'pulsera',
+    };
+
     if (activeFilter === 'all') {
       setFilteredItems(items);
     } else {
-      setFilteredItems(items.filter(item => item.category === activeFilter));
+      setFilteredItems(items.filter(item => item.category === filterMap[activeFilter]));
     }
   }, [activeFilter, items]);
 
   const categoryLabels: Record<CategoryFilter, string> = {
     all: 'Todos',
     rings: 'Anillos',
-    necklaces: 'Collares',
     bracelets: 'Pulseras',
-    earrings: 'Aretes'
   };
 
   const containerVariants = {
