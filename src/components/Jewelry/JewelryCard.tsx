@@ -182,11 +182,11 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-xl font-medium lg:text-2xl text-primary">
-              ${item.price.toFixed}
+              ${Number(item.price).toFixed(2)}
             </span>
             {item.oldPrice && item.oldPrice > item.price && (
               <span className="text-sm line-through lg:text-base text-content">
-                ${item.oldPrice.toFixed}
+                ${Number(item.oldPrice).toFixed(2)}
               </span>
             )}
           </div>
