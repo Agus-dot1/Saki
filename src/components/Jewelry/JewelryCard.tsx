@@ -17,6 +17,12 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     
+    // Check if item needs size selection
+    if (item.availableSizes && item.availableSizes.length > 0) {
+      onClick(); // Open dialog for size selection
+      return;
+    }
+    
     // Convert JewelryItem to Product format for cart compatibility
     const productForCart = {
       id: item.id,
@@ -36,12 +42,13 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
     };
 
     addToCart(productForCart);
+    showSuccess('Producto Agregado', `${item.name} fue agregado al carrito`);
   };
 
   const handleSizeGuide = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    if (item.category === 'rings') {
+    if (item.category === 'anillo') {
       // Dispatch custom event to open size guide
       document.dispatchEvent(new CustomEvent('openRingSizeGuide'));
     } else {
@@ -68,14 +75,10 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
 
   const getCategoryIcon = () => {
     switch (item.category) {
-      case 'rings':
+      case 'anillo':
         return '💍';
-      case 'necklaces':
+      case 'pulsera':
         return '📿';
-      case 'bracelets':
-        return '🔗';
-      case 'earrings':
-        return '👂';
       default:
         return '💎';
     }
@@ -83,7 +86,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
 
   return (
     <motion.div 
-      className="flex flex-col h-full overflow-hidden transition-all duration-300 transform cursor-pointer rounded-2xl bg-white hover:shadow-xl hover:-translate-y-2 group"
+      className="flex flex-col h-full overflow-hidden transition-all duration-300 transform bg-white cursor-pointer rounded-2xl hover:shadow-xl hover:-translate-y-2 group"
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
@@ -109,7 +112,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
               <ShoppingCart size={16} />
             </button>
             
-            {item.category === 'rings' && (
+            {item.category === 'anillo' && (
               <button
                 onClick={handleSizeGuide}
                 className="p-2 transition-all duration-200 bg-white rounded-full shadow-lg hover:bg-accent hover:text-white"
@@ -130,14 +133,14 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
         </div>
 
         {/* Category badge */}
-        <div className="absolute bottom-3 left-3 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-primary">
+        <div className="absolute px-2 py-1 text-xs font-medium rounded-full bottom-3 left-3 bg-white/90 backdrop-blur-sm text-primary">
           <span className="mr-1">{getCategoryIcon()}</span>
           {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
         </div>
 
         {/* Discount badge */}
         {item.discountPercentage && item.discountPercentage > 0 && (
-          <div className="absolute top-3 right-3 px-2 py-1 bg-accent text-white rounded-full text-xs font-medium">
+          <div className="absolute px-2 py-1 text-xs font-medium text-white rounded-full bottom-3 right-3 bg-accent">
             -{item.discountPercentage}%
           </div>
         )}
