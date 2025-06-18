@@ -5,7 +5,7 @@ import { Gem, Filter } from 'lucide-react';
 import JewelryCard from './JewelryCard';
 import LoadingSpinner from '../LoadingSpinner';
 import { JewelryItem } from '../../types/jewelry';
-import { jewelryItems } from '../../data/jewelryData';
+import { fetchJewelryItems } from '../../services/jewelryService';
 
 interface JewelrySectionProps {
   onItemSelect: (item: JewelryItem) => void;
@@ -17,21 +17,35 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
   const [items, setItems] = useState<JewelryItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<JewelryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  // Simulate loading jewelry items
+  // Fetch jewelry items from Supabase
   useEffect(() => {
     const loadItems = async () => {
-      setIsLoading(true);
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setItems(jewelryItems);
-      setFilteredItems(jewelryItems);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        setError(null);
+        console.log('Loading jewelry items...');
+        
+        const jewelryData = await fetchJewelryItems();
+        console.log('Loaded jewelry items:', jewelryData);
+        
+        setItems(jewelryData);
+        setFilteredItems(jewelryData);
+      } catch (err) {
+        console.error('Failed to load jewelry items:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load jewelry items');
+        // Fallback to empty array on error
+        setItems([]);
+        setFilteredItems([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadItems();
@@ -40,7 +54,7 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
   // Filter items based on category
   useEffect(() => {
     const filterMap: Record<CategoryFilter, string | null> = {
-      all: 'todos',
+      all: null,
       rings: 'anillo',
       bracelets: 'pulsera',
     };
@@ -48,7 +62,8 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
     if (activeFilter === 'all') {
       setFilteredItems(items);
     } else {
-      setFilteredItems(items.filter(item => item.category === filterMap[activeFilter]));
+      const categoryValue = filterMap[activeFilter];
+      setFilteredItems(items.filter(item => item.category === categoryValue));
     }
   }, [activeFilter, items]);
 
@@ -89,6 +104,26 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
         <div className="mx-auto max-w-7xl">
           <div className="flex justify-center">
             <LoadingSpinner />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="jewelry" className="px-4 py-16 bg-slate-50 lg:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="py-12 text-center">
+            <p className="mb-4 text-lg text-red-600">
+              Error al cargar la joyería: {error}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
+            >
+              Intentar de Nuevo
+            </button>
           </div>
         </div>
       </section>
@@ -148,14 +183,19 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
             variants={itemVariants}
           >
             <p className="mb-4 text-lg text-content">
-              No hay productos disponibles en esta categoría.
+              {items.length === 0 
+                ? 'No hay productos de joyería disponibles en este momento.'
+                : 'No hay productos disponibles en esta categoría.'
+              }
             </p>
-            <button
-              onClick={() => setActiveFilter('all')}
-              className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
-            >
-              Ver Todos los Productos
-            </button>
+            {items.length > 0 && (
+              <button
+                onClick={() => setActiveFilter('all')}
+                className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
+              >
+                Ver Todos los Productos
+              </button>
+            )}
           </motion.div>
         ) : (
           <motion.div 
