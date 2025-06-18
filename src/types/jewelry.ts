@@ -1,10 +1,11 @@
 export interface JewelryItem {
   id: number;
   name: string;
-  category: 'rings' | 'necklaces' | 'bracelets' | 'earrings';
+  category: 'anillo' | 'pulsera';
   price: number;
   oldPrice?: number;
   discountPercentage?: number;
+  coverImage: string; 
   images: string[];
   description: string;
   detailedDescription: string;
@@ -19,6 +20,12 @@ export interface JewelryItem {
   gemstones?: string[];
   plating?: string;
   warranty?: string;
+  contents?: string[]; 
+  keyBenefits?: string[]; 
+  featuredIngredients?: string[];
+  modelNumber?: number; 
+  selectedSize?: string; 
+
 }
 
 export interface RingSize {
