@@ -14,7 +14,7 @@ import ToastContainer from './components/Toast/ToastContainer';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
-import JewelrySection from './components/Jewelry/JewelrySection';
+import JewelryContainer from './components/Jewelry/JewelryContainer';
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -86,7 +86,7 @@ function App() {
                   <ProductsSection 
                     onProductSelect={setSelectedProduct}
                   />
-                  <JewelrySection />
+                  <JewelryContainer />
                   <TestimonialsSection />
                 </Suspense>
               </div>
