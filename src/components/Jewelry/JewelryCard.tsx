@@ -94,7 +94,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
       {/* Image container */}
       <div className="relative h-64 overflow-hidden lg:h-72">
         <img 
-          src={item.images[0]} 
+          src={item.coverImage} 
           alt={item.name} 
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
