@@ -20,9 +20,9 @@ const Hero: React.FC = () => {
         {/* Left Content - Improved mobile spacing */}
         <motion.div 
           className="flex items-center px-2 py-8 lg:px-12 lg:py-16"
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="max-w-xl space-y-6 lg:space-y-8">
             {/* Trust Indicators - Better mobile layout */}
@@ -36,16 +36,16 @@ const Hero: React.FC = () => {
             {/* Main Heading - Responsive typography */}
             <div>
               <h1 className="mb-4 text-4xl font-light leading-tight sm:text-5xl lg:text-6xl xl:text-7xl text-stone-900">
-                Con Saki,
-                <br />
-                <span className="text-primary">tu piel</span>{' '}
-                <span className="flex items-center italic text-transparent bg-clip-text bg-gradient-to-r via-emerald-200 to-emerald-300 from-primary">
-                  brilla. <Sparkles size={32} className="ml-2 lg:ml-0" color='#7dc5a2' />
-                </span>
+          Con Saki,
+          <br />
+          <span className="text-primary">tu piel</span>{' '}
+          <span className="flex items-center italic text-transparent bg-clip-text bg-gradient-to-r via-emerald-200 to-emerald-300 from-primary">
+            brilla. <Sparkles size={32} className="ml-2 lg:ml-0" color='#7dc5a2' />
+          </span>
               </h1>
               <p className="max-w-md text-base leading-relaxed lg:text-lg text-content">
-                Pureza que se siente. Resultados que se ven. 
-                El cuidado de la piel como debería ser.
+          Pureza que se siente. Resultados que se ven. 
+          El cuidado de la piel como debería ser.
               </p>
             </div>
             
@@ -79,30 +79,21 @@ const VideoPackagingShowcase = () => {
   const videos = [
     {
       id: 1,
-      title: "Unboxing Experience",
+      title: "Kit Sami",
       description: "Descubre el cuidado en cada detalle",
-      thumbnail: "https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=600",
-      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-      duration: "0:45",
+      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1749864099/KitSami_1_cz5xwg.webp",
+      videoUrl: "https://res.cloudinary.com/do17gdc0b/video/upload/v1750303450/Kit_Sami_wbalgt.mp4",
+      duration: "0:51",
       category: "Packaging"
     },
     {
       id: 2,
-      title: "Proceso Artesanal",
-      description: "Cada producto hecho con amor",
-      thumbnail: "https://images.pexels.com/photos/6621462/pexels-photo-6621462.jpeg?auto=compress&cs=tinysrgb&w=600",
-      videoUrl: "https://www.w3schools.com/html/movie.mp4",
-      duration: "1:20",
-      category: "Proceso"
-    },
-    {
-      id: 3,
-      title: "Ingredientes Naturales",
-      description: "De la naturaleza a tu piel",
-      thumbnail: "https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg?auto=compress&cs=tinysrgb&w=600",
-      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-      duration: "0:58",
-      category: "Ingredientes"
+      title: "Kit Paki",
+      description: "Cada kit hecho con amor",
+      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1749864084/KitPaki_1_ujvfwq.webp",
+      videoUrl: "https://res.cloudinary.com/do17gdc0b/video/upload/v1750303438/Kit_Paki_ysyqkb.mp4",
+      duration: "1:07",
+      category: "Packaging"
     }
   ];
 
@@ -141,7 +132,7 @@ const VideoPackagingShowcase = () => {
 
   return (
     <motion.div 
-      className="w-full max-w-lg lg:max-w-2xl"
+      className="w-full max-w-md"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
@@ -154,14 +145,14 @@ const VideoPackagingShowcase = () => {
         transition={{ delay: 0.2, duration: 0.4 }}
       >
         <motion.div 
-          className="relative aspect-[4/3] bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl lg:rounded-3xl overflow-hidden group shadow-xl lg:shadow-2xl"
+          className="relative overflow-hidden shadow-xl aspect-square bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl lg:rounded-3xl group lg:shadow-2xl"
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <video
             ref={videoRef}
             src={videos[currentVideo].videoUrl}
-            className="object-cover w-full h-full transition-all duration-700 scale-105 cursor-pointer brightness-75"
+            className="object-cover object-bottom w-full h-full transition-all duration-700 scale-110 cursor-pointer brightness-75"
             muted={isMuted}
             controls={false}
             onClick={isPlaying ? handlePlayPause : undefined}
@@ -173,7 +164,7 @@ const VideoPackagingShowcase = () => {
             <img 
               src={videos[currentVideo].thumbnail}
               alt={videos[currentVideo].title}
-              className="absolute inset-0 object-cover w-full h-full transition-all duration-700 pointer-events-none group-hover:scale-105"
+              className="absolute inset-0 object-contain w-full h-full transition-all duration-700 scale-[1.8] pointer-events-none group-hover:scale-[1.9]"
               draggable={false}
             />
           )}
@@ -237,7 +228,7 @@ const VideoPackagingShowcase = () => {
       </motion.div>
       
       {/* Video Thumbnails - Better mobile grid */}
-      <div className="grid grid-cols-3 gap-2 lg:gap-4">
+      <div className="grid grid-cols-2 gap-2 lg:gap-6">
         {videos.map((video, index) => (
           <button
             key={video.id}
@@ -251,7 +242,7 @@ const VideoPackagingShowcase = () => {
             <img 
               src={video.thumbnail}
               alt={video.title}
-              className="object-cover w-full h-full"
+              className="object-contain w-full h-full scale-[2.4]"
             />
             <div className={`absolute inset-0 transition-all duration-300 ${
               index === currentVideo 

@@ -182,34 +182,25 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-xl font-medium lg:text-2xl text-primary">
-              ${Number(item.price).toFixed(2)}
+              ${Number(item.price)}
             </span>
             {item.oldPrice && item.oldPrice > item.price && (
               <span className="text-sm line-through lg:text-base text-content">
-                ${Number(item.oldPrice).toFixed(2)}
+                ${Number(item.oldPrice)}
               </span>
             )}
           </div>
 
-          {/* Action buttons */}
-          <div className="flex gap-2">
+            {/* Action button */}
+            <div className="flex">
             <button 
               onClick={onClick}
               className="flex items-center justify-center flex-1 px-3 py-2 space-x-2 text-sm font-medium transition-colors border rounded-lg lg:text-base border-accent text-accent hover:bg-accent hover:text-white"
             >
               <Info size={16} />
-              <span>Más Info</span>
+              <span>Seleccionar</span>
             </button>
-            
-            <button 
-              onClick={handleAddToCart}
-              disabled={stockStatus.disabled}
-              className="flex items-center justify-center px-3 py-2 text-sm font-medium text-white transition-colors rounded-lg lg:text-base bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed"
-              aria-label="Agregar al carrito"
-            >
-              <ShoppingCart size={16} />
-            </button>
-          </div>
+            </div>
         </div>
       </div>
     </motion.div>

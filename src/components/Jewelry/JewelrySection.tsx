@@ -24,7 +24,20 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
     threshold: 0.1,
   });
 
-  // Fetch jewelry items from Supabase
+  //   useEffect(() => {
+  //   const loadItems = async () => {
+  //     setIsLoading(true);
+  //     // Simulate API call delay
+  //     await new Promise(resolve => setTimeout(resolve, 800));
+  //     setItems(jewelryItems);
+  //     setFilteredItems(jewelryItems);
+  //     setIsLoading(false);
+  //   };
+
+  //   loadItems();
+  // }, []);
+
+
   useEffect(() => {
     const loadItems = async () => {
       try {

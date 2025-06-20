@@ -20,12 +20,7 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 200);
-    return () => clearTimeout(timer);
-  }, []);
   
   useEffect(() => {
     if (isCartOpen || selectedProduct || isCheckoutOpen) {
@@ -60,14 +55,6 @@ function App() {
       document.removeEventListener('openCheckoutForm', handleOpenCheckoutForm);
     };
   }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner />
-      </div>
-    );
-  }
 
   return (
     <ErrorBoundary>

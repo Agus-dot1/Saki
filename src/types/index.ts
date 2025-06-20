@@ -23,6 +23,8 @@ export interface Product {
   colors?: string[];
   sizes?: string[];
   items?: ProductItemOption[];
+  modelNumber?: number; // Optional model number for products
+  selectedSize?: string; // Optional selected size for products
 }
 
 export interface SelectedKitItem {

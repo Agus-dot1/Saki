@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, User, MapPin, Mail, Phone, Loader2, X } from 'lucide-react';
+import { CreditCard, User, MapPin, Mail, Loader2, X } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
@@ -151,22 +151,22 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-medium text-primary flex items-center">
+        <h2 className="flex items-center text-2xl font-medium text-primary">
           <CreditCard className="mr-3" size={24} />
           Finalizar Compra
         </h2>
         <button
           onClick={onClose}
           disabled={isProcessing}
-          className="p-2 text-content hover:text-primary transition-colors disabled:opacity-50"
+          className="p-2 transition-colors text-content hover:text-primary disabled:opacity-50"
         >
           <X size={24} />
         </button>
       </div>
 
       {/* Resumen del pedido */}
-      <div className="bg-secondary/30 rounded-lg p-4 mb-6">
-        <h3 className="font-medium text-primary mb-3">Resumen del Pedido</h3>
+      <div className="p-4 mb-6 rounded-lg bg-secondary/30">
+        <h3 className="mb-3 font-medium text-primary">Resumen del Pedido</h3>
         <div className="space-y-2">
           {cartItems.map(item => (
             <div key={item.product.id} className="flex justify-between text-sm">
@@ -175,7 +175,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             </div>
           ))}
         </div>
-        <div className="border-t border-secondary mt-3 pt-3 flex justify-between font-medium">
+        <div className="flex justify-between pt-3 mt-3 font-medium border-t border-secondary">
           <span>Total:</span>
           <span className="text-accent">${totalPrice.toFixed(2)}</span>
         </div>
@@ -184,13 +184,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Datos personales */}
         <div>
-          <h3 className="font-medium text-primary mb-4 flex items-center">
+          <h3 className="flex items-center mb-4 font-medium text-primary">
             <User className="mr-2" size={20} />
             Datos Personales
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-content mb-1">
+              <label className="block mb-1 text-sm font-medium text-content">
                 Nombre *
               </label>
               <input
@@ -203,11 +203,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 disabled={isProcessing}
               />
               {errors.firstName && (
-                <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-content mb-1">
+              <label className="block mb-1 text-sm font-medium text-content">
                 Apellido *
               </label>
               <input
@@ -220,7 +220,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 disabled={isProcessing}
               />
               {errors.lastName && (
-                <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
               )}
             </div>
           </div>
@@ -228,13 +228,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
         {/* Contacto */}
         <div>
-          <h3 className="font-medium text-primary mb-4 flex items-center">
+          <h3 className="flex items-center mb-4 font-medium text-primary">
             <Mail className="mr-2" size={20} />
             Información de Contacto
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-content mb-1">
+              <label className="block mb-1 text-sm font-medium text-content">
                 Email *
               </label>
               <input
@@ -247,11 +247,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 disabled={isProcessing}
               />
               {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-content mb-1">
+              <label className="block mb-1 text-sm font-medium text-content">
                 Teléfono *
               </label>
               <input
@@ -264,7 +264,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 disabled={isProcessing}
               />
               {errors.phone && (
-                <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
               )}
             </div>
           </div>
@@ -272,13 +272,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
         {/* Dirección */}
         <div>
-          <h3 className="font-medium text-primary mb-4 flex items-center">
+          <h3 className="flex items-center mb-4 font-medium text-primary">
             <MapPin className="mr-2" size={20} />
             Dirección de Envío
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-content mb-1">
+              <label className="block mb-1 text-sm font-medium text-content">
                 Dirección *
               </label>
               <input
@@ -292,12 +292,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 disabled={isProcessing}
               />
               {errors.address && (
-                <p className="text-red-500 text-xs mt-1">{errors.address}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.address}</p>
               )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-content mb-1">
+                <label className="block mb-1 text-sm font-medium text-content">
                   Ciudad *
                 </label>
                 <input
@@ -310,18 +310,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   disabled={isProcessing}
                 />
                 {errors.city && (
-                  <p className="text-red-500 text-xs mt-1">{errors.city}</p>
+                  <p className="mt-1 text-xs text-red-500">{errors.city}</p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-content mb-1">
+                <label className="block mb-1 text-sm font-medium text-content">
                   Código Postal
                 </label>
                 <input
                   type="text"
                   value={customerData.postalCode}
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 border border-secondary rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                  className="w-full px-3 py-2 transition-colors border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
                   disabled={isProcessing}
                 />
               </div>
@@ -330,23 +330,23 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         </div>
 
         {/* Botones */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-secondary">
+        <div className="flex flex-col gap-3 pt-6 border-t sm:flex-row border-secondary">
           <button
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="flex-1 px-6 py-3 border border-secondary text-content rounded-md hover:bg-secondary/50 transition-colors disabled:opacity-50"
+            className="flex-1 px-6 py-3 transition-colors border rounded-md border-secondary text-content hover:bg-secondary/50 disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isProcessing}
-            className="flex-1 bg-accent text-white px-6 py-3 rounded-md hover:bg-supporting transition-colors disabled:opacity-50 flex items-center justify-center"
+            className="flex items-center justify-center flex-1 px-6 py-3 text-white transition-colors rounded-md bg-accent hover:bg-supporting disabled:opacity-50"
           >
             {isProcessing ? (
               <>
-                <Loader2 size={20} className="animate-spin mr-2" />
+                <Loader2 size={20} className="mr-2 animate-spin" />
                 Procesando...
               </>
             ) : (
@@ -359,7 +359,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         </div>
       </form>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+      <div className="p-4 mt-6 rounded-lg bg-blue-50">
         <p className="text-sm text-blue-800">
           🔒 <strong>Pago Seguro:</strong> Tu información está protegida con encriptación de nivel bancario.
           Procesamos pagos de forma segura y confiable.

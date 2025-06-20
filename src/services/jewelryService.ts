@@ -30,12 +30,14 @@ interface JewelryDbRow {
   created_at?: string;
   updated_at?: string;
   user_id?: string;
+  isGrid?: boolean;
+  models?: string[];
 }
 
 // Function to map database row to JewelryItem interface
 function mapDbRowToJewelryItem(row: JewelryDbRow): JewelryItem {
   return {
-    id: row.id,
+    id: typeof row.id === 'string' ? Number(row.id) : row.id,
     name: row.name,
     category: row.category as 'anillo' | 'pulsera',
     price: Number(row.price),
@@ -58,7 +60,9 @@ function mapDbRowToJewelryItem(row: JewelryDbRow): JewelryItem {
     warranty: row.warranty,
     contents: row.contents || [],
     keyBenefits: row.keyBenefits || [],
-    featuredIngredients: row.featuredIngredients || []
+    featuredIngredients: row.featuredIngredients || [],
+    isGrid: row.isGrid ?? false,
+    models: row.models ?? [],
   };
 }
 
@@ -92,7 +96,9 @@ export async function fetchJewelryItems(): Promise<JewelryItem[]> {
         warranty,
         contents,
         "keyBenefits",
-        "featuredIngredients"
+        "featuredIngredients",
+        isGrid,
+        models
       `)
       .order('id', { ascending: true });
 
@@ -147,7 +153,9 @@ export async function fetchJewelryById(id: number): Promise<JewelryItem | null> 
         warranty,
         contents,
         "keyBenefits",
-        "featuredIngredients"
+        "featuredIngredients",
+        isGrid,
+        models
       `)
       .eq('id', id)
       .single();
@@ -192,7 +200,9 @@ export async function fetchJewelryByCategory(category: string): Promise<JewelryI
         warranty,
         contents,
         "keyBenefits",
-        "featuredIngredients"
+        "featuredIngredients",
+        isGrid,
+        models
       `)
       .eq('category', category)
       .order('id', { ascending: true });

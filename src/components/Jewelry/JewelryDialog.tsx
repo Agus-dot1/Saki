@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, ShoppingCart, Info, Package } from 'lucide-react';
+import { X, ShoppingCart, Info, Package, ZoomIn } from 'lucide-react';
 import { JewelryItem } from '../../types/jewelry';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
@@ -19,6 +19,8 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
     item.availableSizes?.[0]
   );
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
 
   const handleAddToCart = () => {
     const productForCart = mapJewelryToProduct({
@@ -31,6 +33,12 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
     showSuccess('Producto Agregado', `${item.name} - Modelo ${selectedModel + 1} fue agregado al carrito`);
     onClose();
     onOpenCart();
+  };
+
+
+  const closeImageModal = () => {
+    setShowImageModal(false);
+    setModalImageIndex(null);
   };
 
   return (
@@ -64,34 +72,112 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
             Modelo seleccionado: {selectedModel + 1}
           </p>
 
-          {/* Models Grid */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
-            <button
-              onClick={() => setSelectedModel(0)}
-              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all
-                ${selectedModel === 0 ? 'border-accent scale-105' : 'border-transparent'}`}
-            >
-              <img 
-                src={item.coverImage} 
-                alt={`${item.name} imagen principal`}
-                className="object-cover w-full h-full"
-              />
-            </button>
-            {item.images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedModel(index + 1)}
-                className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all
-                  ${selectedModel === index + 1 ? 'border-accent scale-105' : 'border-transparent'}`}
-              >
-                <img 
-                  src={image} 
-                  alt={`${item.name} modelo ${index + 2}`}
-                  className="object-cover w-full h-full"
+            {/* Models Grid */}
+            <div className="flex flex-col items-center mb-4">
+            {item.isGrid ? (
+              <>
+              <div className="relative w-full max-w-xs mb-2 aspect-square">
+                <img
+                src={item.images[selectedModel]}
+                alt={`${item.name} modelo ${selectedModel + 1}`}
+                className="object-cover w-full h-full rounded-lg shadow"
                 />
-              </button>
-            ))}
-          </div>
+                <button
+                type="button"
+                onClick={() => {
+                  setModalImageIndex(selectedModel);
+                  setShowImageModal(true);
+                }}
+                className="absolute p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
+                aria-label="Ver grande"
+                >
+                <ZoomIn size={18} className="text-accent" />
+                </button>
+              </div>
+              {/* Model Selector */}
+              <div className="flex gap-2">
+                {item.images.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setSelectedModel(index)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all
+                  ${selectedModel === index ? 'border-accent scale-110' : 'border-gray-200'}`}
+                  aria-label={`Seleccionar modelo ${index + 1}`}
+                >
+                  <span className="block w-full h-full overflow-hidden bg-gray-200 rounded-full">
+                  <img
+                    src={item.images[index]}
+                    alt={`Modelo ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                  </span>
+                </button>
+                ))}
+              </div>
+              </>
+            ) : (
+              <>
+              <div className="relative w-full max-w-xs mb-2 aspect-square">
+                <img
+                src={item.images[0]}
+                alt={`${item.name} modelo ${selectedModel + 1}`}
+                className="object-cover w-full h-full rounded-lg shadow"
+                />
+                <button
+                type="button"
+                onClick={() => {
+                  setModalImageIndex(0);
+                  setShowImageModal(true);
+                }}
+                className="absolute p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
+                aria-label="Ver grande"
+                >
+                <ZoomIn size={18} className="text-accent" />
+                </button>
+              </div>
+              <div className="w-full mt-3">
+                <label htmlFor="model-select" className="block mb-1 text-sm font-medium text-gray-700">
+                Seleccionar modelo
+                </label>
+                <select
+                id="model-select"
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-accent focus:ring-1 focus:ring-accent"
+                >
+                {item.models?.map((modelName, idx) => (
+                  <option key={idx} value={idx}>
+                  {modelName}
+                  </option>
+                ))}
+                </select>
+              </div>
+              </>
+            )}
+            <p className="mt-2 text-sm font-medium text-accent">
+              Modelo seleccionado: {selectedModel + 1}
+            </p>
+            </div>
+
+          {/* Image Modal */}
+          {showImageModal && modalImageIndex !== null && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+              <div className="relative">
+                <button
+                  onClick={closeImageModal}
+                  className="absolute p-2 bg-white rounded-full shadow top-2 right-2 hover:bg-gray-200"
+                >
+                  <X size={24} />
+                </button>
+                <img
+                  src={item.images[modalImageIndex]}
+                  alt={`${item.name} modelo ${modalImageIndex + 1}`}
+                  className="max-w-[90vw] max-h-[80vh] rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Material Info */}
           <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">

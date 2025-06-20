@@ -25,7 +25,8 @@ export interface JewelryItem {
   featuredIngredients?: string[];
   modelNumber?: number; 
   selectedSize?: string; 
-
+  isGrid?: boolean; 
+  models?: string[]; 
 }
 
 export interface RingSize {

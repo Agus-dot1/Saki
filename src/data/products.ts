@@ -85,68 +85,6 @@ export const products: Product[] = [
       { name: 'Sérum Control de Grasa', quantity: 1 },
       { name: 'Crema Hidratante Ligera', quantity: 1 }
     ]
-  },
-  {
-    id: 3,
-    name: 'Sistema de Recuperación Anti-Edad',
-    description: 'Rutina anti-edad avanzada con activos naturales potentes. Reduce líneas finas y mejora la elasticidad de la piel.',
-    shortDescription: 'Fórmula avanzada para reducir signos del envejecimiento',
-    price: 119.99,
-    stock: 15,
-    contents: [
-      'Limpiador Regenerador',
-      'Tónico Antioxidante',
-      'Sérum Complejo Péptidos',
-      'Crema Reafirmante'
-    ],
-    images: [
-      'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/7319158/pexels-photo-7319158.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/6621353/pexels-photo-6621353.jpeg?auto=compress&cs=tinysrgb&w=800'
-    ],
-    detailedDescription: 'Nuestro Sistema de Recuperación Anti-Edad es un enfoque integral para abordar los signos visibles del envejecimiento. Formulado con péptidos avanzados, antioxidantes y botánicos naturales de las Pampas argentinas conocidos por sus propiedades rejuvenecedoras. Este sistema ayuda a reducir la apariencia de líneas finas, mejora la elasticidad de la piel y proporciona hidratación profunda. Los productos trabajan sinérgicamente para promover la renovación celular y proteger contra los factores estresantes ambientales.',
-    keyBenefits: [
-      'Reduce líneas finas y arrugas',
-      'Mejora la elasticidad de la piel',
-      'Promueve la renovación celular',
-      'Protege contra el estrés ambiental'
-    ],
-    featuredIngredients: [
-      'Péptidos avanzados',
-      'Extracto de uva',
-      'Aceite de jojoba',
-      'Vitamina E'
-    ],
-    discountPercentage: 15,
-    oldPrice: 139.99,
-    items: [
-      { name: 'Limpiador Regenerador', quantity: 1 },
-      { name: 'Tónico Antioxidante', quantity: 1 },
-      { name: 'Sérum Complejo Péptidos', quantity: 1 },
-      { name: 'Crema Reafirmante', quantity: 1 }
-    ]
-  },
-  {
-    id: 4,
-    name: 'Anillo Plata 925',
-    description: 'Anillo ajustable de plata 925, elegante y minimalista.',
-    shortDescription: 'Anillo de plata 925, varios tamaños disponibles.',
-    price: 59.99,
-    stock: 10,
-    contents: ['Anillo de plata 925'],
-    images: [
-      'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=800'
-    ],
-    detailedDescription: 'Anillo de plata 925 hecho a mano, disponible en varios tamaños para un ajuste perfecto.',
-    keyBenefits: [
-      'Plata genuina 925',
-      'Ajuste cómodo',
-      'Diseño elegante'
-    ],
-    featuredIngredients: [],
-    discountPercentage: 0,
-    oldPrice: 59.99,
-    sizes: ['6', '7', '8', '9']
   }
 ];
 
