@@ -8,7 +8,8 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="mb-3 text-xl font-medium lg:mb-4 lg:text-2xl text-primary">Saki</h3>
           <p className="mb-4 text-sm leading-relaxed lg:mb-6 lg:text-base text-content">
-            Creamos kits pensados para que cada persona se tome un momento para sí. Combinamos cuidado personal y maquillaje con productos seleccionados para hacerte sentir bien, por dentro y por fuera.
+            Saki representa amor propio, conexión y rituales que miman el alma.
+            No es solo un kit de cuidado personal: es una experiencia pensada para que te sientas bien, te veas linda y disfrutes de ese momento que tanto te merecés.
           </p>
           <div className="flex space-x-4">
             <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Instagram">
