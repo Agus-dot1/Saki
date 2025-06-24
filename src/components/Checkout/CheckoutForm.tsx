@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, User, MapPin, Mail, Loader2, X } from 'lucide-react';
+import { CreditCard, User, MapPin, Mail, Loader2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
@@ -77,7 +77,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     try {
       showInfo(
         'Procesando...',
-        'Estamos preparando tu pago',
+        'Estamos preparando tu pago con Mercado Pago',
         { duration: 0, dismissible: false }
       );
 
@@ -86,39 +86,29 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         customer: customerData
       };
 
-      // Para desarrollo, usar checkout simulado
-      // En producción, usar: CheckoutService.createPaymentPreference(checkoutData)
-      const result = await CheckoutService.simulateCheckout(checkoutData);
+      const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
-      if (result.success) {
-        showSuccess(
-          '¡Pago Exitoso!',
-          `Orden #${result.orderNumber} procesada correctamente`,
-          { 
-            duration: 8000,
-            action: {
-              label: 'Ver Detalles',
-              onClick: () => {
-                showInfo(
-                  'Detalles del Pedido',
-                  `Orden: ${result.orderNumber}\nTotal: $${totalPrice.toFixed(2)}\nEstado: Confirmado\nSe enviará confirmación por email`
-                );
-              }
-            }
-          }
-        );
+      // Guardar orden ID en localStorage para tracking
+      localStorage.setItem('currentOrderId', preference.orderId);
 
-        // Limpiar carrito y cerrar formulario
-        clearCart();
-        onClose();
-      } else {
-        throw new Error('El pago no pudo ser procesado');
-      }
+      showSuccess(
+        'Redirigiendo a Mercado Pago',
+        `Orden #${preference.orderNumber} creada exitosamente`,
+        { duration: 3000 }
+      );
+
+      // Limpiar carrito antes de redireccionar
+      clearCart();
+      
+      // Redireccionar a Mercado Pago
+      setTimeout(() => {
+        CheckoutService.redirectToMercadoPago(preference.initPoint);
+      }, 1000);
 
     } catch (error) {
       console.error('Checkout error:', error);
       showError(
-        'Error en el Pago',
+        'Error en el Checkout',
         error instanceof Error ? error.message : 'Ocurrió un error inesperado',
         {
           action: {
@@ -160,7 +150,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
           disabled={isProcessing}
           className="p-2 transition-colors text-content hover:text-primary disabled:opacity-50"
         >
-          <X size={24} />
+          ×
         </button>
       </div>
 
@@ -197,7 +187,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 type="text"
                 value={customerData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.firstName ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
@@ -214,7 +204,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 type="text"
                 value={customerData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.lastName ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
@@ -241,7 +231,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 type="email"
                 value={customerData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.email ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
@@ -258,7 +248,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 type="tel"
                 value={customerData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.phone ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
@@ -286,7 +276,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 placeholder="Calle y número"
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.address ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
@@ -304,7 +294,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   type="text"
                   value={customerData.city}
                   onChange={(e) => handleInputChange('city', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors ${
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                     errors.city ? 'border-red-500' : 'border-secondary'
                   }`}
                   disabled={isProcessing}
@@ -321,7 +311,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   type="text"
                   value={customerData.postalCode}
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 transition-colors border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
                   disabled={isProcessing}
                 />
               </div>
@@ -352,7 +342,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             ) : (
               <>
                 <CreditCard size={20} className="mr-2" />
-                Finalizar Compra
+                Pagar con Mercado Pago
               </>
             )}
           </button>
@@ -361,8 +351,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
       <div className="p-4 mt-6 rounded-lg bg-blue-50">
         <p className="text-sm text-blue-800">
-          🔒 <strong>Pago Seguro:</strong> Tu información está protegida con encriptación de nivel bancario.
-          Procesamos pagos de forma segura y confiable.
+          🔒 <strong>Pago Seguro:</strong> Serás redirigido a Mercado Pago para completar tu compra de forma segura.
+          Aceptamos tarjetas de crédito, débito y otros métodos de pago.
         </p>
       </div>
     </motion.div>

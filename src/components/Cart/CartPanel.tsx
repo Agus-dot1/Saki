@@ -33,20 +33,21 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       onClose();
     }
   };
+  
 
   const handleWhatsAppCheckout = () => {
     if (cartItems.length === 0) {
       showInfo('Carrito Vacío', 'Agregá productos antes de contactarnos');
       return;
     }
-
+    const orderCode = `SAKI-${Date.now()}`;
     const orderSummary = cartItems.map(
       item => `${item.quantity}x ${item.product.name} - $${(item.product.price * item.quantity).toFixed(2)}`
     ).join('\n');
-    
-    const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toFixed(2)}`;
+
+    const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toFixed(2)}\n\nCódigo de Pedido: ${orderCode}`;
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/5411XXXXXXXX?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/541132170664?text=${encodedMessage}`;
     
     window.open(whatsappUrl, '_blank');
     
@@ -110,25 +111,6 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
           
           {/* Action buttons - Better mobile layout */}
           <div className="space-y-3">
-            {/* Primary checkout button */}
-            <button 
-              onClick={handleCheckout}
-              disabled={isProcessingCheckout}
-              className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium text-white transition-colors rounded-md lg:text-lg bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessingCheckout ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Procesando...</span>
-                </>
-              ) : (
-                <>
-                  <span>Finalizar Compra</span>
-                  <ArrowRight size={18} />
-                </>
-              )}
-            </button>
-
             {/* WhatsApp checkout alternative */}
             <button 
               onClick={handleWhatsAppCheckout}
@@ -137,6 +119,25 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             >
               Pedir por WhatsApp
             </button>
+                        {/* Primary checkout button */}
+            <button 
+              onClick={handleCheckout}
+              disabled
+              className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium text-white transition-colors rounded-md lg:text-lg bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isProcessingCheckout ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Procesando...</span>
+              </>
+              ) : (
+              <>
+                <span>Finalizar Compra</span>
+                <ArrowRight size={18} />
+              </>
+              )}
+            </button>
+
 
             {/* Clear cart button */}
             <button 

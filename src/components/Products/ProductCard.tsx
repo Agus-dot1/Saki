@@ -79,7 +79,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         
         {/* Footer - Better mobile layout */}
         <div className="flex flex-col gap-3 pt-4 mt-auto border-t lg:flex-row lg:justify-between lg:items-center lg:pt-6 border-supporting/20">
-          <span className="text-xl font-medium lg:text-2xl text-primary">${product.price}</span>
+          <span className="text-xl font-medium lg:text-2xl text-primary">${product.price}
+          {product.oldPrice && (
+            <span className="ml-2 text-base text-gray-400 line-through">
+              ${product.oldPrice}
+            </span>
+          )}</span> 
           
           <button 
             onClick={handleAddToCart}

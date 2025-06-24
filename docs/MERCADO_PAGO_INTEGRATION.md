@@ -30,8 +30,11 @@ MERCADO_PAGO_ACCESS_TOKEN_SANDBOX=TEST-1234567890-123456-abcdef123456789-1234567
 MERCADO_PAGO_ACCESS_TOKEN_PROD=APP_USR-1234567890-123456-abcdef123456789-123456789
 MERCADO_PAGO_PUBLIC_KEY_SANDBOX=TEST-12345678-1234-1234-1234-123456789012
 MERCADO_PAGO_PUBLIC_KEY_PROD=APP_USR-12345678-1234-1234-1234-123456789012
+
 MERCADO_PAGO_WEBHOOK_SECRET=tu_webhook_secret_aqui
+
 RESEND_API_KEY=re_123456789_abcdefghijklmnop
+
 ADMIN_EMAIL=tu-email@ejemplo.com
 ```
 
@@ -421,6 +424,136 @@ Deno.serve(async (req: Request) => {
     );
   }
 });
+
+// version previa
+// @ts-expect-error: Deno runtime import for serve
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'; // Keep this for Deno
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
+};
+serve(async (req)=>{
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', {
+      headers: corsHeaders
+    });
+  }
+  try {
+    const { items, customer } = await req.json();
+    const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
+    // Create or update customer
+    const { data: customerData, error: customerError } = await supabase.from('customers').upsert({
+      email: customer.email,
+      first_name: customer.firstName,
+      last_name: customer.lastName,
+      phone: customer.phone,
+      address: customer.address,
+      city: customer.city,
+      postal_code: customer.postalCode
+    }, {
+      onConflict: 'email'
+    }).select().single();
+    if (customerError) throw customerError;
+    // Calculate total
+    const totalAmount = items.reduce((sum, item)=>sum + item.product.price * item.quantity, 0);
+    // Create order
+    const { data: orderData, error: orderError } = await supabase.from('orders').insert({
+      customer_id: customerData.id,
+      total_amount: totalAmount,
+      status: 'pending'
+    }).select().single();
+    if (orderError) throw orderError;
+    // Create order items
+    const orderItems = items.map((item)=>({
+        order_id: orderData.id,
+        product_id: item.product.id,
+        product_name: item.product.name,
+        quantity: item.quantity,
+        unit_price: item.product.price,
+        total_price: item.product.price * item.quantity
+      }));
+    const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
+    if (itemsError) throw itemsError;
+    // Prepare items for Mercado Pago
+    const mpItems = items.map((item)=>({
+        id: item.product.id.toString(),
+        title: item.product.name,
+        quantity: item.quantity,
+        unit_price: item.product.price,
+        currency_id: 'ARS'
+      }));
+    // Create preference in Mercado Pago
+    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
+    const preferenceData = {
+      items: mpItems,
+      payer: {
+        name: customer.firstName,
+        surname: customer.lastName,
+        email: customer.email,
+        phone: {
+          number: customer.phone || ''
+        },
+        address: {
+          street_name: customer.address || '',
+          zip_code: customer.postalCode || ''
+        }
+      },
+      back_urls: {
+        success: `${req.headers.get('origin')}/checkout/success`,
+        failure: `${req.headers.get('origin')}/checkout/failure`,
+        pending: `${req.headers.get('origin')}/checkout/pending`
+      },
+      auto_return: 'approved',
+      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/mercado-pago-webhook`,
+      external_reference: orderData.id,
+      statement_descriptor: 'SAKI SKINCARE'
+    };
+    const mpResponse = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(preferenceData)
+    });
+    if (!mpResponse.ok) {
+      const errorData = await mpResponse.text();
+      throw new Error(`Mercado Pago Error: ${errorData}`);
+    }
+    const preference = await mpResponse.json();
+    // Update order with preference_id
+    await supabase.from('orders').update({
+      mercado_pago_preference_id: preference.id
+    }).eq('id', orderData.id);
+    return new Response(JSON.stringify({
+      preferenceId: preference.id,
+      initPoint: preference.init_point,
+      orderId: orderData.id,
+      orderNumber: orderData.order_number
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 200
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({
+      error: error.message
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      },
+      status: 400
+    });
+  }
+});
+
+
+
+
 ```
 
 ### 2. Webhook de Mercado Pago
@@ -603,6 +736,147 @@ Podés preparar el pedido y coordinar el envío 😊
     console.error('Error in sendOrderConfirmationEmail:', error);
   }
 }
+
+
+// version previa
+// @ts-expect-error: Deno runtime import for serve
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'; // Keep this for Deno
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+serve(async (req)=>{
+  try {
+    const body = await req.json();
+    if (body.type !== 'payment') {
+      return new Response('OK', {
+        status: 200
+      });
+    }
+    const paymentId = body.data.id;
+    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
+    // Get payment details from Mercado Pago
+    const paymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    const paymentData = await paymentResponse.json();
+    const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
+    // Find order by external_reference
+    const { data: orderData, error: orderError } = await supabase.from('orders').select(`
+        *,
+        customer:customers(*),
+        order_items(*)
+      `).eq('id', paymentData.external_reference).single();
+    if (orderError || !orderData) {
+      console.error('Order not found:', orderError);
+      return new Response('Order not found', {
+        status: 404
+      });
+    }
+    // Record payment
+    await supabase.from('payments').upsert({
+      order_id: orderData.id,
+      mercado_pago_payment_id: paymentId.toString(),
+      status: paymentData.status,
+      amount: paymentData.transaction_amount,
+      payment_method: paymentData.payment_method_id
+    }, {
+      onConflict: 'mercado_pago_payment_id'
+    });
+    // Update order status if payment approved
+    if (paymentData.status === 'approved') {
+      await supabase.from('orders').update({
+        status: 'paid',
+        mercado_pago_payment_id: paymentId.toString(),
+        payment_method: paymentData.payment_method_id
+      }).eq('id', orderData.id);
+      // Send confirmation email (if Resend is configured)
+      await sendOrderConfirmationEmail(orderData, paymentData);
+    }
+    return new Response('OK', {
+      status: 200
+    });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    return new Response('Error', {
+      status: 500
+    });
+  }
+});
+async function sendOrderConfirmationEmail(orderData, paymentData) {
+  try {
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const adminEmail = Deno.env.get('ADMIN_EMAIL');
+    if (!resendApiKey || !adminEmail) {
+      console.log('Email configuration missing, skipping email');
+      return;
+    }
+    const productDetails = orderData.order_items.map((item)=>`- ${item.product_name} (x${item.quantity}) - $${item.total_price}`).join('\n');
+    const emailContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nuevo Pedido</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #2c5aa0;">🛍️ Nuevo Pedido Confirmado</h2>
+    
+    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3>📋 Detalle del Pedido #${orderData.order_number}</h3>
+      ${productDetails}
+      <hr>
+      <strong>Total: $${orderData.total_amount}</strong>
+    </div>
+    
+    <div style="background: #e8f4f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3>📬 Datos del Cliente</h3>
+      <p><strong>Nombre:</strong> ${orderData.customer.first_name} ${orderData.customer.last_name}</p>
+      <p><strong>Email:</strong> ${orderData.customer.email}</p>
+      <p><strong>Teléfono:</strong> ${orderData.customer.phone || 'No proporcionado'}</p>
+      <p><strong>Dirección:</strong> ${orderData.customer.address || 'No proporcionada'}</p>
+    </div>
+    
+    <div style="background: #e8f8e8; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3>💳 Información del Pago</h3>
+      <p><strong>Estado:</strong> ✅ Aprobado</p>
+      <p><strong>Método:</strong> ${paymentData.payment_method_id}</p>
+      <p><strong>ID de pago:</strong> ${paymentData.id}</p>
+    </div>
+    
+    <p style="margin-top: 30px; font-size: 14px; color: #666;">
+      El pago fue procesado exitosamente por Mercado Pago. 
+      Podés preparar el pedido y coordinar el envío 😊
+    </p>
+  </div>
+</body>
+</html>`.trim();
+    const emailData = {
+      from: 'Saki Skincare <noreply@sakiskincare.com>',
+      to: [
+        adminEmail
+      ],
+      subject: `🛍️ Nuevo Pedido #${orderData.order_number} - $${orderData.total_amount}`,
+      text: emailContent
+    };
+    const emailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(emailData)
+    });
+    if (!emailResponse.ok) {
+      console.error('Error sending email:', await emailResponse.text());
+    } else {
+      console.log('Order confirmation email sent successfully');
+    }
+  } catch (error) {
+    console.error('Error in sendOrderConfirmationEmail:', error);
+  }
+}
+
 ```
 
 ## 🎨 Integración Frontend

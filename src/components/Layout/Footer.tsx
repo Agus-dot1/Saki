@@ -1,25 +1,19 @@
 import React from 'react';
-import { Instagram, Facebook, Twitter, CreditCard, MapPin, Mail, Phone } from 'lucide-react';
+import { Instagram, MapPin, Mail, Phone } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
     <footer id="contact" className="px-4 py-12 lg:px-6 lg:py-16 bg-secondary">
-      <div className="grid grid-cols-1 gap-8 mx-auto max-w-7xl lg:grid-cols-3 lg:gap-12">
-        <div>
+      <div className="flex gap-8 mx-auto justify-evenly max-w-7xl ">
+        <div className="flex flex-col justify-between max-w-sm">
           <h3 className="mb-3 text-xl font-medium lg:mb-4 lg:text-2xl text-primary">Saki</h3>
           <p className="mb-4 text-sm leading-relaxed lg:mb-6 lg:text-base text-content">
             Saki representa amor propio, conexión y rituales que miman el alma.
             No es solo un kit de cuidado personal: es una experiencia pensada para que te sientas bien, te veas linda y disfrutes de ese momento que tanto te merecés.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Instagram">
+            <a target="_blank" href="https://www.instagram.com/accs_saki?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="transition-colors text-supporting hover:text-accent" aria-label="Instagram">
               <Instagram size={20} />
-            </a>
-            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Facebook">
-              <Facebook size={20} />
-            </a>
-            <a href="#" className="transition-colors text-supporting hover:text-accent" aria-label="Twitter">
-              <Twitter size={20} />
             </a>
           </div>
         </div>
@@ -33,21 +27,13 @@ const Footer: React.FC = () => {
             </li>
             <li className="flex items-center space-x-2">
               <Mail size={16} className="text-supporting lg:w-5 lg:h-5" />
-              <span className="text-sm lg:text-base text-content">hola@sakiskincare.com</span>
+              <span className="text-sm lg:text-base text-content">denise_yevrasky1@hotmail.com</span>
             </li>
             <li className="flex items-center space-x-2">
               <Phone size={16} className="text-supporting lg:w-5 lg:h-5" />
-              <span className="text-sm lg:text-base text-content">+54 11 1234 5678</span>
+              <span className="text-sm lg:text-base text-content">+54 11 2672-0095</span>
             </li>
           </ul>
-        </div>
-        
-        <div>
-          <h3 className="mb-3 text-lg font-medium lg:mb-4 lg:text-xl text-primary">Métodos de Pago</h3>
-          <div className="flex flex-wrap gap-2 mb-4 lg:mb-6">
-            <CreditCard size={20} className="text-supporting lg:w-6 lg:h-6" />
-            <span className="text-sm lg:text-base text-content">Aceptamos todas las tarjetas principales</span>
-          </div>
         </div>
       </div>
       

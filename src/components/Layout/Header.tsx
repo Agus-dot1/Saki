@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   return (
     <>
       {/* Desktop Sidebar - Hidden on mobile */}
-      <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 left-4 xl:left-6 lg:block">
+      <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 right-4 xl:right-6 lg:block">
         <nav className="flex flex-col items-center p-3 space-y-2 border shadow-lg bg-white/90 backdrop-blur-md rounded-2xl border-white/20">
           {menuItems.map(({ icon: Icon, label, href, id }) => (
             <a

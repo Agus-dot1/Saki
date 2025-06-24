@@ -1,3 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
 export interface CheckoutData {
   items: Array<{
     product: {
@@ -26,58 +33,8 @@ export interface PaymentPreference {
 }
 
 export class CheckoutService {
-  // Método para simular el checkout (para desarrollo sin Supabase configurado)
-  static async simulateCheckout(data: CheckoutData): Promise<{ success: boolean; orderId?: string; orderNumber?: string }> {
-    try {
-      // Simular delay de procesamiento
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simular 90% de éxito
-      const isSuccess = Math.random() > 0.1;
-      
-      if (isSuccess) {
-        const orderId = `sim-${Date.now()}`;
-        const orderNumber = `SIM-${Date.now().toString().slice(-6)}`;
-        
-        return {
-          success: true,
-          orderId,
-          orderNumber
-        };
-      } else {
-        throw new Error('Pago simulado rechazado');
-      }
-    } catch (error) {
-      console.error('Error in simulated checkout:', error);
-      return { success: false };
-    }
-  }
-
-  // Métodos para cuando Supabase esté configurado
   static async createPaymentPreference(data: CheckoutData): Promise<PaymentPreference> {
-    // Verificar si Supabase está configurado
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey || supabaseUrl === 'your_supabase_project_url_here') {
-      console.warn('Supabase not configured, using simulated checkout');
-      const result = await this.simulateCheckout(data);
-      if (result.success) {
-        return {
-          preferenceId: result.orderId!,
-          initPoint: '#',
-          orderId: result.orderId!,
-          orderNumber: result.orderNumber!
-        };
-      } else {
-        throw new Error('Checkout simulado falló');
-      }
-    }
-
     try {
-      const { createClient } = await import('@supabase/supabase-js');
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
       const { data: response, error } = await supabase.functions.invoke(
         'create-payment-preference',
         {
@@ -96,28 +53,7 @@ export class CheckoutService {
   }
 
   static async getOrderStatus(orderId: string) {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey || supabaseUrl === 'your_supabase_project_url_here') {
-      // Retornar datos simulados
-      return {
-        id: orderId,
-        order_number: `SIM-${orderId.slice(-6)}`,
-        status: 'paid',
-        total_amount: 89.99,
-        customer: {
-          first_name: 'Usuario',
-          last_name: 'Demo',
-          email: 'demo@ejemplo.com'
-        }
-      };
-    }
-
     try {
-      const { createClient } = await import('@supabase/supabase-js');
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
       const { data, error } = await supabase
         .from('orders')
         .select(`
@@ -138,10 +74,6 @@ export class CheckoutService {
   }
 
   static redirectToMercadoPago(initPoint: string) {
-    if (initPoint === '#') {
-      console.log('Modo simulado: redirección a Mercado Pago simulada');
-      return;
-    }
     window.location.href = initPoint;
   }
 }

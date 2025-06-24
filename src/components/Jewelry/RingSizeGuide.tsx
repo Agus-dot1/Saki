@@ -47,7 +47,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-3"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
       role="dialog"
       aria-modal="true"
@@ -66,7 +66,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
         transition={{ duration: 0.2 }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-secondary/20">
+        <div className="flex items-center justify-between p-2 border-b border-secondary/20">
           <div className="flex items-center space-x-3">
             <Ruler className="text-accent" size={24} />
             <h2 id="size-guide-title" className="text-xl font-medium text-primary">
@@ -104,14 +104,14 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
           <h3 className="mb-2 text-lg font-medium text-primary">
             {measurementMethods[activeMethod].title}
           </h3>
-          <ol className="mb-4 space-y-2 list-decimal list-inside text-content">
+          <ol className="mb-3 space-y-2 list-decimal list-inside text-content">
             {measurementMethods[activeMethod].steps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
           </ol>
 
           {/* Size Table */}
-          <h4 className="mt-6 mb-2 font-medium text-primary">Tabla de Tallas Disponibles</h4>
+          <h4 className="mt-4 mb-2 font-medium text-primary">Tabla de Tallas Disponibles</h4>
           <table className="w-full mb-2 text-sm border rounded-lg border-secondary/20">
             <thead>
               <tr className="bg-accent/10">
@@ -136,10 +136,10 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end p-4 border-t border-secondary/20">
+        <div className="flex justify-end p-2 border-t border-secondary/20">
           <button
             onClick={onClose}
-            className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
+            className="px-6 py-2 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
           >
             Cerrar Guía
           </button>

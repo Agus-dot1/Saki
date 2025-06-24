@@ -143,7 +143,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
 
   return (
     <motion.div 
-      className="flex overflow-hidden fixed inset-0 z-50 justify-center items-center p-2 min-w-full min-h-screen backdrop-blur-sm bg-black/70 sm:p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-4"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -163,7 +163,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
         exit="exit"
       >
         {/* Header with close and action buttons - Better mobile positioning */}
-        <div className="flex absolute top-3 right-3 z-20 items-center space-x-2 lg:top-6 lg:right-6 lg:space-x-4">
+        <div className="absolute z-20 flex items-center space-x-2 top-3 right-3 lg:top-6 lg:right-6 lg:space-x-4">
           <motion.button
             onClick={handleShare}
             whileHover={{ scale: 1.1 }}
@@ -186,8 +186,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
         
         <div className="flex flex-col h-full lg:flex-row">
           {/* Image Section - Better mobile layout */}
-          <div className="flex relative justify-center items-center p-3 bg-gradient-to-br lg:w-2/5 lg:p-6 from-secondary/30 to-secondary/60">
-            <div className="overflow-hidden w-full max-w-sm bg-white rounded-xl shadow-lg lg:max-w-lg aspect-square">
+          <div className="relative flex items-center justify-center p-3 bg-gradient-to-br lg:w-2/5 lg:p-6 from-secondary/30 to-secondary/60">
+            <div className="w-full max-w-sm overflow-hidden bg-white shadow-lg rounded-xl lg:max-w-lg aspect-square">
               <OptimizedCarousel 
                 images={product.images} 
                 alt={product.name}
@@ -223,7 +223,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 >
                   {product.name}
                 </h2>
-                <div className="flex flex-wrap gap-2 items-baseline mb-3 lg:gap-3 lg:mb-4">
+                <div className="flex flex-wrap items-baseline gap-2 mb-3 lg:gap-3 lg:mb-4">
                   <span className="text-2xl font-medium lg:text-3xl xl:text-4xl text-accent">
                     ${product.price.toFixed(2)}
                   </span>
@@ -249,11 +249,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 variants={itemVariants}
               >
                 <div className="text-center">
-                  <Leaf className="mx-auto mb-1 w-6 h-6 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
+                  <Leaf className="w-6 h-6 mx-auto mb-1 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
                   <p className="text-xs font-medium lg:text-sm text-primary">100% Natural</p>
                 </div>
                 <div className="text-center">
-                  <Truck className="mx-auto mb-1 w-6 h-6 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
+                  <Truck className="w-6 h-6 mx-auto mb-1 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
                   <p className="text-xs font-medium lg:text-sm text-primary">
                     Entrega Gratis en{' '}
                     <span 
@@ -267,7 +267,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                   </p>
                 </div>
                 <div className="text-center">
-                  <Star className="mx-auto mb-1 w-6 h-6 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
+                  <Star className="w-6 h-6 mx-auto mb-1 lg:mb-2 lg:w-8 lg:h-8 text-accent" />
                   <p className="text-xs font-medium lg:text-sm text-primary">Calidad Premium</p>
                 </div>
               </motion.div>
@@ -278,7 +278,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                   Cantidad
                 </label>
                 <div className="flex flex-col gap-3 w-fit lg:flex-row lg:items-center lg:space-x-4">
-                  <div className="flex overflow-hidden items-center rounded-lg border border-accent/10">
+                  <div className="flex items-center overflow-hidden border rounded-lg border-accent/10">
                     <button
                       onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
                       className="px-4 py-3 transition-colors hover:bg-accent/20"
@@ -310,7 +310,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     <div className="mb-3">
                       <span className="block mb-1 text-sm font-medium lg:text-base text-content">Color para {item.name}</span>
                       <select
-                        className="px-3 py-2 w-full rounded-lg border lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+                        className="w-full px-3 py-2 border rounded-lg lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
                         value={itemSelections[idx]?.color}
                         onChange={e =>
                           setItemSelections(selections => ({
@@ -329,7 +329,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     <div>
                       <span className="block mb-1 text-sm font-medium lg:text-base text-content">Tamaño para {item.name}</span>
                       <select
-                        className="px-3 py-2 w-full rounded-lg border lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+                        className="w-full px-3 py-2 border rounded-lg lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
                         value={itemSelections[idx]?.size}
                         onChange={e =>
                           setItemSelections(selections => ({
@@ -355,7 +355,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                         Color
                       </label>
                       <select
-                        className="px-3 py-2 w-full rounded-lg border lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+                        className="w-full px-3 py-2 border rounded-lg lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
                         value={selectedColor}
                         onChange={e => setSelectedColor(e.target.value)}
                       >
@@ -371,7 +371,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                         Talle
                       </label>
                       <select
-                        className="px-3 py-2 w-full rounded-lg border lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
+                        className="w-full px-3 py-2 border rounded-lg lg:px-4 lg:py-3 border-accent/20 focus:outline-none focus:ring-2 focus:ring-accent"
                         value={selectedSize}
                         onChange={e => setSelectedSize(e.target.value)}
                       >
@@ -406,7 +406,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </div>
                 
                 {/* Fixed height container for tab content - Desktop only */}
-                <div className="overflow-y-auto p-4 h-48 bg-white rounded-lg border transition-all duration-200 lg:h-64 border-secondary/20 lg:p-6">
+                <div className="h-48 p-4 overflow-y-auto transition-all duration-200 bg-white border rounded-lg lg:h-64 border-secondary/20 lg:p-6">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeTab}
@@ -448,7 +448,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                             ))}
                           </ul>
                           {product.featuredIngredients && product.featuredIngredients.length > 0 && (
-                            <div className="p-3 bg-green-50 rounded-lg lg:p-4">
+                            <div className="p-3 rounded-lg bg-green-50 lg:p-4">
                               <h5 className="mb-2 font-medium text-green-800 lg:mb-3">Contenidos Destacados:</h5>
                               <ul className="space-y-1 text-green-700 lg:space-y-2">
                                 {product.featuredIngredients.map((ingredient, idx) => (
@@ -484,7 +484,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     {product.detailedDescription}
                   </p>
                   {product.featuredIngredients && product.featuredIngredients.length > 0 && (
-                    <div className="p-3 bg-green-50 rounded-lg">
+                    <div className="p-3 rounded-lg bg-green-50">
                       <h5 className="mb-2 font-medium text-green-800">Contenidos Destacados:</h5>
                       <ul className="space-y-1 text-green-700">
                         {product.featuredIngredients.map((ingredient, idx) => (
@@ -527,15 +527,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     {stockStatus && !stockStatus.available ? 'Sin Stock' : 'Agregar al Carrito'}
                   </span>
                 </motion.button>
-                <motion.button 
-                  className="px-6 py-3 font-medium rounded-xl border-2 transition-all duration-200 lg:px-8 lg:py-4 lg:w-auto border-accent text-accent hover:bg-accent hover:text-white"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Comprar Ahora
-                </motion.button>
               </div>
-              <div className="flex flex-wrap justify-center items-center mt-3 space-x-4 text-xs lg:mt-4 lg:space-x-6 lg:text-sm text-content">
+              <div className="flex flex-wrap items-center justify-center mt-3 space-x-4 text-xs lg:mt-4 lg:space-x-6 lg:text-sm text-content">
                 <span className="flex items-center space-x-1">
                   <Truck size={14} className="lg:w-4 lg:h-4" />
                   <span>

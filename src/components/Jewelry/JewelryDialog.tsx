@@ -88,7 +88,7 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
                   setModalImageIndex(selectedModel);
                   setShowImageModal(true);
                 }}
-                className="absolute p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
+                className="absolute flex items-center justify-center p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
                 aria-label="Ver grande"
                 >
                 <ZoomIn size={18} className="text-accent" />
@@ -130,7 +130,7 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
                   setModalImageIndex(0);
                   setShowImageModal(true);
                 }}
-                className="absolute p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
+                className="absolute flex items-center justify-center p-2 transition rounded-full shadow top-2 right-2 bg-white/80 hover:bg-white"
                 aria-label="Ver grande"
                 >
                 <ZoomIn size={18} className="text-accent" />
@@ -166,7 +166,7 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
               <div className="relative">
                 <button
                   onClick={closeImageModal}
-                  className="absolute p-2 bg-white rounded-full shadow top-2 right-2 hover:bg-gray-200"
+                  className="absolute flex items-center justify-center p-2 bg-white rounded-full shadow top-2 right-2 hover:bg-gray-200"
                 >
                   <X size={24} />
                 </button>
