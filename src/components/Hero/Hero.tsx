@@ -15,56 +15,56 @@ const Hero: React.FC = () => {
       {/* Background elements - adjusted for mobile */}
       <div className="absolute w-48 h-48 rounded-full left-4 top-16 lg:left-10 lg:top-20 lg:w-72 lg:h-72 blur-3xl animate-pulse bg-emerald-200/20"></div>
       <div className="absolute w-64 h-64 delay-1000 rounded-full right-4 bottom-16 lg:right-10 lg:bottom-20 lg:w-96 lg:h-96 blur-3xl animate-pulse bg-sage-300/20"></div>
-      
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* Left Content - Improved mobile spacing */}
-        <motion.div 
-          className="flex items-center px-2 py-8 lg:px-12 lg:py-16"
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="max-w-xl space-y-6 lg:space-y-8">
-            {/* Trust Indicators - Better mobile layout */}
-            <div className="flex items-center gap-2 text-supporting">
-              <Star className="fill-accent text-accent" size={18} />
-              <span className="text-sm font-medium text-primary lg:text-base">4.9</span>
-              <Users className="text-content" size={18} />
-              <span className="text-sm text-content lg:text-base">12K Confían</span>
-            </div>
-            
-            {/* Main Heading - Responsive typography */}
-            <div>
-              <h1 className="mb-4 text-4xl font-light leading-tight sm:text-5xl lg:text-6xl xl:text-7xl text-stone-900">
+
+      <div className="grid grid-cols-1 gap-8 center lg:grid-cols-2 lg:gap-12">
+      {/* Left Content - Improved mobile spacing */}
+      <motion.div 
+        className="flex items-center justify-center px-2 py-8 lg:justify-start lg:px-12 lg:py-16"
+        initial={{ opacity: 0, x: -40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="max-w-xl space-y-6 text-center lg:space-y-8 lg:text-left">
+        {/* Trust Indicators - Better mobile layout */}
+        <div className="flex items-center justify-center gap-2 text-supporting lg:justify-start">
+          <Star className="fill-accent text-accent" size={18} />
+          <span className="text-sm font-medium text-primary lg:text-base">4.9</span>
+          <Users className="text-content" size={18} />
+          <span className="text-sm text-content lg:text-base">+20 Confían</span>
+        </div>
+        
+        {/* Main Heading - Responsive typography */}
+        <div>
+          <h1 className="mb-4 space-y-2 text-4xl leading-tight sm:text-5xl lg:text-6xl xl:text-7xl text-stone-900">
           Con Saki,
           <br />
           <span className="text-primary">tu piel</span>{' '}
-          <span className="flex items-center italic text-transparent bg-clip-text bg-gradient-to-r via-emerald-200 to-emerald-300 from-primary">
+          <span className="flex items-center justify-center italic text-transparent bg-clip-text bg-gradient-to-r via-emerald-200 to-emerald-300 from-primary lg:justify-start">
             brilla. <Sparkles size={32} className="ml-2 lg:ml-0" color='#7dc5a2' />
           </span>
-              </h1>
-              <p className="max-w-md text-base leading-relaxed lg:text-lg text-content">
+          </h1>
+          <p className="max-w-md mx-auto text-base leading-relaxed lg:mx-0 lg:text-lg text-content">
           Pureza que se siente. Resultados que se ven. 
           El cuidado de la piel como debería ser.
-              </p>
-            </div>
-            
-            {/* CTA Button - Better mobile sizing */}
-            <motion.button 
-              onClick={scrollToProducts}
-              className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Comprar Ahora
-            </motion.button>
-          </div>
-        </motion.div>
+          </p>
+        </div>
+        
+        {/* CTA Button - Better mobile sizing */}
+        <motion.button 
+          onClick={scrollToProducts}
+          className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Comprar Ahora
+        </motion.button>
+        </div>
+      </motion.div>
 
-        {/* Right Content - Better mobile layout */}
-        <motion.div className="flex items-center justify-center p-4 lg:p-6">
-          <VideoPackagingShowcase />
-        </motion.div>
+      {/* Right Content - Better mobile layout */}
+      <motion.div className="flex items-center justify-center p-4 lg:p-6">
+        <VideoPackagingShowcase />
+      </motion.div>
       </div>
     </section>
   );

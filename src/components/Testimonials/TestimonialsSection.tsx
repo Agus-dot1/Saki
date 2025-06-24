@@ -40,12 +40,12 @@ const TestimonialsSection: React.FC = () => {
   const marqueeTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section className="relative px-5 py-16 overflow-hidden lg:py-24 bg-secondary/30">
+    <section className="relative py-16 overflow-hidden lg:px-5 lg:py-24 bg-secondary/30">
       {/* Gradient overlay */}
       <div className="pointer-events-none lg:absolute inset-0 z-10 after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-white after:via-transparent after:to-white after:w-full after:h-full" />
       <div className="mx-auto max-w-7xl">
         {/* Header - Better mobile spacing */}
-        <div className="relative z-20 mb-12 text-center lg:mb-16">
+        <div className="relative z-20 px-5 mb-12 text-center lg:mb-16">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Star className="fill-accent text-accent" size={24} />
             <span className="text-base font-medium lg:text-lg">Confianza de miles</span>

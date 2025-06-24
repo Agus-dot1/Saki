@@ -4,7 +4,7 @@ import { Instagram, MapPin, Mail, Phone } from 'lucide-react';
 const Footer: React.FC = () => {
   return (
     <footer id="contact" className="px-4 py-12 lg:px-6 lg:py-16 bg-secondary">
-      <div className="flex gap-8 mx-auto justify-evenly max-w-7xl ">
+      <div className="flex flex-col gap-8 mx-auto justify-evenly max-w-7xl lg:flex-row">
         <div className="flex flex-col justify-between max-w-sm">
           <h3 className="mb-3 text-xl font-medium lg:mb-4 lg:text-2xl text-primary">Saki</h3>
           <p className="mb-4 text-sm leading-relaxed lg:mb-6 lg:text-base text-content">
