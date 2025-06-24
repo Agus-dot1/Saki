@@ -273,12 +273,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.phoneNumber}
                 onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.phone ? 'border-red-500' : 'border-secondary'
+                  errors.phoneNumber ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
+                placeholder="Ej: 12345678"
               />
-              {errors.phone && (
-                <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
+              {errors.phoneNumber && (
+                <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
               )}
             </div>
           </div>
