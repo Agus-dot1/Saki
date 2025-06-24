@@ -47,7 +47,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
 
     const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toFixed(2)}\n\nCódigo de Pedido: ${orderCode}`;
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/541132170664?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/541126720095?text=${encodedMessage}`;
     
     window.open(whatsappUrl, '_blank');
     
