@@ -122,7 +122,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
                         {/* Primary checkout button */}
             <button 
               onClick={handleCheckout}
-              disabled
+              disabled={isProcessingCheckout}
               className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium text-white transition-colors rounded-md lg:text-lg bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessingCheckout ? (
