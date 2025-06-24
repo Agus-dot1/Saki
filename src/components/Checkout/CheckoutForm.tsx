@@ -19,8 +19,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     email: '',
     firstName: '',
     lastName: '',
-    phone: '',
-    address: '',
+    areaCode: '',
+    phoneNumber: '',
+    streetName: '',
+    streetNumber: '',
     city: '',
     postalCode: ''
   });
@@ -28,37 +30,45 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  const newErrors: Record<string, string> = {};
 
-    if (!customerData.email) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
-      newErrors.email = 'El email no es válido';
-    }
+  if (!customerData.email) {
+    newErrors.email = 'El email es requerido';
+  } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
+    newErrors.email = 'El email no es válido';
+  }
 
-    if (!customerData.firstName) {
-      newErrors.firstName = 'El nombre es requerido';
-    }
+  if (!customerData.firstName) {
+    newErrors.firstName = 'El nombre es requerido';
+  }
 
-    if (!customerData.lastName) {
-      newErrors.lastName = 'El apellido es requerido';
-    }
+  if (!customerData.lastName) {
+    newErrors.lastName = 'El apellido es requerido';
+  }
 
-    if (!customerData.phone) {
-      newErrors.phone = 'El teléfono es requerido';
-    }
+  if (!customerData.areaCode) {
+    newErrors.areaCode = 'El código de área es requerido';
+  }
 
-    if (!customerData.address) {
-      newErrors.address = 'La dirección es requerida';
-    }
+  if (!customerData.phoneNumber) {
+    newErrors.phoneNumber = 'El número es requerido';
+  }
 
-    if (!customerData.city) {
-      newErrors.city = 'La ciudad es requerida';
-    }
+  if (!customerData.streetName) {
+    newErrors.streetName = 'La calle es requerida';
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  if (!customerData.streetNumber) {
+    newErrors.streetNumber = 'El número es requerido';
+  }
+
+  if (!customerData.city) {
+    newErrors.city = 'La ciudad es requerida';
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,11 +92,25 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         { duration: 0, dismissible: false }
       );
       
-  const checkoutData = buildCheckoutData(cartItems, customerData);
+        const checkoutData = buildCheckoutData(cartItems, {
+        firstName: customerData.firstName,
+        lastName: customerData.lastName,
+        email: customerData.email,
+        phone: {
+          areaCode: customerData.areaCode,
+          number: customerData.phoneNumber
+        },
+        address: {
+          streetName: customerData.streetName,
+          streetNumber: customerData.streetNumber,
+          city: customerData.city,
+          postalCode: customerData.postalCode
+        }
+      });
       
-  console.log('Request body received:', JSON.stringify(checkoutData, null, 2));
+          console.log('Request body received:', JSON.stringify(checkoutData, null, 2));
 
-      const preference = await CheckoutService.createPaymentPreference(checkoutData);
+          const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
       // Guardar orden ID en localStorage para tracking
       localStorage.setItem('currentOrderId', preference.orderId);
@@ -245,9 +269,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 Teléfono *
               </label>
               <input
-                type="tel"
-                value={customerData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
+                type="text"
+                value={customerData.phoneNumber}
+                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
                   errors.phone ? 'border-red-500' : 'border-secondary'
                 }`}
@@ -271,19 +295,44 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
               <label className="block mb-1 text-sm font-medium text-content">
                 Dirección *
               </label>
-              <input
-                type="text"
-                value={customerData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Calle y número"
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.address ? 'border-red-500' : 'border-secondary'
-                }`}
-                disabled={isProcessing}
-              />
-              {errors.address && (
-                <p className="mt-1 text-xs text-red-500">{errors.address}</p>
-              )}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-content">
+                    Calle *
+                  </label>
+                  <input
+                    type="text"
+                    value={customerData.streetName}
+                    onChange={(e) => handleInputChange('streetName', e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                      errors.streetName ? 'border-red-500' : 'border-secondary'
+                    }`}
+                    disabled={isProcessing}
+                    placeholder="Ej: Av. Siempre Viva"
+                  />
+                  {errors.streetName && (
+                    <p className="mt-1 text-xs text-red-500">{errors.streetName}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-content">
+                    Número *
+                  </label>
+                  <input
+                    type="text"
+                    value={customerData.streetNumber}
+                    onChange={(e) => handleInputChange('streetNumber', e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                      errors.streetNumber ? 'border-red-500' : 'border-secondary'
+                    }`}
+                    disabled={isProcessing}
+                    placeholder="Ej: 742"
+                  />
+                  {errors.streetNumber && (
+                    <p className="mt-1 text-xs text-red-500">{errors.streetNumber}</p>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>

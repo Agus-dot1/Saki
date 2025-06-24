@@ -23,9 +23,19 @@ export interface BackendCheckoutData {
     email: string;
     firstName: string;
     lastName: string;
-    phone?: string;
-    address?: string;
-    city?: string;
-    postalCode?: string;
+    phone?: PhoneInfo;
+    address?: AddressInfo;
   };
+}
+
+interface PhoneInfo {
+    areaCode: string;
+    number: string;
+}
+
+interface AddressInfo {
+    streetName: string;
+    streetNumber: string;
+    city: string;
+    postalCode: string;
 }
