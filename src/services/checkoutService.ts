@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { BackendCheckoutData } from '../types/backendCheckoutData';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -33,7 +34,7 @@ export interface PaymentPreference {
 }
 
 export class CheckoutService {
-  static async createPaymentPreference(data: CheckoutData): Promise<PaymentPreference> {
+  static async createPaymentPreference(data: BackendCheckoutData): Promise<PaymentPreference> {
     try {
       const { data: response, error } = await supabase.functions.invoke(
         'create-payment-preference',

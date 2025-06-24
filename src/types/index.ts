@@ -23,8 +23,8 @@ export interface Product {
   colors?: string[];
   sizes?: string[];
   items?: ProductItemOption[];
-  modelNumber?: number; // Optional model number for products
-  selectedSize?: string; // Optional selected size for products
+  modelNumber?: number; 
+  selectedSize?: string;
 }
 
 export interface SelectedKitItem {
@@ -63,4 +63,26 @@ export interface OrderStatus {
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered';
   estimatedDelivery?: string;
   trackingNumber?: string;
+}
+
+
+
+export interface NormalizedItem {
+  id: number;
+  product_name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface CheckoutData {
+  items: NormalizedItem[];
+  customer: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    address: string;
+    city: string;
+    postalCode: string;
+  };
 }
