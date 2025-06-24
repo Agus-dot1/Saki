@@ -113,7 +113,7 @@ Deno.serve(async (req: Request) => {
     }));
 
     // Crear preferencia en Mercado Pago
-    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN_PROD');
+    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
     
     const preferenceData = {
       items: mpItems,
