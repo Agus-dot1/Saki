@@ -3,34 +3,32 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
 interface CartItem {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-  };
+  id: string;
+  product_name: string;
+  price: number;
   quantity: number;
+  image_url?: string;
 }
 
 interface CustomerData {
+  first_name: string;
+  last_name: string;
   email: string;
-  firstName: string;
-  lastName: string;
   phone?: string;
   address?: string;
-  city?: string;
-  postalCode?: string;
 }
 
-interface CreatePreferenceRequest {
+interface CheckoutData {
   items: CartItem[];
   customer: CustomerData;
 }
 
-Deno.serve(async (req: Request) => {
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -41,105 +39,146 @@ Deno.serve(async (req: Request) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { items, customer }: CreatePreferenceRequest = await req.json();
+    const body: CheckoutData = await req.json();
+    console.log('Creating payment preference for:', body);
 
-    // Validar datos
-    if (!items || items.length === 0) {
-      throw new Error('No hay items en el carrito');
+    // Validate required data
+    if (!body.items || !body.customer) {
+      return new Response(
+        JSON.stringify({ error: 'Items and customer data are required' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
-    if (!customer.email || !customer.firstName || !customer.lastName) {
-      throw new Error('Datos del cliente incompletos');
-    }
+    // Calculate total amount
+    const totalAmount = body.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Crear o actualizar cliente
-    const { data: customerData, error: customerError } = await supabase
+    // Create or get customer
+    const { data: existingCustomer } = await supabase
       .from('customers')
-      .upsert({
-        email: customer.email,
-        first_name: customer.firstName,
-        last_name: customer.lastName,
-        phone: customer.phone,
-        address: customer.address,
-        city: customer.city,
-        postal_code: customer.postalCode,
-      })
-      .select()
+      .select('id')
+      .eq('email', body.customer.email)
       .single();
 
-    if (customerError) throw customerError;
+    let customerId;
+    if (existingCustomer) {
+      customerId = existingCustomer.id;
+      // Update customer data
+      await supabase
+        .from('customers')
+        .update({
+          first_name: body.customer.first_name,
+          last_name: body.customer.last_name,
+          phone: body.customer.phone,
+          address: body.customer.address,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', customerId);
+    } else {
+      const { data: newCustomer, error: customerError } = await supabase
+        .from('customers')
+        .insert({
+          first_name: body.customer.first_name,
+          last_name: body.customer.last_name,
+          email: body.customer.email,
+          phone: body.customer.phone,
+          address: body.customer.address
+        })
+        .select('id')
+        .single();
 
-    // Calcular total
-    const totalAmount = items.reduce((total, item) => 
-      total + (item.product.price * item.quantity), 0
-    );
+      if (customerError) {
+        console.error('Error creating customer:', customerError);
+        throw new Error('Error creating customer');
+      }
+      customerId = newCustomer.id;
+    }
 
-    // Crear orden en la base de datos
+    // Generate order number
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+
+    // Create order
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
       .insert({
-        customer_id: customerData.id,
+        customer_id: customerId,
+        order_number: orderNumber,
         total_amount: totalAmount,
-        status: 'pending'
+        status: 'pending',
+        created_at: new Date().toISOString()
       })
-      .select()
+      .select('id')
       .single();
 
-    if (orderError) throw orderError;
+    if (orderError) {
+      console.error('Error creating order:', orderError);
+      throw new Error('Error creating order');
+    }
 
-    // Crear items de la orden
-    const orderItems = items.map(item => ({
+    // Create order items
+    const orderItems = body.items.map(item => ({
       order_id: orderData.id,
-      product_id: item.product.id,
-      product_name: item.product.name,
+      product_name: item.product_name,
       quantity: item.quantity,
-      unit_price: item.product.price,
-      total_price: item.product.price * item.quantity
+      unit_price: item.price,
+      total_price: item.price * item.quantity
     }));
 
     const { error: itemsError } = await supabase
       .from('order_items')
       .insert(orderItems);
 
-    if (itemsError) throw itemsError;
+    if (itemsError) {
+      console.error('Error creating order items:', itemsError);
+      throw new Error('Error creating order items');
+    }
 
-    // Preparar items para Mercado Pago
-    const mpItems = items.map(item => ({
-      id: item.product.id.toString(),
-      title: item.product.name,
-      quantity: item.quantity,
-      unit_price: item.product.price,
-      currency_id: 'ARS'
-    }));
+    // Prepare Mercado Pago preference
+    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
+    const webhookUrl = Deno.env.get('MERCADO_PAGO_WEBHOOK_URL'); // Your webhook URL
 
-    // Crear preferencia en Mercado Pago
-    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN_SANDBOX');
-    
+    if (!accessToken) {
+      throw new Error('Mercado Pago access token not configured');
+    }
+
     const preferenceData = {
-      items: mpItems,
+      items: body.items.map(item => ({
+        id: item.id,
+        title: item.product_name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        currency_id: 'ARS', // Change to your currency
+        picture_url: item.image_url
+      })),
       payer: {
-        name: customer.firstName,
-        surname: customer.lastName,
-        email: customer.email,
+        name: body.customer.first_name,
+        surname: body.customer.last_name,
+        email: body.customer.email,
         phone: {
-          number: customer.phone || ''
+          number: body.customer.phone || ''
         },
         address: {
-          street_name: customer.address || '',
-          zip_code: customer.postalCode || ''
+          street_name: body.customer.address || ''
         }
       },
       back_urls: {
-        success: `${req.headers.get('origin')}/checkout/success`,
-        failure: `${req.headers.get('origin')}/checkout/failure`,
-        pending: `${req.headers.get('origin')}/checkout/pending`
+        success: `${Deno.env.get('FRONTEND_URL')}/checkout/success`,
+        failure: `${Deno.env.get('FRONTEND_URL')}/checkout/failure`,
+        pending: `${Deno.env.get('FRONTEND_URL')}/checkout/pending`
       },
       auto_return: 'approved',
-      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/mercado-pago-webhook`,
-      external_reference: orderData.id,
-      statement_descriptor: 'SAKI SKINCARE'
+      external_reference: orderData.id.toString(), // This is crucial for your webhook
+      notification_url: webhookUrl,
+      statement_descriptor: 'Saki Skincare',
+      expires: true,
+      expiration_date_from: new Date().toISOString(),
+      expiration_date_to: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
     };
 
+    // Create preference in Mercado Pago
     const mpResponse = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',
       headers: {
@@ -151,40 +190,43 @@ Deno.serve(async (req: Request) => {
 
     if (!mpResponse.ok) {
       const errorData = await mpResponse.text();
-      throw new Error(`Error de Mercado Pago: ${errorData}`);
+      console.error('Mercado Pago error:', errorData);
+      throw new Error('Error creating Mercado Pago preference');
     }
 
     const preference = await mpResponse.json();
 
-    // Actualizar orden con preference_id
+    // Update order with Mercado Pago preference ID
     await supabase
       .from('orders')
-      .update({ mercado_pago_preference_id: preference.id })
+      .update({
+        mercado_pago_preference_id: preference.id
+      })
       .eq('id', orderData.id);
 
+    const response = {
+      orderId: orderData.id,
+      orderNumber: orderNumber,
+      initPoint: preference.init_point,
+      sandboxInitPoint: preference.sandbox_init_point,
+      preferenceId: preference.id
+    };
+
     return new Response(
-      JSON.stringify({
-        preferenceId: preference.id,
-        initPoint: preference.init_point,
-        orderId: orderData.id,
-        orderNumber: orderData.order_number
-      }),
+      JSON.stringify(response),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
 
   } catch (error) {
     console.error('Error creating payment preference:', error);
-    
     return new Response(
-      JSON.stringify({ 
-        error: error.message || 'Error interno del servidor' 
-      }),
+      JSON.stringify({ error: error.message }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, User, MapPin, Mail, Loader2 } from 'lucide-react';
+import { CreditCard, User, MapPin, Mail, Loader2, X } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
@@ -80,11 +80,19 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         'Estamos preparando tu pago con Mercado Pago',
         { duration: 0, dismissible: false }
       );
+  const checkoutData = {
+    items: cartItems.map((item) => ({
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price
+      },
+      quantity: item.quantity
+    })),
+    customer: customerData
+  };
 
-      const checkoutData = {
-        items: cartItems,
-        customer: customerData
-      };
+  console.log('Request body received:', JSON.stringify(checkoutData, null, 2));
 
       const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
@@ -150,7 +158,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
           disabled={isProcessing}
           className="p-2 transition-colors text-content hover:text-primary disabled:opacity-50"
         >
-          ×
+          <X size={24} />
         </button>
       </div>
 
