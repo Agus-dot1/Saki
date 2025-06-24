@@ -26,7 +26,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const paymentId = body.data.id;
-    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
+    const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN_SANDBOX');
 
     // Obtener detalles del pago desde Mercado Pago
     const paymentResponse = await fetch(
