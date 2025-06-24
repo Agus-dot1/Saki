@@ -189,7 +189,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between pt-3 mt-3 font-medium border-t border-secondary">
+        <div className="flex justify-between pt-3 mt-3 font-medium border-t ">
           <span>Total:</span>
           <span className="text-accent">${totalPrice.toFixed(2)}</span>
         </div>
@@ -212,7 +212,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.firstName ? 'border-red-500' : 'border-secondary'
+                  errors.firstName ? 'border-red-500' : ''
                 }`}
                 disabled={isProcessing}
               />
@@ -229,7 +229,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.lastName ? 'border-red-500' : 'border-secondary'
+                  errors.lastName ? 'border-red-500' : ''
                 }`}
                 disabled={isProcessing}
               />
@@ -256,7 +256,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.email ? 'border-red-500' : 'border-secondary'
+                  errors.email ? 'border-red-500' : ''
                 }`}
                 disabled={isProcessing}
               />
@@ -264,7 +264,27 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 <p className="mt-1 text-xs text-red-500">{errors.email}</p>
               )}
             </div>
-            <div>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+              <label className="block mb-1 text-sm font-medium text-content">
+                Área *
+              </label>
+              <input
+                type="text"
+                value={customerData.areaCode}
+                onChange={(e) => handleInputChange('areaCode', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                errors.areaCode ? 'border-red-500' : ''
+                }`}
+                disabled={isProcessing}
+                placeholder="Ej: 11"
+                maxLength={5}
+              />
+              {errors.areaCode && (
+                <p className="mt-1 text-xs text-red-500">{errors.areaCode}</p>
+              )}
+              </div>
+              <div className="col-span-2">
               <label className="block mb-1 text-sm font-medium text-content">
                 Teléfono *
               </label>
@@ -273,7 +293,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.phoneNumber}
                 onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.phoneNumber ? 'border-red-500' : 'border-secondary'
+                errors.phoneNumber ? 'border-red-500' : ''
                 }`}
                 disabled={isProcessing}
                 placeholder="Ej: 12345678"
@@ -281,6 +301,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
               {errors.phoneNumber && (
                 <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
               )}
+              </div>
             </div>
           </div>
         </div>
@@ -306,7 +327,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                     value={customerData.streetName}
                     onChange={(e) => handleInputChange('streetName', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                      errors.streetName ? 'border-red-500' : 'border-secondary'
+                      errors.streetName ? 'border-red-500' : ''
                     }`}
                     disabled={isProcessing}
                     placeholder="Ej: Av. Siempre Viva"
@@ -324,7 +345,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                     value={customerData.streetNumber}
                     onChange={(e) => handleInputChange('streetNumber', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                      errors.streetNumber ? 'border-red-500' : 'border-secondary'
+                      errors.streetNumber ? 'border-red-500' : ''
                     }`}
                     disabled={isProcessing}
                     placeholder="Ej: 742"
@@ -345,7 +366,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   value={customerData.city}
                   onChange={(e) => handleInputChange('city', e.target.value)}
                   className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.city ? 'border-red-500' : 'border-secondary'
+                    errors.city ? 'border-red-500' : ''
                   }`}
                   disabled={isProcessing}
                 />
@@ -361,7 +382,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   type="text"
                   value={customerData.postalCode}
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent"
                   disabled={isProcessing}
                 />
               </div>
@@ -370,12 +391,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         </div>
 
         {/* Botones */}
-        <div className="flex flex-col gap-3 pt-6 border-t sm:flex-row border-secondary">
+        <div className="flex flex-col gap-3 pt-6 border-t sm:flex-row ">
           <button
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="flex-1 px-6 py-3 transition-colors border rounded-md border-secondary text-content hover:bg-secondary/50 disabled:opacity-50"
+            className="flex-1 px-6 py-3 transition-colors border rounded-md text-content hover:bg-secondary/50 disabled:opacity-50"
           >
             Cancelar
           </button>
