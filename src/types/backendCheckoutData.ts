@@ -19,10 +19,10 @@ export interface BackendCheckoutItem {
 
 export interface BackendCheckoutData {
   items: BackendCheckoutItem[];
-  customer: {
+  payer: {
     email: string;
-    firstName: string;
-    lastName: string;
+    name: string;
+    surname: string;
     phone?: PhoneInfo;
     address?: AddressInfo;
   };

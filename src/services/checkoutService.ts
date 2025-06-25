@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { BackendCheckoutData } from '../types/backendCheckoutData';
+import { MercadoPagoPreferencePayload } from '../types/checkout';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -34,14 +34,12 @@ export interface PaymentPreference {
 }
 
 export class CheckoutService {
-  static async createPaymentPreference(data: BackendCheckoutData): Promise<PaymentPreference> {
+  static async createPaymentPreference(data: MercadoPagoPreferencePayload) {
     try {
       const { data: response, error } = await supabase.functions.invoke(
-        'create-payment-preference',
-        {
-          body: data
-        }
-      );
+      'create-payment-preference',
+      { body: data }
+    );
 
       if (error) throw error;
       if (response.error) throw new Error(response.error);
