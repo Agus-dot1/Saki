@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
     
     // Configurar Mercado Pago
     const accessToken = Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN_SANDBOX') || 
-                       Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN_PROD');
+                       Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN');
     
     if (!accessToken) {
       throw new Error('Access token de Mercado Pago no configurado');
