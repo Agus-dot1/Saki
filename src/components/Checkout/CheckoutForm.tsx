@@ -29,45 +29,45 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
-  const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {};
 
-  if (!customerData.email) {
-    newErrors.email = 'El email es requerido';
-  } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
-    newErrors.email = 'El email no es válido';
-  }
+    if (!customerData.email) {
+      newErrors.email = 'El email es requerido';
+    } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
+      newErrors.email = 'El email no es válido';
+    }
 
-  if (!customerData.firstName) {
-    newErrors.firstName = 'El nombre es requerido';
-  }
+    if (!customerData.firstName) {
+      newErrors.firstName = 'El nombre es requerido';
+    }
 
-  if (!customerData.lastName) {
-    newErrors.lastName = 'El apellido es requerido';
-  }
+    if (!customerData.lastName) {
+      newErrors.lastName = 'El apellido es requerido';
+    }
 
-  if (!customerData.areaCode) {
-    newErrors.areaCode = 'El código de área es requerido';
-  }
+    if (!customerData.areaCode) {
+      newErrors.areaCode = 'El código de área es requerido';
+    }
 
-  if (!customerData.phoneNumber) {
-    newErrors.phoneNumber = 'El número es requerido';
-  }
+    if (!customerData.phoneNumber) {
+      newErrors.phoneNumber = 'El número es requerido';
+    }
 
-  if (!customerData.streetName) {
-    newErrors.streetName = 'La calle es requerida';
-  }
+    if (!customerData.streetName) {
+      newErrors.streetName = 'La calle es requerida';
+    }
 
-  if (!customerData.streetNumber) {
-    newErrors.streetNumber = 'El número es requerido';
-  }
+    if (!customerData.streetNumber) {
+      newErrors.streetNumber = 'El número es requerido';
+    }
 
-  if (!customerData.city) {
-    newErrors.city = 'La ciudad es requerida';
-  }
+    if (!customerData.city) {
+      newErrors.city = 'La ciudad es requerida';
+    }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,13 +90,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         'Estamos preparando tu pago con Mercado Pago',
         { duration: 0, dismissible: false }
       );
-      
+
       // Preparar datos para enviar al backend
+      const checkoutData = {
+        items: cartItems,
+        customer: customerData
+      };
 
+      console.log('Sending checkout data:', checkoutData);
 
+      const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
-
-          const preference = await CheckoutService.createPaymentPreference(checkoutData);
+      console.log('Received preference:', preference);
 
       // Guardar orden ID en localStorage para tracking
       localStorage.setItem('currentOrderId', preference.orderId);
@@ -126,7 +131,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             onClick: () => {
               const message = `Hola, tuve un problema en el checkout. Total: $${totalPrice.toFixed(2)}`;
               const encodedMessage = encodeURIComponent(message);
-              window.open(`https://wa.me/5411XXXXXXXX?text=${encodedMessage}`, '_blank');
+              window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
             }
           }
         }
@@ -175,7 +180,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between pt-3 mt-3 font-medium border-t ">
+        <div className="flex justify-between pt-3 mt-3 font-medium border-t border-secondary">
           <span>Total:</span>
           <span className="text-accent">${totalPrice.toFixed(2)}</span>
         </div>
@@ -198,7 +203,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.firstName ? 'border-red-500' : ''
+                  errors.firstName ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
               />
@@ -215,7 +220,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.lastName ? 'border-red-500' : ''
+                  errors.lastName ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
               />
@@ -242,7 +247,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                 value={customerData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.email ? 'border-red-500' : ''
+                  errors.email ? 'border-red-500' : 'border-secondary'
                 }`}
                 disabled={isProcessing}
               />
@@ -252,41 +257,41 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div>
-              <label className="block mb-1 text-sm font-medium text-content">
-                Área *
-              </label>
-              <input
-                type="text"
-                value={customerData.areaCode}
-                onChange={(e) => handleInputChange('areaCode', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                errors.areaCode ? 'border-red-500' : ''
-                }`}
-                disabled={isProcessing}
-                placeholder="Ej: 11"
-                maxLength={5}
-              />
-              {errors.areaCode && (
-                <p className="mt-1 text-xs text-red-500">{errors.areaCode}</p>
-              )}
+                <label className="block mb-1 text-sm font-medium text-content">
+                  Área *
+                </label>
+                <input
+                  type="text"
+                  value={customerData.areaCode}
+                  onChange={(e) => handleInputChange('areaCode', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                    errors.areaCode ? 'border-red-500' : 'border-secondary'
+                  }`}
+                  disabled={isProcessing}
+                  placeholder="Ej: 11"
+                  maxLength={5}
+                />
+                {errors.areaCode && (
+                  <p className="mt-1 text-xs text-red-500">{errors.areaCode}</p>
+                )}
               </div>
               <div className="col-span-2">
-              <label className="block mb-1 text-sm font-medium text-content">
-                Teléfono *
-              </label>
-              <input
-                type="text"
-                value={customerData.phoneNumber}
-                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                errors.phoneNumber ? 'border-red-500' : ''
-                }`}
-                disabled={isProcessing}
-                placeholder="Ej: 12345678"
-              />
-              {errors.phoneNumber && (
-                <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
-              )}
+                <label className="block mb-1 text-sm font-medium text-content">
+                  Teléfono *
+                </label>
+                <input
+                  type="text"
+                  value={customerData.phoneNumber}
+                  onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                    errors.phoneNumber ? 'border-red-500' : 'border-secondary'
+                  }`}
+                  disabled={isProcessing}
+                  placeholder="Ej: 12345678"
+                />
+                {errors.phoneNumber && (
+                  <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
+                )}
               </div>
             </div>
           </div>
@@ -299,47 +304,42 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             Dirección de Envío
           </h3>
           <div className="space-y-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-content">
-                Dirección *
-              </label>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block mb-1 text-sm font-medium text-content">
-                    Calle *
-                  </label>
-                  <input
-                    type="text"
-                    value={customerData.streetName}
-                    onChange={(e) => handleInputChange('streetName', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                      errors.streetName ? 'border-red-500' : ''
-                    }`}
-                    disabled={isProcessing}
-                    placeholder="Ej: Av. Siempre Viva"
-                  />
-                  {errors.streetName && (
-                    <p className="mt-1 text-xs text-red-500">{errors.streetName}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-medium text-content">
-                    Número *
-                  </label>
-                  <input
-                    type="text"
-                    value={customerData.streetNumber}
-                    onChange={(e) => handleInputChange('streetNumber', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                      errors.streetNumber ? 'border-red-500' : ''
-                    }`}
-                    disabled={isProcessing}
-                    placeholder="Ej: 742"
-                  />
-                  {errors.streetNumber && (
-                    <p className="mt-1 text-xs text-red-500">{errors.streetNumber}</p>
-                  )}
-                </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block mb-1 text-sm font-medium text-content">
+                  Calle *
+                </label>
+                <input
+                  type="text"
+                  value={customerData.streetName}
+                  onChange={(e) => handleInputChange('streetName', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                    errors.streetName ? 'border-red-500' : 'border-secondary'
+                  }`}
+                  disabled={isProcessing}
+                  placeholder="Ej: Av. Siempre Viva"
+                />
+                {errors.streetName && (
+                  <p className="mt-1 text-xs text-red-500">{errors.streetName}</p>
+                )}
+              </div>
+              <div>
+                <label className="block mb-1 text-sm font-medium text-content">
+                  Número *
+                </label>
+                <input
+                  type="text"
+                  value={customerData.streetNumber}
+                  onChange={(e) => handleInputChange('streetNumber', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+                    errors.streetNumber ? 'border-red-500' : 'border-secondary'
+                  }`}
+                  disabled={isProcessing}
+                  placeholder="Ej: 742"
+                />
+                {errors.streetNumber && (
+                  <p className="mt-1 text-xs text-red-500">{errors.streetNumber}</p>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -352,7 +352,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   value={customerData.city}
                   onChange={(e) => handleInputChange('city', e.target.value)}
                   className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.city ? 'border-red-500' : ''
+                    errors.city ? 'border-red-500' : 'border-secondary'
                   }`}
                   disabled={isProcessing}
                 />
@@ -368,7 +368,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   type="text"
                   value={customerData.postalCode}
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border border-secondary rounded-md focus:ring-2 focus:ring-accent focus:border-accent"
                   disabled={isProcessing}
                 />
               </div>
@@ -377,12 +377,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         </div>
 
         {/* Botones */}
-        <div className="flex flex-col gap-3 pt-6 border-t sm:flex-row ">
+        <div className="flex flex-col gap-3 pt-6 border-t border-secondary sm:flex-row">
           <button
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="flex-1 px-6 py-3 transition-colors border rounded-md text-content hover:bg-secondary/50 disabled:opacity-50"
+            className="flex-1 px-6 py-3 transition-colors border border-secondary text-content rounded-md hover:bg-secondary/50 disabled:opacity-50"
           >
             Cancelar
           </button>

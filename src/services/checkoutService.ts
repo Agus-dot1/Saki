@@ -18,9 +18,11 @@ export interface CheckoutData {
     email: string;
     firstName: string;
     lastName: string;
-    phone?: string;
-    address?: string;
-    city?: string;
+    areaCode: string;
+    phoneNumber: string;
+    streetName: string;
+    streetNumber: string;
+    city: string;
     postalCode?: string;
   };
 }
@@ -35,13 +37,32 @@ export interface PaymentPreference {
 export class CheckoutService {
   static async createPaymentPreference(data: CheckoutData): Promise<PaymentPreference> {
     try {
+      console.log('Creating payment preference with data:', data);
+      
       const { data: response, error } = await supabase.functions.invoke(
-      'create-payment-preference',
-      { body: data }
-    );
+        'create-payment-preference',
+        {
+          body: data
+        }
+      );
 
-      if (error) throw error;
-      if (response.error) throw new Error(response.error);
+      console.log('Supabase function response:', response);
+      console.log('Supabase function error:', error);
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Error en la función: ${error.message}`);
+      }
+      
+      if (response?.error) {
+        console.error('Response error:', response.error);
+        throw new Error(response.error);
+      }
+
+      if (!response?.preferenceId) {
+        console.error('Invalid response format:', response);
+        throw new Error('Respuesta inválida del servidor');
+      }
 
       return response;
     } catch (error) {
