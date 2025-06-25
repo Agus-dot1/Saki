@@ -92,38 +92,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       );
       
       // Preparar datos para enviar al backend
-            const checkoutData = {
-        items: cartItems.map(item => ({
-          id: item.product.id.toString(),
-          title: item.product.name,
-          quantity: item.quantity,
-          unit_price: item.product.price,
-        })),
-        payer: {
-          name: customerData.firstName,
-          surname: customerData.lastName,
-          email: customerData.email,
-          phone: {
-            area_code: customerData.areaCode,
-            number: customerData.phoneNumber
-          },
-          address: {
-            street_name: customerData.streetName,
-            street_number: customerData.streetNumber,
-            city: customerData.city,
-            zip_code: customerData.postalCode
-          }
-        },
-        back_urls: {
-          success: window.location.origin + '/checkout/success',
-          failure: window.location.origin + '/checkout/failure',
-          pending: window.location.origin + '/checkout/pending'
-        },
-        auto_return: "approved"
-      };
 
 
-          console.log('Request body received:', JSON.stringify(checkoutData, null, 2));
+
 
           const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
