@@ -68,46 +68,16 @@ function mapDbRowToJewelryItem(row: JewelryDbRow): JewelryItem {
 
 export async function fetchJewelryItems(): Promise<JewelryItem[]> {
   try {
-    console.log('Fetching jewelry items from Supabase...');
     
     const { data, error } = await supabase
       .from('jewelry')
-      .select(`
-        id,
-        name,
-        category,
-        price,
-        "oldPrice",
-        "discountPercentage",
-        "coverImage",
-        images,
-        description,
-        "detailedDescription",
-        material,
-        weight,
-        dimensions,
-        "availableSizes",
-        stock,
-        "careInstructions",
-        features,
-        "isCustomizable",
-        gemstones,
-        plating,
-        warranty,
-        contents,
-        "keyBenefits",
-        "featuredIngredients",
-        isGrid,
-        models
-      `)
+      .select('*')
       .order('id', { ascending: true });
 
     if (error) {
       console.error('Supabase error fetching jewelry:', error);
       throw new Error(`Failed to fetch jewelry items: ${error.message}`);
     }
-
-    console.log('Raw Supabase data:', data);
     
     if (!data || data.length === 0) {
       console.log('No jewelry items found in database');
@@ -116,7 +86,6 @@ export async function fetchJewelryItems(): Promise<JewelryItem[]> {
 
     // Map the database rows to JewelryItem objects
     const mappedItems = data.map(mapDbRowToJewelryItem);
-    console.log('Mapped jewelry items:', mappedItems);
     
     return mappedItems;
   } catch (error) {
@@ -129,34 +98,7 @@ export async function fetchJewelryById(id: number): Promise<JewelryItem | null> 
   try {
     const { data, error } = await supabase
       .from('jewelry')
-      .select(`
-        id,
-        name,
-        category,
-        price,
-        "oldPrice",
-        "discountPercentage",
-        "coverImage",
-        images,
-        description,
-        "detailedDescription",
-        material,
-        weight,
-        dimensions,
-        "availableSizes",
-        stock,
-        "careInstructions",
-        features,
-        "isCustomizable",
-        gemstones,
-        plating,
-        warranty,
-        contents,
-        "keyBenefits",
-        "featuredIngredients",
-        isGrid,
-        models
-      `)
+      .select('*')
       .eq('id', id)
       .single();
 
@@ -176,34 +118,7 @@ export async function fetchJewelryByCategory(category: string): Promise<JewelryI
   try {
     const { data, error } = await supabase
       .from('jewelry')
-      .select(`
-        id,
-        name,
-        category,
-        price,
-        "oldPrice",
-        "discountPercentage",
-        "coverImage",
-        images,
-        description,
-        "detailedDescription",
-        material,
-        weight,
-        dimensions,
-        "availableSizes",
-        stock,
-        "careInstructions",
-        features,
-        "isCustomizable",
-        gemstones,
-        plating,
-        warranty,
-        contents,
-        "keyBenefits",
-        "featuredIngredients",
-        isGrid,
-        models
-      `)
+      .select('*')
       .eq('category', category)
       .order('id', { ascending: true });
 

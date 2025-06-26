@@ -5,6 +5,7 @@ import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import OptimizedCarousel from './OptimizedCarousel';
+import ShippingLocationsModal from './ShippingLocationModal';
 
 interface ProductDialogProps {
   product: Product;
@@ -552,6 +553,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
           </motion.div>
         </div>
       </motion.div>
+      {/* Shipping Locations Modal */}
+      <ShippingLocationsModal
+        open={showShippingModal}
+        onClose={() => setShowShippingModal(false)}
+      />
     </motion.div>
   );
 };

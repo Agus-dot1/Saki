@@ -52,9 +52,9 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               <Icon size={20} />
 
               {/* Tooltip */}
-              <div className="absolute z-50 px-3 py-2 ml-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 bg-gray-800 rounded-md opacity-0 pointer-events-none left-full top-1/2 whitespace-nowrap group-hover:opacity-100">
+              <div className="absolute z-50 px-3 py-2 mr-4 text-sm text-white transition-opacity duration-200 transform -translate-y-1/2 bg-gray-800 rounded-md opacity-0 pointer-events-none right-full top-1/2 whitespace-nowrap group-hover:opacity-100">
                 {label}
-                <div className="absolute transform -translate-y-1/2 border-4 border-transparent right-full top-1/2 border-r-gray-800"></div>
+                <div className="absolute transform -translate-y-1/2 border-4 border-transparent left-full top-1/2 border-r-gray-800"></div>
               </div>
             </a>
           ))}
