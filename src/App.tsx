@@ -19,7 +19,6 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
-import { KitBuilderModal } from './components/KitBuilder';
 
 // Main App Component
 const MainApp: React.FC = () => {
@@ -72,7 +71,6 @@ const MainApp: React.FC = () => {
     <div className="min-h-screen text-primary font-jost">
       <Header 
         toggleCart={() => setIsCartOpen(!isCartOpen)}
-        openKitBuilder={() => setIsKitBuilderOpen(true)}
       />
       
       {/* Main content with proper mobile spacing */}
@@ -163,13 +161,6 @@ const MainApp: React.FC = () => {
               <CheckoutForm onClose={() => setIsCheckoutOpen(false)} />
             </motion.div>
           </>
-        )}
-
-        {isKitBuilderOpen && (
-          <KitBuilderModal
-            isOpen={isKitBuilderOpen}
-            onClose={() => setIsKitBuilderOpen(false)}
-          />
         )}
       </AnimatePresence>
 

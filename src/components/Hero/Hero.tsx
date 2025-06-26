@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
-import { KitBuilderButton } from '../KitBuilder';
 
 const Hero: React.FC = () => {
   const scrollToProducts = () => {
@@ -9,10 +8,6 @@ const Hero: React.FC = () => {
     if (productsSection) {
       productsSection.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const openKitBuilder = () => {
-    document.dispatchEvent(new CustomEvent('openKitBuilder'));
   };
 
   return (
@@ -64,11 +59,7 @@ const Hero: React.FC = () => {
           >
             Ver Productos
           </motion.button>
-          
-          <KitBuilderButton 
-            onClick={openKitBuilder}
-            className="lg:w-auto"
-          />
+        
         </div>
         </div>
       </motion.div>
@@ -93,7 +84,7 @@ const VideoPackagingShowcase = () => {
       id: 1,
       title: "Kit Sami",
       description: "Descubre el cuidado en cada detalle",
-      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1749864099/KitSami_1_cz5xwg.webp",
+      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1750901904/kit_sami_1_p3xqxg.webp",
       videoUrl: "https://res.cloudinary.com/do17gdc0b/video/upload/v1750303450/Kit_Sami_wbalgt.mp4",
       duration: "0:51",
       category: "Packaging"
