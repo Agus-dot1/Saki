@@ -51,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       <img 
         src={product.images[0]} 
         alt={product.name} 
-        className={`object-contain w-full h-full ${product.isNew ? 'scale-150 saturate-150 contrast-125' : 'scale-150 opacity-90' } lg:scale-[2.1]`}
+        className={`object-contain w-full h-full ${product.isNew ? 'scale-150' : 'scale-150 opacity-90' } lg:scale-[2.1]`}
       />
       
       {/* Stock indicator - Better mobile positioning */}
