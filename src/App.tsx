@@ -19,15 +19,17 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
+import { KitBuilderModal } from './components/KitBuilder';
 
 // Main App Component
 const MainApp: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isKitBuilderOpen, setIsKitBuilderOpen] = useState(false);
   
   useEffect(() => {
-    if (isCartOpen || selectedProduct || isCheckoutOpen) {
+    if (isCartOpen || selectedProduct || isCheckoutOpen || isKitBuilderOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -36,7 +38,7 @@ const MainApp: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isCartOpen, selectedProduct, isCheckoutOpen]);
+  }, [isCartOpen, selectedProduct, isCheckoutOpen, isKitBuilderOpen]);
 
   // Listen for cart opening requests
   useEffect(() => {
@@ -49,14 +51,20 @@ const MainApp: React.FC = () => {
       setIsCheckoutOpen(true);
     };
 
+    const handleOpenKitBuilder = () => {
+      setIsKitBuilderOpen(true);
+    };
+
     document.addEventListener('requestOpenCart', handleRequestOpenCart);
     document.addEventListener('openCart', handleRequestOpenCart);
     document.addEventListener('openCheckoutForm', handleOpenCheckoutForm);
+    document.addEventListener('openKitBuilder', handleOpenKitBuilder);
     
     return () => {
       document.removeEventListener('requestOpenCart', handleRequestOpenCart);
       document.removeEventListener('openCart', handleRequestOpenCart);
       document.removeEventListener('openCheckoutForm', handleOpenCheckoutForm);
+      document.removeEventListener('openKitBuilder', handleOpenKitBuilder);
     };
   }, []);
 
@@ -64,6 +72,7 @@ const MainApp: React.FC = () => {
     <div className="min-h-screen text-primary font-jost">
       <Header 
         toggleCart={() => setIsCartOpen(!isCartOpen)}
+        openKitBuilder={() => setIsKitBuilderOpen(true)}
       />
       
       {/* Main content with proper mobile spacing */}
@@ -154,6 +163,13 @@ const MainApp: React.FC = () => {
               <CheckoutForm onClose={() => setIsCheckoutOpen(false)} />
             </motion.div>
           </>
+        )}
+
+        {isKitBuilderOpen && (
+          <KitBuilderModal
+            isOpen={isKitBuilderOpen}
+            onClose={() => setIsKitBuilderOpen(false)}
+          />
         )}
       </AnimatePresence>
 

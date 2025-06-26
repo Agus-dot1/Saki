@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
+import { KitBuilderButton } from '../KitBuilder';
 
 const Hero: React.FC = () => {
   const scrollToProducts = () => {
@@ -8,6 +9,10 @@ const Hero: React.FC = () => {
     if (productsSection) {
       productsSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const openKitBuilder = () => {
+    document.dispatchEvent(new CustomEvent('openKitBuilder'));
   };
 
   return (
@@ -49,15 +54,22 @@ const Hero: React.FC = () => {
           </p>
         </div>
         
-        {/* CTA Button - Better mobile sizing */}
-        <motion.button 
-          onClick={scrollToProducts}
-          className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Comprar Ahora
-        </motion.button>
+        {/* CTA Buttons - Better mobile layout */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+          <motion.button 
+            onClick={scrollToProducts}
+            className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Ver Productos
+          </motion.button>
+          
+          <KitBuilderButton 
+            onClick={openKitBuilder}
+            className="lg:w-auto"
+          />
+        </div>
         </div>
       </motion.div>
 
