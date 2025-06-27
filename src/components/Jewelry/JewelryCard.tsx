@@ -182,11 +182,11 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-xl font-medium lg:text-2xl text-primary">
-              ${Number(item.price)}
+              ${Number(item.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}
             </span>
             {item.oldPrice && item.oldPrice > item.price && (
               <span className="text-sm line-through lg:text-base text-content">
-                ${Number(item.oldPrice)}
+                ${Number(item.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}
               </span>
             )}
           </div>

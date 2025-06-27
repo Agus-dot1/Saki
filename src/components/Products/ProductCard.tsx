@@ -63,6 +63,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         </div>
         </div>
       )}
+      {product.discountPercentage && (
+        <div className={`absolute bottom-3 right-3 lg:bottom-4 lg:right-4 px-2 py-1 lg:px-3 lg:py-1 rounded-full bg-supporting text-white text-xs font-medium`}>
+        <div className="flex items-center space-x-1">
+          <span>{product.discountPercentage}% OFF</span>
+        </div>
+        </div>
+            )}
+      
       </div>
       
       {/* Content - Better mobile spacing */}
@@ -88,10 +96,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       
       {/* Footer - Better mobile layout */}
       <div className="flex flex-col gap-3 pt-4 mt-auto border-t lg:flex-row lg:justify-between lg:items-center lg:pt-6 border-supporting/20">
-        <span className={`text-xl font-medium lg:text-2xl ${product.isNew ? 'text-accent' : 'text-primary'}`}>${product.price}
+        <span className={`text-xl font-medium lg:text-2xl ${product.isNew ? 'text-accent' : 'text-primary'}`}>${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         {product.oldPrice && (
         <span className="ml-2 text-base text-gray-400 line-through">
-          ${product.oldPrice}
+          ${product.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </span>
         )}</span> 
         
