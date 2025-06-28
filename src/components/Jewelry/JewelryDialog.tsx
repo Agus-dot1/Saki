@@ -215,11 +215,11 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-medium text-accent">
-                ${item.price}
+                ${item.price.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
               {item.oldPrice && (
                 <span className="text-sm text-gray-400 line-through">
-                  ${item.oldPrice}
+                  ${item.oldPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               )}
             </div>

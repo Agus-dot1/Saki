@@ -42,7 +42,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             </button>
           )}
         </div>
-        <p className="text-sm text-content">${product.price.toFixed(2)}</p>
+        <p className="text-sm text-content">${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
 
         {/* Display selected model and size */}
         {(product.modelNumber || product.selectedSize) && (

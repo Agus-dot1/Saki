@@ -226,11 +226,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </h2>
                 <div className="flex flex-wrap items-baseline gap-2 mb-3 lg:gap-3 lg:mb-4">
                   <span className="text-2xl font-medium lg:text-3xl xl:text-4xl text-accent">
-                    ${product.price.toFixed(2)}
+                    ${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                   {product.oldPrice && (
                     <span className="text-base line-through lg:text-lg text-content">
-                      ${product.oldPrice.toFixed(2)}
+                      ${product.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   )}
                   {product.discountPercentage && (
@@ -299,7 +299,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                     </button>
                   </div>
                   <span className="text-sm lg:text-base text-content">
-                    Total: <span className="font-medium text-primary">${(product.price * selectedQuantity).toFixed(2)}</span>
+                    Total: <span className="font-medium text-primary">${(product.price * selectedQuantity).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </span>
                 </div>
               </motion.div>

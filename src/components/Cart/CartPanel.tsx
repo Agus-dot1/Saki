@@ -48,10 +48,10 @@
       }
       const orderCode = `SAKI-${Date.now()}`;
       const orderSummary = cartItems.map(
-        item => `${item.quantity}x ${item.product.name} - $${(item.product.price * item.quantity).toFixed(2)}`
+        item => `${item.quantity}x ${item.product.name} - $${(item.product.price * item.quantity).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       ).join('\n');
 
-      const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toFixed(2)}\n\nCódigo de Pedido: ${orderCode}`;
+      const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n\nCódigo de Pedido: ${orderCode}`;
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/541126720095?text=${encodedMessage}`;
       
@@ -106,12 +106,12 @@
             {/* Price breakdown - Better mobile typography */}
             <div className="flex items-center justify-between mb-2">
               <span className="text-base lg:text-lg text-primary">Subtotal</span>
-              <span className="text-base lg:text-lg text-primary">${totalPrice}</span>
+              <span className="text-base lg:text-lg text-primary">${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="flex items-center justify-between mb-4 font-bold lg:mb-6">
               <span className="text-base lg:text-lg text-primary">Total</span>
               <span className="text-xl font-medium lg:text-2xl text-primary">
-                ${totalPrice}
+                ${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             
