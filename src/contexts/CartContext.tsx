@@ -170,18 +170,36 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const processCheckout = async (): Promise<boolean> => {
+    try {
+      console.log('Starting checkout process...');
       const res = await fetch('https://jvrvhoyepfcznosljvjw.supabase.co/functions/v1/create-payment-preference', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: 'Pan de masa madre',
-            price: 5500,
-          }),
-        })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Pan de masa madre',
+          price: 5500,
+        }),
+      });
 
-        const data = await res.json()
-        window.location.href = data.init_point // redirigís al checkout
-    return true;
+      if (!res.ok) {
+        console.error('Checkout request failed:', res.status, res.statusText);
+        return false;
+      }
+
+      const data = await res.json();
+      console.log('Checkout response data:', data);
+
+      if (data.init_point) {
+        window.location.href = data.init_point; // redirigís al checkout
+        return true;
+      } else {
+        console.error('No init_point in response:', data);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error during checkout process:', error);
+      return false;
+    }
   };
   
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
