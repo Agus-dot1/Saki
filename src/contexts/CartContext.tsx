@@ -170,13 +170,17 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const processCheckout = async (): Promise<boolean> => {
-    if (cartItems.length === 0) {
-      showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
-      return false;
-    }
+      const res = await fetch('https://jvrvhoyepfcznosljvjw.supabase.co/functions/v1/create-payment-preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: 'Pan de masa madre',
+            price: 5500,
+          }),
+        })
 
-    // Abrir formulario de checkout en lugar de procesar directamente
-    openCheckoutForm();
+        const data = await res.json()
+        window.location.href = data.init_point // redirigís al checkout
     return true;
   };
   
