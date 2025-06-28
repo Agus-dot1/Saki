@@ -170,7 +170,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const processCheckout = async (): Promise<boolean> => {
-  try {
+      try {
     const res = await fetch('https://jvrvhoyepfcznosljvjw.supabase.co/functions/v1/create-payment-preference', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -199,7 +199,16 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     console.error('Error during checkout process:', error)
     return false
   }
-}
+
+    // if (cartItems.length === 0) {
+    //   showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
+    //   return false;
+    // }
+
+    // // Abrir formulario de checkout en lugar de procesar directamente
+    // openCheckoutForm();
+    // return true;
+  };
   
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   
