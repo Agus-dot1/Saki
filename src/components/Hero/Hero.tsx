@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
                 Con Saki,
                 <br />
                 <span className="font-medium text-primary">tu piel</span>{' '}
-                <span className="relative inline-flex items-center text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-200 to-emerald-300">
+                <span className="relative inline-flex items-center text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-500 to-emerald-600">
                   brilla
                   <Sparkles size={20} className="ml-2 text-emerald-300 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                 </span>

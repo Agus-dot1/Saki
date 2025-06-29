@@ -141,7 +141,7 @@ const TestimonialsSection: React.FC = () => {
           <p className="text-sm text-content sm:text-base">
             ¿Querés ser parte de nuestras historias de éxito?{' '}
             <a 
-              href="https://wa.me/541126720095?text=Hola%2C%20quiero%20conocer%20más%20sobre%20los%20productos"
+              href="https://wa.me/541126720095?text=Hola%2C%20me%20gustaría%20agregar%20una%20reseña"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium underline text-accent hover:text-supporting"
