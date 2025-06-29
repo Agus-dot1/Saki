@@ -24,7 +24,7 @@ const Hero: React.FC = () => {
           
           {/* Content Section - Mobile First */}
           <motion.div 
-            className="flex flex-col justify-center pt-6 text-center lg:text-left lg:pt-0"
+            className="flex flex-col justify-center text-center lg:text-left lg:pt-0"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
