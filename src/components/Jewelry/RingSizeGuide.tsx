@@ -19,9 +19,8 @@ const measurementMethods = [
   {
     title: 'Anillo Existente',
     steps: [
-      'Tomá un anillo que te quede bien',
-      'Medí el diámetro interno en mm',
-      'Buscá el diámetro en la tabla'
+      'Tomá un anillo que te quede bien y medí el diámetro interno en mm',
+      'Buscá el diámetro en la tabla y listo!'
     ]
   }
 ];
