@@ -67,7 +67,7 @@ const TestimonialsSection: React.FC = () => {
   };
 
   return (
-    <section className="relative py-12 overflow-hidden sm:py-16 lg:py-20 bg-secondary/30" ref={ref}>
+    <section className="relative py-12 overflow-hidden sm:py-16 lg:py-20" ref={ref}>
       {/* Gradient overlay for mobile */}
       <div className="absolute inset-0 z-10 pointer-events-none">
         <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-secondary/30 to-transparent sm:w-16"></div>
@@ -99,7 +99,7 @@ const TestimonialsSection: React.FC = () => {
 
         {/* Marquee - Mobile optimized */}
         <motion.div 
-          className="relative w-full overflow-x-hidden py-5"
+          className="relative w-full py-5 overflow-x-hidden"
           variants={itemVariants}
         >
           <div className="flex gap-4 w-max marquee sm:gap-6 lg:gap-8">
