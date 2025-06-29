@@ -99,7 +99,7 @@ const TestimonialsSection: React.FC = () => {
 
         {/* Marquee - Mobile optimized */}
         <motion.div 
-          className="relative w-full overflow-x-hidden"
+          className="relative w-full overflow-x-hidden py-5"
           variants={itemVariants}
         >
           <div className="flex gap-4 w-max marquee sm:gap-6 lg:gap-8">
