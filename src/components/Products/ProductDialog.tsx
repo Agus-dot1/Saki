@@ -228,8 +228,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
             )}
           </div>
           
-          {/* Content Section - Mobile optimized scrolling */}
-          <div className="flex flex-col flex-1 overflow-y-auto">
+          {/* Content Section - Mobile optimized scrolling with bottom padding for fixed button */}
+          <div className="flex flex-col flex-1 overflow-y-auto pb-20">
             <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
               {/* Product Header - Hidden on mobile (shown in mobile header) */}
               <div className="hidden sm:block">
@@ -447,40 +447,40 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Fixed Add to Cart Button - Always visible at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 shadow-lg sm:p-6">
+          <div className="space-y-3">
+            <button 
+              onClick={handleAddToCart}
+              disabled={stockStatus?.available === false}
+              className="flex items-center justify-center w-full px-6 py-4 space-x-2 text-lg font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95 shadow-lg"
+            >
+              <ShoppingCart size={20} />
+              <span>
+                {stockStatus && !stockStatus.available ? 'Sin Stock' : 'Agregar al Carrito'}
+              </span>
+            </button>
             
-            {/* Sticky Footer - Mobile optimized */}
-            <div className="p-4 bg-white border-t border-gray-100 sm:p-6">
-              <div className="space-y-3">
-                <button 
-                  onClick={handleAddToCart}
-                  disabled={stockStatus?.available === false}
-                  className="flex items-center justify-center w-full px-6 py-4 space-x-2 text-lg font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95"
+            {/* Trust indicators footer */}
+            <div className="flex items-center justify-center space-x-4 text-xs text-content">
+              <span className="flex items-center space-x-1">
+                <Truck size={12} />
+                <span 
+                  className="underline cursor-pointer text-accent"
+                  onClick={() => setShowShippingModal(true)}
+                  tabIndex={0}
+                  role="button"
                 >
-                  <ShoppingCart size={20} />
-                  <span>
-                    {stockStatus && !stockStatus.available ? 'Sin Stock' : 'Agregar al Carrito'}
-                  </span>
-                </button>
-                
-                {/* Trust indicators footer */}
-                <div className="flex items-center justify-center space-x-4 text-xs text-content">
-                  <span className="flex items-center space-x-1">
-                    <Truck size={12} />
-                    <span 
-                      className="underline cursor-pointer text-accent"
-                      onClick={() => setShowShippingModal(true)}
-                      tabIndex={0}
-                      role="button"
-                    >
-                      Envío gratis
-                    </span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <Shield size={12} />
-                    <span>Garantía 30 días</span>
-                  </span>
-                </div>
-              </div>
+                  Envío gratis
+                </span>
+              </span>
+              <span className="flex items-center space-x-1">
+                <Shield size={12} />
+                <span>Garantía 30 días</span>
+              </span>
             </div>
           </div>
         </div>
