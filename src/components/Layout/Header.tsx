@@ -73,6 +73,8 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               </span>
             )}
           </button>
+
+      
         </nav>
       </header>
 
@@ -110,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               e.preventDefault();
               handleMenuClick(href);
             }}
-            className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 group hover:text-green-700 hover:bg-green-50 rounded-xl active:scale-95"
+            className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 group hover:text-green-700 hover:bg-green-50 rounded-xl"
             aria-label={label}
             title={label}
           >
@@ -120,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
 
         {/* Cart Button */}
         <button
-          className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl active:scale-95"
+          className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
           onClick={toggleCart}
           aria-label="Abrir carrito"
           title="Carrito de Compras"
@@ -188,6 +190,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                       </li>
                     ))}
                   </ul>
+
                 </nav>
 
                 {/* Mobile Menu Footer */}
@@ -195,14 +198,8 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                   <div className="text-sm text-content">
                     <p className="mb-2">Seguinos:</p>
                     <div className="flex space-x-4">
-                      <a 
-                        href="https://www.instagram.com/accs_saki?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="transition-colors text-primary hover:text-accent"
-                      >
-                        Instagram
-                      </a>
+                      <a href="#" className="transition-colors text-primary hover:text-accent">Instagram</a>
+                      <a href="#" className="transition-colors text-primary hover:text-accent">Facebook</a>
                     </div>
                   </div>
                 </div>
