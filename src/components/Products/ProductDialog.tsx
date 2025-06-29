@@ -473,6 +473,25 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               </div>
             </div>
 
+            {/* Kit Contents */}
+            {product.items && product.items.length > 0 && (
+              <div className="mb-6">
+                <h4 className="mb-4 text-lg font-medium text-primary">Qué incluye este kit:</h4>
+                <div className="space-y-3">
+                  {product.items.map((item, idx) => (
+                    <div key={idx} className="flex items-start p-4 rounded-lg bg-gray-50">
+                      <Star size={18} className="mt-0.5 mr-3 text-accent flex-shrink-0" />
+                      <div>
+                        <span className="text-base font-medium text-primary">{item.name}</span>
+                        {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+
             {/* Detailed Description */}
             <div className="mb-6">
               <h4 className="mb-4 text-lg font-medium text-primary">Descripción:</h4>
