@@ -11,12 +11,9 @@ const measurementMethods = [
   {
     title: 'Medir con Papel',
     steps: [
-      'Cortá una tira fina de papel',
-      'Envolvé alrededor de tu dedo',
-      'Marcá donde se superpone',
-      'Medí con regla (en mm)',
-      'Dividí por 3.14 para el diámetro',
-      'Buscá en la tabla tu talla'
+      'Cortá una tira fina de papel, envolvé alrededor de tu dedo y marcá donde se superpone',
+      'Medí con regla (en mm) y dividí por 3.14 para el diámetro',
+      'Buscá en la tabla tu talla y listo!'
     ]
   },
   {
