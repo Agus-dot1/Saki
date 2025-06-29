@@ -170,6 +170,10 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const processCheckout = async (): Promise<boolean> => {
+
+    openCheckoutForm();
+
+
       try {
     const res = await fetch('https://jvrvhoyepfcznosljvjw.supabase.co/functions/v1/create-payment-preference', {
       method: 'POST',
