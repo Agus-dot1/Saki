@@ -11,14 +11,14 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-tr from-secondary via-secondary to-emerald-200/30">
+    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-tr from-emerald-200/30 via-emerald-200/40 to-emerald-200/50">
       {/* Mobile-first background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-32 h-32 rounded-full -top-8 -left-8 sm:w-48 sm:h-48 sm:-top-12 sm:-left-12 lg:w-72 lg:h-72 lg:top-20 lg:left-10 blur-2xl animate-pulse bg-emerald-200/30"></div>
         <div className="absolute w-40 h-40 rounded-full -bottom-10 -right-10 sm:w-56 sm:h-56 sm:-bottom-14 sm:-right-14 lg:w-96 lg:h-96 lg:bottom-20 lg:right-10 blur-3xl animate-pulse bg-sage-300/20 animation-delay-1000"></div>
       </div>
 
-      <div className="relative z-10 flex py-20 flex-col min-h-screen px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div className="relative z-10 flex flex-col min-h-screen px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Mobile-optimized layout */}
         <div className="flex flex-col flex-1 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
                 Con Saki,
                 <br />
                 <span className="font-medium text-primary">tu piel</span>{' '}
-                <span className="relative inline-flex items-center text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-200 to-emerald-300">
+                <span className="relative inline-flex items-center text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-emerald-600">
                   brilla
                   <Sparkles size={20} className="ml-2 text-emerald-300 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                 </span>
@@ -60,10 +60,10 @@ const Hero: React.FC = () => {
             </div>
             
             {/* CTA Button - Mobile optimized */}
-            <div className="flex mb-20 flex-col items-center gap-4 lg:items-start">
+            <div className="flex flex-col items-center gap-4 mb-20 lg:items-start">
               <motion.button 
                 onClick={scrollToProducts}
-                className="w-full max-w-xs px-8 py-4 text-lg font-semibold text-white transition-all transform rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                className="w-full max-w-xs px-8 py-4 text-lg font-semibold text-white transition-all transform shadow-lg rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 hover:shadow-xl"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
