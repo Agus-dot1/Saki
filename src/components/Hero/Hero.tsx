@@ -11,7 +11,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-tr from-emerald-200/30 via-emerald-200/40 to-emerald-200/50">
+    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-tr from-emerald-200/20 via-emerald-200/40 to-emerald-200/80">
       {/* Mobile-first background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-32 h-32 rounded-full -top-8 -left-8 sm:w-48 sm:h-48 sm:-top-12 sm:-left-12 lg:w-72 lg:h-72 lg:top-20 lg:left-10 blur-2xl animate-pulse bg-emerald-200/30"></div>
@@ -37,14 +37,14 @@ const Hero: React.FC = () => {
               </div>
               <div className="w-1 h-1 rounded-full bg-content/30"></div>
               <div className="flex items-center gap-1">
-                <Users className="w-4 h-4 text-content" />
-                <span className="text-sm text-content">+50 Clientes</span>
+                <Users className="w-4 h-4 text-white" />
+                <span className="text-sm text-white">+20 Clientes</span>
               </div>
             </div>
             
             {/* Main Heading - Mobile optimized typography */}
             <div className="mb-6">
-              <h1 className="mb-4 text-3xl font-light leading-tight text-stone-900 sm:text-4xl lg:text-5xl xl:text-6xl">
+              <h1 className="mb-4 text-3xl font-light leading-tight text-white sm:text-4xl lg:text-5xl xl:text-6xl">
                 Con Saki,
                 <br />
                 <span className="font-medium text-primary">tu piel</span>{' '}
@@ -53,7 +53,7 @@ const Hero: React.FC = () => {
                   <Sparkles size={20} className="ml-2 text-emerald-300 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                 </span>
               </h1>
-              <p className="max-w-lg mx-auto text-base leading-relaxed sm:text-lg lg:mx-0 lg:text-xl text-content">
+              <p className="max-w-lg mx-auto text-base leading-relaxed text-white sm:text-lg lg:mx-0 lg:text-xl">
                 Pureza que se siente. Resultados que se ven. 
                 El cuidado de la piel como debería ser.
               </p>
