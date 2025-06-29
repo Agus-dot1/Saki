@@ -1,4 +1,4 @@
-  import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
   import { X, ArrowRight, Loader2 } from 'lucide-react';
   import { useCart } from '../../hooks/useCart';
   import { useToast } from '../../hooks/useToast';
