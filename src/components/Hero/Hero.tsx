@@ -60,7 +60,7 @@ const Hero: React.FC = () => {
             </div>
             
             {/* CTA Button - Mobile optimized */}
-            <div className="flex flex-col items-center gap-4 lg:items-start">
+            <div className="flex mb-20 flex-col items-center gap-4 lg:items-start">
               <motion.button 
                 onClick={scrollToProducts}
                 className="w-full max-w-xs px-8 py-4 text-lg font-semibold text-white transition-all transform rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
