@@ -38,7 +38,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       }));
     }
     addToCart(product, selectedQuantity, selectedItems);
-    showSuccess('Agregado al Carrito', `${product.name} fue agregado exitosamente`);
     onClose();
     onOpenCart();
   };
