@@ -54,9 +54,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         <img 
           src={product.images[0]} 
           alt={product.name} 
-          className={`object-contain w-full h-full transition-transform duration-500 ${
+          className={`object-contain scale-[2.8]  w-full h-full transition-transform duration-500 ${
             product.isNew ? 'scale-150' : 'scale-150 opacity-90'
-          } hover:scale-[1.6]`}
+          }`}
           loading="lazy"
         />
         
@@ -72,7 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
         {/* Discount badge - Mobile optimized */}
         {product.discountPercentage && (
-          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 px-2 py-1 rounded-full bg-supporting text-white text-xs font-bold border border-white/50">
+          <div className="absolute px-2 py-1 text-xs font-bold text-white border rounded-full bottom-2 right-2 sm:bottom-3 sm:right-3 bg-supporting border-white/50">
             {product.discountPercentage}% OFF
           </div>
         )}
