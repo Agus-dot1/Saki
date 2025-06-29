@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Home, Package, Mail, X, Menu } from 'lucide-react';
+import { ShoppingCart, Home, Package, Mail, X } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,11 +14,6 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     document.body.style.overflow = 'unset';
-  };
-
-  const openMobileMenu = () => {
-    setIsMobileMenuOpen(true);
-    document.body.style.overflow = 'hidden';
   };
 
   const menuItems = [
@@ -39,42 +34,6 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
 
   return (
     <>
-      {/* Mobile Header Bar */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 lg:hidden">
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Logo */}
-          <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-primary">Saki</h1>
-          </div>
-
-          {/* Mobile Actions */}
-          <div className="flex items-center space-x-3">
-            {/* Cart Button */}
-            <button
-              className="relative p-2 text-gray-600 transition-colors hover:text-primary rounded-xl"
-              onClick={toggleCart}
-              aria-label="Abrir carrito"
-            >
-              <ShoppingCart size={24} />
-              {totalItems > 0 && (
-                <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white rounded-full -top-1 -right-1 bg-accent">
-                  {totalItems}
-                </span>
-              )}
-            </button>
-
-            {/* Menu Button */}
-            <button
-              onClick={openMobileMenu}
-              className="p-2 text-gray-600 transition-colors hover:text-primary rounded-xl"
-              aria-label="Abrir menú"
-            >
-              <Menu size={24} />
-            </button>
-          </div>
-        </div>
-      </header>
-
       {/* Desktop Sidebar - Hidden on mobile */}
       <header className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 right-4 xl:right-6 lg:block">
         <nav className="flex flex-col items-center p-3 space-y-2 border shadow-lg bg-white/90 backdrop-blur-md rounded-2xl border-white/20">
@@ -117,6 +76,64 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
         </nav>
       </header>
 
+      {/* Floating Bottom Nav for Mobile */}
+      <nav
+        className="
+          fixed
+          z-50
+          bottom-4
+          left-1/2
+          -translate-x-1/2
+          flex
+          items-center
+          justify-between
+          px-3
+          py-2
+          bg-white/90
+          backdrop-blur-md
+          border
+          border-white/20
+          shadow-lg
+          rounded-2xl
+          w-[95vw]
+          max-w-md
+          mx-auto
+          lg:hidden
+        "
+        style={{ pointerEvents: isMobileMenuOpen ? 'none' : 'auto' }}
+      >
+        {menuItems.map(({ icon: Icon, label, href, id }) => (
+          <a
+            key={id}
+            href={href}
+            onClick={e => {
+              e.preventDefault();
+              handleMenuClick(href);
+            }}
+            className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 group hover:text-green-700 hover:bg-green-50 rounded-xl active:scale-95"
+            aria-label={label}
+            title={label}
+          >
+            <Icon size={22} />
+          </a>
+        ))}
+
+        {/* Cart Button */}
+        <button
+          className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl active:scale-95"
+          onClick={toggleCart}
+          aria-label="Abrir carrito"
+          title="Carrito de Compras"
+        >
+          <ShoppingCart size={22} />
+          {totalItems > 0 && (
+            <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-green-600 rounded-full -top-1 -right-1">
+              {totalItems}
+            </span>
+          )}
+        </button>
+      </nav>
+
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -127,7 +144,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 bg-black/60 lg:hidden"
+              className="fixed inset-0 z-40 bg-black/60 lg:hidden"
               onClick={closeMobileMenu}
             />
 
@@ -194,25 +211,6 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
           </>
         )}
       </AnimatePresence>
-
-      {/* Floating Bottom Nav for Mobile - Simplified */}
-      <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30 lg:hidden">
-        <div className="flex items-center justify-center px-4 py-3 bg-white/95 backdrop-blur-md border border-white/20 shadow-lg rounded-2xl">
-          <button
-            className="relative flex flex-col items-center justify-center p-3 text-gray-600 transition-all duration-200 hover:text-accent rounded-xl active:scale-95"
-            onClick={toggleCart}
-            aria-label="Abrir carrito"
-          >
-            <ShoppingCart size={24} />
-            <span className="text-xs font-medium mt-1">Carrito</span>
-            {totalItems > 0 && (
-              <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white rounded-full -top-1 -right-1 bg-accent">
-                {totalItems}
-              </span>
-            )}
-          </button>
-        </div>
-      </nav>
     </>
   );
 };
