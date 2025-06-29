@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
         <div className="absolute w-40 h-40 rounded-full -bottom-10 -right-10 sm:w-56 sm:h-56 sm:-bottom-14 sm:-right-14 lg:w-96 lg:h-96 lg:bottom-20 lg:right-10 blur-3xl animate-pulse bg-sage-300/20 animation-delay-1000"></div>
       </div>
 
-      <div className="relative z-10 flex flex-col min-h-screen px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div className="relative z-10 flex flex-col min-h-screen px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Mobile-optimized layout */}
         <div className="flex flex-col flex-1 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           
