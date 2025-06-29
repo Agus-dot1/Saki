@@ -1,7 +1,8 @@
 import React from 'react';
-import { ShoppingCart, Package } from 'lucide-react';
+import { ShoppingCart, Package, Star } from 'lucide-react';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
+import { motion } from 'framer-motion';
 
 interface ProductCardProps {
   product: Product;
@@ -22,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     if (product.stock <= 0) {
       return { text: 'Sin Stock', color: 'text-red-600 bg-red-50', disabled: true };
     } else if (product.stock <= 5) {
-      return { text: `Solo ${product.stock} disponibles`, color: 'text-yellow-600 bg-yellow-50', disabled: false };
+      return { text: `Solo ${product.stock}`, color: 'text-yellow-600 bg-yellow-50', disabled: false };
     } else if (product.stock <= 10) {
       return { text: `${product.stock} disponibles`, color: 'text-blue-600 bg-blue-50', disabled: false };
     }
@@ -33,89 +34,128 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const stockStatus = getStockStatus();
   
   return (
-    <div 
-      className={`flex flex-col w-full h-full overflow-hidden transition-all duration-300 transform cursor-pointer rounded-3xl bg-secondary border-2 
-      ${product.isNew ? 'border-accent shadow-[0_4px_24px_0_rgba(59,130,246,0.15)' : 'border-transparent'}
-      hover:shadow-lg hover:-translate-y-1
-      hover:border-accent`}
+    <motion.div 
+      className={`flex flex-col w-full h-full overflow-hidden transition-all duration-300 transform cursor-pointer rounded-2xl bg-white border-2 shadow-sm
+      ${product.isNew ? 'border-accent shadow-accent/10' : 'border-gray-100'}
+      hover:shadow-lg hover:-translate-y-1 hover:border-accent/50 active:scale-[0.98]`}
       onClick={onClick}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
     >
-      {/* Image container - Better mobile aspect ratio */}
-      <div className="relative h-64 overflow-hidden lg:h-80">
-      {/* NEW badge */}
-      {product.isNew && (
-        <div className="absolute z-20 px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-white rounded-full shadow-lg top-3 left-3 lg:top-4 lg:left-4 bg-gradient-to-r from-accent to-supporting border-2 border-white">
-        ¡Nuevo!
-        </div>
-      )}
-      <img 
-        src={product.images[0]} 
-        alt={product.name} 
-        className={`object-contain w-full h-full ${product.isNew ? 'scale-150' : 'scale-150 opacity-90' } lg:scale-[2.1]`}
-      />
-      
-      {/* Stock indicator - Better mobile positioning */}
-      {stockStatus && (
-        <div className={`absolute top-3 right-3 lg:top-4 lg:right-4 px-2 py-1 lg:px-3 lg:py-1 rounded-full text-xs font-medium ${stockStatus.color}`}>
-        <div className="flex items-center space-x-1">
-          <Package size={12} />
-          <span>{stockStatus.text}</span>
-        </div>
-        </div>
-      )}
-      {product.discountPercentage && (
-        <div className={`absolute bottom-3 right-3 lg:bottom-4 lg:right-4 px-2 py-1 lg:px-3 lg:py-1 rounded-full bg-supporting text-white text-xs font-medium`}>
-        <div className="flex items-center space-x-1">
-          <span>{product.discountPercentage}% OFF</span>
-        </div>
-        </div>
-            )}
-      
-      </div>
-      
-      {/* Content - Better mobile spacing */}
-      <div className="flex flex-col flex-grow p-4 lg:p-6">
-      <h3 className={`mb-2 text-xl font-medium lg:mb-3 lg:text-2xl ${product.isNew ? 'text-accent' : 'text-primary'}`}>{product.name}</h3>
-      <p className="mb-4 text-base lg:mb-6 lg:text-lg text-content">{product.shortDescription}</p>
-      
-      {/* Items list - Improved mobile layout */}
-      <div className="flex-grow mb-4 lg:mb-6">
-        <h4 className="mb-2 text-base font-medium lg:mb-3 lg:text-lg text-primary">Incluye:</h4>
-        <ul className="space-y-2 lg:space-y-1">
-        {product.items && product.items.length > 0 && product.items.slice(0, 4).map((item, idx) => (
-          <li key={idx} className="text-sm lg:text-base">
-          <span className="font-medium text-primary">{item.name}</span>
-          {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
-          </li>
-        ))}
-        </ul>
-        <span className="mt-3 text-sm font-medium lg:mt-4 text-primary">
-        y más...
-        </span>
-      </div>
-      
-      {/* Footer - Better mobile layout */}
-      <div className="flex flex-col gap-3 pt-4 mt-auto border-t lg:flex-row lg:justify-between lg:items-center lg:pt-6 border-supporting/20">
-        <span className={`text-xl font-medium lg:text-2xl ${product.isNew ? 'text-accent' : 'text-primary'}`}>${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        {product.oldPrice && (
-        <span className="ml-2 text-base text-gray-400 line-through">
-          ${product.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </span>
-        )}</span> 
+      {/* Image container - Mobile optimized */}
+      <div className="relative h-48 overflow-hidden sm:h-56 lg:h-64">
+        {/* NEW badge - Mobile optimized */}
+        {product.isNew && (
+          <div className="absolute z-20 px-2 py-1 text-xs font-bold tracking-wide uppercase text-white rounded-full shadow-lg top-2 left-2 sm:px-3 sm:py-1.5 sm:top-3 sm:left-3 bg-gradient-to-r from-accent to-supporting border border-white">
+            ¡Nuevo!
+          </div>
+        )}
+
+        <img 
+          src={product.images[0]} 
+          alt={product.name} 
+          className={`object-contain w-full h-full transition-transform duration-500 ${
+            product.isNew ? 'scale-150' : 'scale-150 opacity-90'
+          } hover:scale-[1.6]`}
+          loading="lazy"
+        />
         
-        <button 
-        onClick={handleAddToCart}
-        disabled={stockStatus?.disabled}
-        className={`flex items-center justify-center w-full px-4 py-3 space-x-2 text-white transition-colors rounded-2xl lg:w-auto lg:px-6 
-          ${product.isNew ? 'bg-accent/90 hover:bg-accent' : 'bg-accent hover:bg-supporting'} 
-          disabled:bg-gray-400 disabled:cursor-not-allowed`}
-        >
-        <ShoppingCart size={18} />
-        <span>{stockStatus?.disabled ? 'Sin Stock' : 'Agregar'}</span>
-        </button>
+        {/* Stock indicator - Mobile optimized */}
+        {stockStatus && (
+          <div className={`absolute top-2 right-2 sm:top-3 sm:right-3 px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color} border border-white/50 backdrop-blur-sm`}>
+            <div className="flex items-center space-x-1">
+              <Package size={10} />
+              <span>{stockStatus.text}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Discount badge - Mobile optimized */}
+        {product.discountPercentage && (
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 px-2 py-1 rounded-full bg-supporting text-white text-xs font-bold border border-white/50">
+            {product.discountPercentage}% OFF
+          </div>
+        )}
+
+        {/* Quick add button overlay - Mobile optimized */}
+        <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 bg-black/20 hover:opacity-100">
+          <button
+            onClick={handleAddToCart}
+            disabled={stockStatus?.disabled}
+            className="flex items-center justify-center w-12 h-12 text-white transition-all duration-200 rounded-full bg-accent/90 hover:bg-accent hover:scale-110 disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95"
+            aria-label="Agregar al carrito"
+          >
+            <ShoppingCart size={20} />
+          </button>
+        </div>
       </div>
+      
+      {/* Content - Mobile optimized spacing */}
+      <div className="flex flex-col flex-grow p-4 sm:p-5">
+        {/* Header */}
+        <div className="mb-3">
+          <h3 className={`mb-2 text-lg font-semibold leading-tight sm:text-xl ${
+            product.isNew ? 'text-accent' : 'text-primary'
+          }`}>
+            {product.name}
+          </h3>
+          <p className="text-sm leading-relaxed text-content sm:text-base">
+            {product.shortDescription}
+          </p>
+        </div>
+        
+        {/* Items preview - Mobile optimized */}
+        <div className="flex-grow mb-4">
+          <h4 className="mb-2 text-sm font-medium text-primary sm:text-base">Incluye:</h4>
+          <ul className="space-y-1">
+            {product.items && product.items.length > 0 && product.items.slice(0, 3).map((item, idx) => (
+              <li key={idx} className="flex items-start text-xs sm:text-sm">
+                <Star size={12} className="mt-0.5 mr-2 text-accent flex-shrink-0" />
+                <span>
+                  <span className="font-medium text-primary">{item.name}</span>
+                  {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {product.items && product.items.length > 3 && (
+            <span className="text-xs font-medium text-accent sm:text-sm">
+              +{product.items.length - 3} más...
+            </span>
+          )}
+        </div>
+        
+        {/* Footer - Mobile optimized */}
+        <div className="pt-3 mt-auto border-t border-gray-100">
+          {/* Price */}
+          <div className="flex items-baseline justify-between mb-3">
+            <div className="flex items-baseline space-x-2">
+              <span className={`text-xl font-bold sm:text-2xl ${
+                product.isNew ? 'text-accent' : 'text-primary'
+              }`}>
+                ${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+              {product.oldPrice && (
+                <span className="text-sm text-gray-400 line-through">
+                  ${product.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Action button - Mobile optimized */}
+          <button 
+            onClick={handleAddToCart}
+            disabled={stockStatus?.disabled}
+            className={`w-full px-4 py-3 text-sm font-semibold text-white transition-all duration-200 rounded-xl sm:text-base
+              ${product.isNew ? 'bg-accent/90 hover:bg-accent' : 'bg-accent hover:bg-supporting'} 
+              disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95 hover:scale-[1.02]`}
+          >
+            {stockStatus?.disabled ? 'Sin Stock' : 'Agregar al Carrito'}
+          </button>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -27,15 +27,31 @@ const MainApp: React.FC = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isKitBuilderOpen, setIsKitBuilderOpen] = useState(false);
   
+  // Mobile-first body scroll management
   useEffect(() => {
-    if (isCartOpen || selectedProduct || isCheckoutOpen || isKitBuilderOpen) {
+    const isModalOpen = isCartOpen || selectedProduct || isCheckoutOpen || isKitBuilderOpen;
+    
+    if (isModalOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
     } else {
-      document.body.style.overflow = 'unset';
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
     
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
     };
   }, [isCartOpen, selectedProduct, isCheckoutOpen, isKitBuilderOpen]);
 
@@ -73,8 +89,8 @@ const MainApp: React.FC = () => {
         toggleCart={() => setIsCartOpen(!isCartOpen)}
       />
       
-      {/* Main content with proper mobile spacing */}
-      <main className="pt-5 transition-all duration-300">
+      {/* Main content with mobile-first spacing */}
+      <main className="pt-16 transition-all duration-300 lg:pt-0">
         <div className="max-w-[1920px] mx-auto">
           <Suspense fallback={<LoadingSpinner />}>
             <Hero />
@@ -97,7 +113,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setIsCartOpen(false)}
             />
             <motion.div
@@ -122,7 +138,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setSelectedProduct(null)}
             />
             <motion.div
@@ -148,7 +164,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setIsCheckoutOpen(false)}
             />
             <motion.div
