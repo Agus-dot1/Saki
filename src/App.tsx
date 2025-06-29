@@ -90,7 +90,7 @@ const MainApp: React.FC = () => {
       />
       
       {/* Main content with mobile-first spacing */}
-      <main className="pt-16 transition-all duration-300 lg:pt-0">
+      <main className="transition-all duration-300">
         <div className="max-w-[1920px] mx-auto">
           <Suspense fallback={<LoadingSpinner />}>
             <Hero />
