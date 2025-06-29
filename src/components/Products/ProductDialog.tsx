@@ -312,21 +312,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </div>
               )}
 
-              {/* Benefits */}
-              {product.keyBenefits && product.keyBenefits.length > 0 && (
-                <div>
-                  <h4 className="mb-3 text-base font-medium text-primary">Beneficios principales:</h4>
-                  <ul className="space-y-2">
-                    {product.keyBenefits.map((benefit, idx) => (
-                      <li key={idx} className="flex items-start text-sm">
-                        <span className="mr-2 text-accent">•</span>
-                        <span className="text-content">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
               {/* Detailed Description */}
               <div>
                 <h4 className="mb-3 text-base font-medium text-primary">Descripción:</h4>
