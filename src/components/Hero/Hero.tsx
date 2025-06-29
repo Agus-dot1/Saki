@@ -84,7 +84,7 @@ const Hero: React.FC = () => {
 
           {/* Video Section - Mobile optimized */}
           <motion.div 
-            className="flex items-center justify-center order-1 lg:order-2"
+            className="flex items-center justify-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
