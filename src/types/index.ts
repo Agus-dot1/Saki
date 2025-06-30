@@ -26,6 +26,7 @@ export interface Product {
   modelNumber?: number; 
   selectedSize?: string;
   isNew?: boolean;
+  categoryId?: string; 
 }
 
 export interface SelectedKitItem {

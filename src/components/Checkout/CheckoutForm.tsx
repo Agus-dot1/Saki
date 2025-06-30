@@ -97,6 +97,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         id: item.product.id,
         name: item.product.name,
         price: item.product.price,
+        description: item.product.description,
+        category_id: item.product.categoryId,
       },
       quantity: item.quantity,
     }));
