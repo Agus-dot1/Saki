@@ -3,10 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Package } from 'lucide-react';
 import { CheckoutService } from '../../services/checkoutService';
 import LoadingSpinner from '../LoadingSpinner';
+import { useLocation } from 'react-router-dom';
+
 
 interface OrderData {
   order_number: string;
   total_amount: number;
+  order_items: {
+    id: number;
+    product_name: string;
+    quantity: number;
+  }[];
+  status: string;
 }
 
 const CheckoutSuccess: React.FC = () => {
@@ -14,10 +22,16 @@ const CheckoutSuccess: React.FC = () => {
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
 
+
+    
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const queryOrderId = queryParams.get('orderId');
+  const orderId = queryOrderId || localStorage.getItem('currentOrderId');
+
   useEffect(() => {
     const loadOrderData = async () => {
       try {
-        const orderId = localStorage.getItem('currentOrderId');
         if (orderId) {
           const data = await CheckoutService.getOrderStatus(orderId);
           setOrderData(data);
@@ -31,7 +45,7 @@ const CheckoutSuccess: React.FC = () => {
     };
 
     loadOrderData();
-  }, []);
+  }, [orderId]);
 
   if (loading) {
     return (
@@ -52,7 +66,21 @@ const CheckoutSuccess: React.FC = () => {
           <p className="text-content">
             Tu pedido ha sido confirmado y procesado correctamente.
           </p>
+          
         </div>
+        
+        {(orderData?.order_items ?? []).length > 0 && (
+          <div className="mt-4 text-sm">
+            <h4 className="mb-1 font-medium">Productos:</h4>
+            <ul className="list-disc list-inside">
+              {(orderData?.order_items ?? []).map((item: OrderData['order_items'][number]) => (
+                <li key={item.id}>
+                  {item.product_name} x {item.quantity}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {orderData && (
           <div className="p-4 mb-6 text-left rounded-lg bg-secondary/30">
@@ -60,7 +88,7 @@ const CheckoutSuccess: React.FC = () => {
             <div className="space-y-1 text-sm">
               <p><strong>Número:</strong> {orderData.order_number}</p>
               <p><strong>Total:</strong> ${orderData.total_amount}</p>
-              <p><strong>Estado:</strong> Confirmado</p>
+              <p><strong>Estado:</strong> {orderData.status === 'paid' ? 'Pagado' : 'Pendiente'}</p>
             </div>
           </div>
         )}

@@ -5,6 +5,7 @@ import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
 
+
 interface CheckoutFormProps {
   onClose: () => void;
 }
@@ -25,7 +26,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     city: '',
     postalCode: ''
   });
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -70,76 +70,82 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validateForm()) {
-      showError('Datos Incompletos', 'Por favor completá todos los campos requeridos');
-      return;
-    }
+  if (!validateForm()) {
+    showError('Datos Incompletos', 'Por favor completá todos los campos requeridos');
+    return;
+  }
 
-    if (cartItems.length === 0) {
-      showError('Carrito Vacío', 'Agregá productos antes de continuar');
-      return;
-    }
+  if (cartItems.length === 0) {
+    showError('Carrito Vacío', 'Agregá productos antes de continuar');
+    return;
+  }
 
-    setIsProcessing(true);
+  setIsProcessing(true);
 
-    try {
-      showInfo(
-        'Procesando...',
-        'Estamos preparando tu pago con Mercado Pago',
-        { duration: 0, dismissible: false }
-      );
+  try {
+    showInfo(
+      'Procesando...',
+      'Estamos preparando tu pago con Mercado Pago',
+      { duration: 0, dismissible: false }
+    );
 
-      // Preparar datos para enviar al backend
-      const checkoutData = {
-        items: cartItems,
-        customer: customerData
-      };
+    // 🧠 Normalizar carrito
+    const normalizedItems = cartItems.map(item => ({
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+      },
+      quantity: item.quantity,
+    }));
 
-      console.log('Sending checkout data:', checkoutData);
+    const checkoutData = {
+      items: normalizedItems,
+      customer: customerData
+    };
 
-      const preference = await CheckoutService.createPaymentPreference(checkoutData);
+    console.log('Sending checkout data:', checkoutData);
 
-      console.log('Received preference:', preference);
+    const preference = await CheckoutService.createPaymentPreference(checkoutData);
 
-      // Guardar orden ID en localStorage para tracking
-      localStorage.setItem('currentOrderId', preference.orderId);
+    console.log('Received preference:', preference);
 
-      showSuccess(
-        'Redirigiendo a Mercado Pago',
-        `Orden #${preference.orderNumber} creada exitosamente`,
-        { duration: 3000 }
-      );
+    localStorage.setItem('currentOrderId', preference.orderId);
 
-      // Limpiar carrito antes de redireccionar
-      clearCart();
-      
-      // Redireccionar a Mercado Pago
-      setTimeout(() => {
-        CheckoutService.redirectToMercadoPago(preference.initPoint);
-      }, 1000);
+    showSuccess(
+      'Redirigiendo a Mercado Pago',
+      `Orden #${preference.orderNumber} creada exitosamente`,
+      { duration: 3000 }
+    );
 
-    } catch (error) {
-      console.error('Checkout error:', error);
-      showError(
-        'Error en el Checkout',
-        error instanceof Error ? error.message : 'Ocurrió un error inesperado',
-        {
-          action: {
-            label: 'Contactar Soporte',
-            onClick: () => {
-              const message = `Hola, tuve un problema en el checkout. Total: $${totalPrice.toFixed(2)}`;
-              const encodedMessage = encodeURIComponent(message);
-              window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
-            }
+    clearCart();
+
+    setTimeout(() => {
+      CheckoutService.redirectToMercadoPago(preference.initPoint);
+    }, 1000);
+
+  } catch (error) {
+    console.error('Checkout error:', error);
+    showError(
+      'Error en el Checkout',
+      error instanceof Error ? error.message : 'Ocurrió un error inesperado',
+      {
+        action: {
+          label: 'Contactar Soporte',
+          onClick: () => {
+            const message = `Hola, tuve un problema en el checkout. Total: $${totalPrice.toFixed(2)}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
           }
         }
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+      }
+    );
+  } finally {
+    setIsProcessing(false);
+  }
+};
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -368,7 +374,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   type="text"
                   value={customerData.postalCode}
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 border border-secondary rounded-md focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
                   disabled={isProcessing}
                 />
               </div>
@@ -382,7 +388,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="flex-1 px-6 py-3 transition-colors border border-secondary text-content rounded-md hover:bg-secondary/50 disabled:opacity-50"
+            className="flex-1 px-6 py-3 transition-colors border rounded-md border-secondary text-content hover:bg-secondary/50 disabled:opacity-50"
           >
             Cancelar
           </button>

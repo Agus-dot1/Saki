@@ -170,44 +170,14 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const processCheckout = async (): Promise<boolean> => {
-      try {
-    const res = await fetch('https://jvrvhoyepfcznosljvjw.supabase.co/functions/v1/create-payment-preference', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: 'Pan de masa madre',
-        price: 5500,
-      }),
-    });
+        if (cartItems.length === 0) {
+          showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
+          return false;
+        }
 
-    if (!res.ok) {
-      const errorText = await res.text()
-      console.error('Checkout request failed:', res.status, errorText)
-      return false
-    }
-
-    const data = await res.json()
-
-    if (data.init_point) {
-      window.location.href = data.init_point // redirigís al checkout de MP
-      return true
-    } else {
-      console.error('No init_point en respuesta:', data)
-      return false
-    }
-  } catch (error) {
-    console.error('Error during checkout process:', error)
-    return false
-  }
-
-    // if (cartItems.length === 0) {
-    //   showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
-    //   return false;
-    // }
-
-    // // Abrir formulario de checkout en lugar de procesar directamente
-    // openCheckoutForm();
-    // return true;
+        // Abrir formulario de checkout en lugar de procesar directamente
+        openCheckoutForm();
+        return true;
   };
   
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);

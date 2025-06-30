@@ -27,12 +27,12 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
     return () => document.removeEventListener('openCart', handleOpenCart);
   }, [isOpen]);
 
-  const handleCheckout = async () => {
-    const success = await processCheckout();
-    if (success) {
-      onClose();
-    }
-  };
+    const handleCheckout = async () => {
+      const success = await processCheckout();
+      if (success) {
+        onClose();
+      }
+    };
 
   const devCheckoutEnabled = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -88,7 +88,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       <div className="flex-1 overflow-y-auto">
         {cartItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-            <div className="w-16 h-16 mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="flex items-center justify-center w-16 h-16 mb-4 bg-gray-100 rounded-full">
               <MessageCircle size={24} className="text-gray-400" />
             </div>
             <h3 className="mb-2 text-lg font-medium text-primary">Tu carrito está vacío</h3>
@@ -125,7 +125,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="flex items-center justify-between text-sm text-content">
               <span>Envío</span>
-              <span className="text-green-600 font-medium">Gratis en zonas seleccionadas</span>
+              <span className="font-medium text-green-600">Gratis en zonas seleccionadas</span>
             </div>
             <div className="pt-2 border-t border-gray-200">
               <div className="flex items-center justify-between">
@@ -174,25 +174,25 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             <button 
               onClick={clearCart}
               disabled={isProcessingCheckout}
-              className="w-full text-sm text-content hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 py-2"
+              className="w-full py-2 text-sm transition-colors duration-200 text-content hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Vaciar Carrito
             </button>
           </div>
 
           {/* Trust indicators - Mobile optimized */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="pt-4 mt-4 border-t border-gray-200">
             <div className="flex items-center justify-center space-x-4 text-xs text-content">
               <span className="flex items-center">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                 Pago Seguro
               </span>
               <span className="flex items-center">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                <span className="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
                 Envío Gratis
               </span>
               <span className="flex items-center">
-                <span className="w-2 h-2 bg-purple-500 rounded-full mr-1"></span>
+                <span className="w-2 h-2 mr-1 bg-purple-500 rounded-full"></span>
                 Garantía 30 días
               </span>
             </div>
