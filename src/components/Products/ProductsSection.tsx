@@ -67,7 +67,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   return (
     <section id="products" className="px-4 py-12 bg-slate-50 sm:px-6 sm:py-16 lg:py-20" ref={ref}>
       <motion.div
-        className="mx-auto max-w-6xl"
+        className="max-w-5xl mx-auto"
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
         variants={containerVariants}
