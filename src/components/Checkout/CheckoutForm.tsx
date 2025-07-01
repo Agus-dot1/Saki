@@ -88,7 +88,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     showInfo(
       'Procesando...',
       'Estamos preparando tu pago con Mercado Pago',
-      { duration: 0, dismissible: false }
+      { duration: 2, dismissible: false }
     );
 
     // 🧠 Normalizar carrito
