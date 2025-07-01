@@ -25,6 +25,7 @@ export interface Product {
   items?: ProductItemOption[];
   modelNumber?: number; 
   selectedSize?: string;
+  selectedColor?: string;
   isNew?: boolean;
   categoryId?: string; 
 }

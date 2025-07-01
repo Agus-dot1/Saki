@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
@@ -37,7 +37,12 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
         size: itemSelections[idx]?.size,
       }));
     }
-    addToCart(product, selectedQuantity, selectedItems);
+    // Pass selectedColor and selectedSize for main product
+    addToCart(
+      { ...product, selectedColor, selectedSize },
+      selectedQuantity,
+      selectedItems
+    );
     onClose();
     onOpenCart();
   };
@@ -79,22 +84,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       showSuccess('Enlace Copiado', 'El enlace del producto fue copiado al portapapeles');
     }
   };
-
-  // Prevent body scroll when dialog is open
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    };
-  }, []);
-
   const getStockStatus = () => {
     if (!product.stock) return null;
     
@@ -145,6 +134,14 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     }
   };
 
+  // Add this before your return statement, after all hooks:
+  const sortedItems =
+    product.items?.slice().sort((a, b) => {
+      const aHasVariant = (a.colorOptions?.length ?? 0) > 0 || (a.sizeOptions?.length ?? 0) > 0;
+      const bHasVariant = (b.colorOptions?.length ?? 0) > 0 || (b.sizeOptions?.length ?? 0) > 0;
+      return Number(bHasVariant) - Number(aHasVariant);
+    }) ?? [];
+
   return (
     <motion.div 
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6 backdrop-blur-sm bg-black/70"
@@ -160,7 +157,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     >
       {/* Mobile Layout */}
       <motion.div 
-        className="relative flex flex-col w-full bg-white shadow-2xl sm:hidden max-h-screen overflow-hidden"
+        className="relative flex flex-col w-full max-h-screen overflow-hidden bg-white shadow-2xl sm:hidden"
         onClick={(e) => e.stopPropagation()}
         variants={dialogVariants}
         initial="hidden"
@@ -211,7 +208,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
           </div>
           
           {/* Content Section with bottom padding for fixed button */}
-          <div className="flex flex-col flex-1 overflow-y-auto pb-20">
+          <div className="flex flex-col flex-1 pb-20 overflow-y-auto">
             <div className="p-4 space-y-4">
               {/* Mobile description */}
               <div>
@@ -237,6 +234,60 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 )}
               </div>
               
+              {/* Color & Size Selectors */}
+              {((product.colors?.length ?? 0) > 0 || (product.sizes?.length ?? 0) > 0) && (
+                <div className="flex flex-col gap-4">
+                  {(product.colors?.length ?? 0) > 0 && (
+                    <div>
+                      <label className="block mb-2 text-base font-medium text-primary">
+                        Color
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {product.colors?.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            className={`px-4 py-2 rounded-xl border font-medium transition-colors ${
+                              selectedColor === color
+                                ? 'bg-accent text-white border-accent'
+                                : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                            }`}
+                            onClick={() => setSelectedColor(color)}
+                            aria-pressed={selectedColor === color}
+                          >
+                            {color}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(product.sizes?.length ?? 0) > 0 && (
+                    <div>
+                      <label className="block mb-2 text-base font-medium text-primary">
+                        Talla
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {product.sizes?.map((size) => (
+                          <button
+                            key={size}
+                            type="button"
+                            className={`px-4 py-2 rounded-xl border font-medium transition-colors ${
+                              selectedSize === size
+                                ? 'bg-accent text-white border-accent'
+                                : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                            }`}
+                            onClick={() => setSelectedSize(size)}
+                            aria-pressed={selectedSize === size}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Trust Indicators */}
               <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-accent/10">
                 <div className="text-center">
@@ -293,18 +344,70 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 </div>
               </div>
 
-              {/* Kit Contents */}
+              {/* Kit Contents with Variant Selectors */}
               {product.items && product.items.length > 0 && (
                 <div>
                   <h4 className="mb-3 text-base font-medium text-primary">Qué incluye este kit:</h4>
                   <div className="space-y-2">
-                    {product.items.map((item, idx) => (
-                      <div key={idx} className="flex items-start p-3 rounded-lg bg-gray-50">
-                        <Star size={16} className="mt-0.5 mr-2 text-accent flex-shrink-0" />
-                        <div>
+                    {sortedItems.map((item, idx) => (
+                      <div key={idx} className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50">
+                        <div className="flex items-center">
+                          <Star size={16} className="flex-shrink-0 mr-2 text-accent" />
                           <span className="font-medium text-primary">{item.name}</span>
-                          {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                          {item.quantity && <span className="ml-1 text-content">(x{item.quantity})</span>}
                         </div>
+                        {/* Color Selector for this item */}
+                        {item.colorOptions && item.colorOptions.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-primary">Color:</label>
+                            {item.colorOptions.map((color) => (
+                              <button
+                                key={color}
+                                type="button"
+                                className={`px-3 py-1 rounded-lg border font-medium transition-colors ${
+                                  itemSelections[idx]?.color === color
+                                    ? 'bg-accent text-white border-accent'
+                                    : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                                }`}
+                                onClick={() =>
+                                  setItemSelections((prev) => ({
+                                    ...prev,
+                                    [idx]: { ...prev[idx], color }
+                                  }))
+                                }
+                                aria-pressed={itemSelections[idx]?.color === color}
+                              >
+                                {color}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        {/* Size Selector for this item */}
+                        {item.sizeOptions && item.sizeOptions.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-primary">Talla:</label>
+                            {item.sizeOptions.map((size) => (
+                              <button
+                                key={size}
+                                type="button"
+                                className={`px-3 py-1 rounded-lg border font-medium transition-colors ${
+                                  itemSelections[idx]?.size === size
+                                    ? 'bg-accent text-white border-accent'
+                                    : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                                }`}
+                                onClick={() =>
+                                  setItemSelections((prev) => ({
+                                    ...prev,
+                                    [idx]: { ...prev[idx], size }
+                                  }))
+                                }
+                                aria-pressed={itemSelections[idx]?.size === size}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -327,7 +430,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
           <button 
             onClick={handleAddToCart}
             disabled={stockStatus?.available === false}
-            className="flex items-center justify-center w-full px-6 py-4 space-x-2 text-lg font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95 shadow-lg"
+            className="flex items-center justify-center w-full px-6 py-4 space-x-2 text-lg font-semibold text-white transition-all duration-200 shadow-lg rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-95"
           >
             <ShoppingCart size={20} />
             <span>
@@ -416,6 +519,60 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               )}
             </div>
             
+            {/* Color & Size Selectors */}
+            {((product.colors?.length ?? 0) > 0 || (product.sizes?.length ?? 0) > 0) && (
+              <div className="flex flex-col gap-4 mb-6">
+                {(product.colors?.length ?? 0) > 0 && (
+                  <div>
+                    <label className="block mb-2 text-base font-medium text-primary">
+                      Color
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {(product.colors ?? []).map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={`px-4 py-2 rounded-xl border font-medium transition-colors ${
+                            selectedColor === color
+                              ? 'bg-accent text-white border-accent'
+                              : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                          }`}
+                          onClick={() => setSelectedColor(color)}
+                          aria-pressed={selectedColor === color}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(product.sizes?.length ?? 0) > 0 && (
+                  <div>
+                    <label className="block mb-2 text-base font-medium text-primary">
+                      Talla
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {(product.sizes ?? []).map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          className={`px-4 py-2 rounded-xl border font-medium transition-colors ${
+                            selectedSize === size
+                              ? 'bg-accent text-white border-accent'
+                              : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                          }`}
+                          onClick={() => setSelectedSize(size)}
+                          aria-pressed={selectedSize === size}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Trust Indicators */}
             <div className="grid grid-cols-3 gap-4 p-6 mb-6 rounded-xl bg-accent/10">
               <div className="text-center">
@@ -472,18 +629,72 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               </div>
             </div>
 
-            {/* Kit Contents */}
+            {/* Kit Contents with Variant Selectors */}
             {product.items && product.items.length > 0 && (
               <div className="mb-6">
                 <h4 className="mb-4 text-lg font-medium text-primary">Qué incluye este kit:</h4>
                 <div className="space-y-3">
-                  {product.items.map((item, idx) => (
-                    <div key={idx} className="flex items-start p-4 rounded-lg bg-gray-50">
-                      <Star size={18} className="mt-0.5 mr-3 text-accent flex-shrink-0" />
-                      <div>
-                        <span className="text-base font-medium text-primary">{item.name}</span>
-                        {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                  {sortedItems.map((item, idx) => (
+                    <div key={idx} className="flex flex-col gap-2 p-4 rounded-lg bg-gray-50">
+                      <div className="flex items-center">
+                        <Star size={18} className="mt-0.5 mr-3 text-accent flex-shrink-0" />
+                        <div>
+                          <span className="text-base font-medium text-primary">{item.name}</span>
+                          {item.quantity && <span className="text-content"> (x{item.quantity})</span>}
+                        </div>
                       </div>
+                      {/* Color Selector for this item */}
+                      {item.colorOptions && item.colorOptions.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <label className="text-sm font-medium text-primary">Color:</label>
+                          {item.colorOptions.map((color) => (
+                            <button
+                              key={color}
+                              type="button"
+                              className={`px-3 py-1 rounded-lg border font-medium transition-colors ${
+                                itemSelections[idx]?.color === color
+                                  ? 'bg-accent text-white border-accent'
+                                  : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                              }`}
+                              onClick={() =>
+                                setItemSelections((prev) => ({
+                                  ...prev,
+                                  [idx]: { ...prev[idx], color }
+                                }))
+                              }
+                              aria-pressed={itemSelections[idx]?.color === color}
+                            >
+                              {color}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {/* Size Selector for this item */}
+                      {item.sizeOptions && item.sizeOptions.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <label className="text-sm font-medium text-primary">Talla:</label>
+                          {item.sizeOptions.map((size) => (
+                            <button
+                              key={size}
+                              type="button"
+                              className={`px-3 py-1 rounded-lg border font-medium transition-colors ${
+                                itemSelections[idx]?.size === size
+                                  ? 'bg-accent text-white border-accent'
+                                  : 'bg-white text-primary border-accent/30 hover:bg-accent/10'
+                              }`}
+                              onClick={() =>
+                                setItemSelections((prev) => ({
+                                  ...prev,
+                                  [idx]: { ...prev[idx], size }
+                                }))
+                              }
+                              aria-pressed={itemSelections[idx]?.size === size}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -506,7 +717,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               <button 
                 onClick={handleAddToCart}
                 disabled={stockStatus?.available === false}
-                className="flex items-center justify-center w-full px-8 py-4 space-x-3 text-xl font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg"
+                className="flex items-center justify-center w-full px-8 py-4 space-x-3 text-xl font-semibold text-white transition-all duration-200 shadow-lg rounded-xl bg-accent hover:bg-supporting disabled:bg-gray-400 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
               >
                 <ShoppingCart size={24} />
                 <span>

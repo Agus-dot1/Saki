@@ -33,7 +33,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
         onClose();
       }
     };
-
+    
   const devCheckoutEnabled = useMemo(() => {
     if (typeof window === 'undefined') return false
     const params = new URLSearchParams(window.location.search)
