@@ -14,7 +14,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart(product);
+    
+    // Auto-select first available color and size if they exist
+    const selectedColor = product.colors && product.colors.length > 0 ? product.colors[0] : undefined;
+    const selectedSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined;
+    
+    // Handle kit items with auto-selection of variants
+    let selectedItems;
+    if (product.items && product.items.length > 0) {
+      selectedItems = product.items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity ?? 1,
+        color: item.colorOptions && item.colorOptions.length > 0 ? item.colorOptions[0] : undefined,
+        size: item.sizeOptions && item.sizeOptions.length > 0 ? item.sizeOptions[0] : undefined,
+      }));
+    }
+    
+    // Add to cart with selected variants
+    addToCart(
+      { ...product, selectedColor, selectedSize },
+      1, // Default quantity
+      selectedItems
+    );
   };
 
   const getStockStatus = () => {

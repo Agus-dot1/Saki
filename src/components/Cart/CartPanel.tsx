@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { X, ArrowRight, Loader2, MessageCircle } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import CartItem from './CartItem';
+import ShippingLocationsModal from '../Products/ShippingLocationModal';
 
 interface CartPanelProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
     cartItems, totalPrice, clearCart, processCheckout, isProcessingCheckout
   } = useCart();
   const { showInfo } = useToast();
+    const [showShippingModal, setShowShippingModal] = useState(false);
   
   // Listen for custom cart opening events
   useEffect(() => {
@@ -125,8 +127,19 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="flex items-center justify-between text-sm text-content">
               <span>Envío</span>
-              <span className="font-medium text-green-600">Gratis en zonas seleccionadas</span>
+              <span className="font-medium text-green-600">Gratis en                   <span 
+                    className="underline cursor-pointer"
+                    onClick={() => setShowShippingModal(true)}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    zonas seleccionadas
+                  </span></span>
             </div>
+            <ShippingLocationsModal
+              open={showShippingModal}
+              onClose={() => setShowShippingModal(false)}
+            />
             <div className="pt-2 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold text-primary">Total</span>

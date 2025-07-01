@@ -5,9 +5,9 @@ import { useToast } from '../hooks/useToast';
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product, quantity?: number, selectedItems?: SelectedKitItem[]) => void;
-  removeFromCart: (productId: number, modelNumber?: number, selectedSize?: string) => void;
-  increaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string) => void;
-  decreaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string) => void;
+  removeFromCart: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
+  increaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
+  decreaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -67,22 +67,40 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     return true;
   };
   
+  // Utility to compare selectedItems deeply
+  function areSelectedItemsEqual(a?: SelectedKitItem[], b?: SelectedKitItem[]) {
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+    return a.every((item, idx) => {
+      const other = b[idx];
+      return (
+        item.name === other.name &&
+        item.quantity === other.quantity &&
+        item.color === other.color &&
+        item.size === other.size
+      );
+    });
+  }
+
   const addToCart = (product: Product, quantity: number = 1, selectedItems?: SelectedKitItem[]) => {
     if (!checkStock(product, quantity)) return;
 
     setCartItems(prevItems => {
-      // Check if the product with the same ID, model, and size exists
+      // Check if the product with the same ID, model, size, and selectedItems exists
       const existingItem = prevItems.find(item => 
         item.product.id === product.id && 
         item.product.modelNumber === product.modelNumber &&
-        item.product.selectedSize === product.selectedSize
+        item.product.selectedSize === product.selectedSize &&
+        areSelectedItemsEqual(item.selectedItems, selectedItems)
       );
 
       if (existingItem) {
         const updatedItems = prevItems.map(item =>
           item.product.id === product.id &&
           item.product.modelNumber === product.modelNumber &&
-          item.product.selectedSize === product.selectedSize
+          item.product.selectedSize === product.selectedSize &&
+          areSelectedItemsEqual(item.selectedItems, selectedItems)
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -105,51 +123,57 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
   
   // Also update these functions to consider model and size
-  const removeFromCart = (productId: number, modelNumber?: number, selectedSize?: string) => {
-    const item = cartItems.find(item => 
-      item.product.id === productId &&
-      item.product.modelNumber === modelNumber &&
-      item.product.selectedSize === selectedSize
-    );
-    
-    if (item) {
-      setCartItems(prevItems => prevItems.filter(item => 
-        !(item.product.id === productId &&
+  const removeFromCart = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    setCartItems(prevItems =>
+      prevItems.filter(item =>
+        !(
+          item.product.id === productId &&
           item.product.modelNumber === modelNumber &&
-          item.product.selectedSize === selectedSize)
-      ));
-    }
+          item.product.selectedSize === selectedSize &&
+          areSelectedItemsEqual(item.selectedItems, selectedItems)
+        )
+      )
+    );
   };
 
-  const increaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
+  const increaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
         item.product.id === productId &&
         item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
+        item.product.selectedSize === selectedSize &&
+        areSelectedItemsEqual(item.selectedItems, selectedItems)
           ? { ...item, quantity: item.quantity + 1 }
           : item
       )
     );
   };
 
-  const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string) => {
+  const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
     setCartItems(prevItems => {
-      const item = prevItems.find(item => 
+      const item = prevItems.find(item =>
         item.product.id === productId &&
         item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
+        item.product.selectedSize === selectedSize &&
+        areSelectedItemsEqual(item.selectedItems, selectedItems)
       );
 
       if (item?.quantity === 1) {
-        removeFromCart(productId, modelNumber, selectedSize);
-        return prevItems;
+        return prevItems.filter(item =>
+          !(
+            item.product.id === productId &&
+            item.product.modelNumber === modelNumber &&
+            item.product.selectedSize === selectedSize &&
+            areSelectedItemsEqual(item.selectedItems, selectedItems)
+          )
+        );
       }
 
-      return prevItems.map(item => 
+      return prevItems.map(item =>
         item.product.id === productId &&
         item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
+        item.product.selectedSize === selectedSize &&
+        areSelectedItemsEqual(item.selectedItems, selectedItems)
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );

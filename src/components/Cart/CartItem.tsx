@@ -81,7 +81,8 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
               onClick={() => decreaseQuantity(
                 product.id,
                 product.modelNumber,
-                product.selectedSize
+                product.selectedSize,
+                item.selectedItems
               )}
               className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Disminuir cantidad"
@@ -95,7 +96,8 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
               onClick={() => increaseQuantity(
                 product.id,
                 product.modelNumber,
-                product.selectedSize
+                product.selectedSize,
+                item.selectedItems
               )}
               className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
               aria-label="Aumentar cantidad"
@@ -105,11 +107,13 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
           </div>
           
           <button 
-            onClick={() => removeFromCart(
-              product.id,
-              product.modelNumber,
-              product.selectedSize
-            )}
+            onClick={() =>
+              removeFromCart(
+                product.id,
+                product.modelNumber,
+                product.selectedSize,
+                item.selectedItems
+              )}
             className="p-2 ml-auto transition-colors text-content hover:text-accent"
             aria-label="Eliminar producto"
           >

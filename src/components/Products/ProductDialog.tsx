@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../../types';
@@ -33,8 +33,12 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       selectedItems = product.items.map((item, idx) => ({
         name: item.name,
         quantity: item.quantity ?? 1,
-        color: itemSelections[idx]?.color,
-        size: itemSelections[idx]?.size,
+        color:
+          itemSelections[idx]?.color ??
+          (item.colorOptions && item.colorOptions.length > 0 ? item.colorOptions[0] : undefined),
+        size:
+          itemSelections[idx]?.size ??
+          (item.sizeOptions && item.sizeOptions.length > 0 ? item.sizeOptions[0] : undefined),
       }));
     }
     // Pass selectedColor and selectedSize for main product
@@ -46,19 +50,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     onClose();
     onOpenCart();
   };
-
-  useEffect(() => {
-    if (product.items) {
-      const initialSelections: { [itemIdx: number]: { color?: string; size?: string } } = {};
-      product.items.forEach((item, idx) => {
-        initialSelections[idx] = {
-          color: item.colorOptions && item.colorOptions.length > 0 ? item.colorOptions[0] : undefined,
-          size: item.sizeOptions && item.sizeOptions.length > 0 ? item.sizeOptions[0] : undefined,
-        };
-      });
-      setItemSelections(initialSelections);
-    }
-  }, [product]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -133,14 +124,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       }
     }
   };
-
-  // Add this before your return statement, after all hooks:
-  const sortedItems =
-    product.items?.slice().sort((a, b) => {
-      const aHasVariant = (a.colorOptions?.length ?? 0) > 0 || (a.sizeOptions?.length ?? 0) > 0;
-      const bHasVariant = (b.colorOptions?.length ?? 0) > 0 || (b.sizeOptions?.length ?? 0) > 0;
-      return Number(bHasVariant) - Number(aHasVariant);
-    }) ?? [];
 
   return (
     <motion.div 
@@ -349,7 +332,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 <div>
                   <h4 className="mb-3 text-base font-medium text-primary">Qué incluye este kit:</h4>
                   <div className="space-y-2">
-                    {sortedItems.map((item, idx) => (
+                    {product.items.map((item, idx) => (
                       <div key={idx} className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50">
                         <div className="flex items-center">
                           <Star size={16} className="flex-shrink-0 mr-2 text-accent" />
@@ -634,7 +617,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
               <div className="mb-6">
                 <h4 className="mb-4 text-lg font-medium text-primary">Qué incluye este kit:</h4>
                 <div className="space-y-3">
-                  {sortedItems.map((item, idx) => (
+                  {product.items.map((item, idx) => (
                     <div key={idx} className="flex flex-col gap-2 p-4 rounded-lg bg-gray-50">
                       <div className="flex items-center">
                         <Star size={18} className="mt-0.5 mr-3 text-accent flex-shrink-0" />
