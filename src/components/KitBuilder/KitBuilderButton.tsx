@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Package, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface KitBuilderButtonProps {
   onClick: () => void;
@@ -16,17 +16,16 @@ const KitBuilderButton: React.FC<KitBuilderButtonProps> = ({ onClick, className 
       whileTap={{ scale: 0.95 }}
     >
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-supporting to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-supporting to-accent group-hover:opacity-100" />
       
       {/* Content */}
-      <div className="relative flex items-center space-x-2">
-        <Package size={20} />
+      <div className="relative flex items-center justify-center space-x-2 lg:justify-normal">
         <span>Arma tu Kit</span>
         <Sparkles size={16} className="animate-pulse" />
       </div>
       
       {/* Shine effect */}
-      <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
+      <div className="absolute inset-0 -skew-x-12 opacity-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:opacity-100 group-hover:animate-pulse" />
     </motion.button>
   );
 };

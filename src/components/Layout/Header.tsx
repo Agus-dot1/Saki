@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Home, Package, Mail, X } from 'lucide-react';
+import { ShoppingCart, Home, Package, Mail, X, Sparkles } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { motion, AnimatePresence } from 'framer-motion';
 import { KitBuilderButton } from '../KitBuilder';
@@ -80,10 +80,10 @@ const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
           <div className="pt-2 border-t border-gray-200">
             <button
               onClick={openKitBuilder}
-              className="p-3 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
+              className="flex flex-col items-center p-3 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
               title="Arma tu Kit"
             >
-              <Package size={20} />
+              <Sparkles size={20} />
             </button>
           </div>
         </nav>
@@ -152,14 +152,10 @@ const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
           className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
           title="Arma tu Kit"
         >
-          <Package size={22} />
+          <Sparkles size={22} />
         </button>
       </nav>
 
-      {/* Kit Builder CTA - Desktop */}
-      <div className="fixed z-20 hidden transform -translate-y-1/2 top-1/2 left-4 xl:left-6 lg:block">
-        <KitBuilderButton onClick={openKitBuilder} />
-      </div>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
+import { Package, Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
 import { KitBuilderButton } from '../KitBuilder';
 
 const Hero: React.FC = () => {
@@ -58,11 +58,11 @@ const Hero: React.FC = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
           <motion.button 
             onClick={scrollToProducts}
-            className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-full lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
+            className="px-6 py-3 text-base font-medium text-white transition-all transform rounded-xl lg:px-8 lg:py-4 lg:text-lg bg-accent hover:bg-supporting hover:-translate-y-1"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Ver Productos
+            Ver Productos <Package className="inline-block w-5 h-5" />
           </motion.button>
           
           <KitBuilderButton 
@@ -93,7 +93,7 @@ const VideoPackagingShowcase = () => {
       id: 1,
       title: "Kit Sami",
       description: "Descubre el cuidado en cada detalle",
-      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1749864099/KitSami_1_cz5xwg.webp",
+      thumbnail: "https://res.cloudinary.com/do17gdc0b/image/upload/v1750901908/kit_sami_3_aeytpd.webp",
       videoUrl: "https://res.cloudinary.com/do17gdc0b/video/upload/v1750303450/Kit_Sami_wbalgt.mp4",
       duration: "0:51",
       category: "Packaging"
