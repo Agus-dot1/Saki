@@ -19,7 +19,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
-import { KitBuilderModal } from './components/KitBuilder';
+import { KitBuilderModal, FloatingKitButton } from './components/KitBuilder';
 
 // Main App Component
 const MainApp: React.FC = () => {
@@ -165,13 +165,14 @@ const MainApp: React.FC = () => {
           </>
         )}
 
-        {isKitBuilderOpen && (
-          <KitBuilderModal
-            isOpen={isKitBuilderOpen}
-            onClose={() => setIsKitBuilderOpen(false)}
-          />
-        )}
+        <KitBuilderModal
+          isOpen={isKitBuilderOpen}
+          onClose={() => setIsKitBuilderOpen(false)}
+        />
       </AnimatePresence>
+
+      {/* Floating Kit Builder Button */}
+      <FloatingKitButton onOpenKitBuilder={() => setIsKitBuilderOpen(true)} />
 
       {/* Toast Container */}
       <ToastContainer />

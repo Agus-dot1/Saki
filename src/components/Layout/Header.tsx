@@ -76,16 +76,6 @@ const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
             )}
           </button>
 
-          {/* Kit Builder Button */}
-          <div className="pt-2 border-t border-gray-200">
-            <button
-              onClick={openKitBuilder}
-              className="flex flex-col items-center p-3 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
-              title="Arma tu Kit"
-            >
-              <Sparkles size={20} />
-            </button>
-          </div>
         </nav>
       </header>
 
@@ -146,14 +136,7 @@ const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
           )}
         </button>
 
-        {/* Kit Builder Button Mobile */}
-        <button
-          onClick={openKitBuilder}
-          className="relative flex flex-col items-center justify-center p-2 text-gray-600 transition-all duration-200 hover:text-green-700 hover:bg-green-50 rounded-xl"
-          title="Arma tu Kit"
-        >
-          <Sparkles size={22} />
-        </button>
+  
       </nav>
 
 
