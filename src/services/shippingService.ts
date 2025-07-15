@@ -1,4 +1,4 @@
-import { SHIPPING_ZONES, DEFAULT_SHIPPING, STORE_PICKUP } from '../types/shippingZones';
+import { SHIPPING_ZONES, DEFAULT_SHIPPING } from '../types/shippingZones';
 
 export interface ShippingOption {
   id: string;
@@ -60,19 +60,6 @@ export class ShippingService {
       estimatedDelivery: DEFAULT_SHIPPING.estimatedDelivery,
       description: DEFAULT_SHIPPING.description,
       zone: 'Otras zonas'
-    };
-  }
-
-  static getPickupInfo() {
-    return {
-      id: 'pickup',
-      name: STORE_PICKUP.name,
-      cost: STORE_PICKUP.cost,
-      estimatedDelivery: STORE_PICKUP.estimatedDelivery,
-      description: STORE_PICKUP.description,
-      address: STORE_PICKUP.address,
-      hours: STORE_PICKUP.hours,
-      preparation: STORE_PICKUP.preparation
     };
   }
 

@@ -27,7 +27,6 @@ const ShippingMethodSelector: React.FC<ShippingMethodSelectorProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const shippingMethods = ShippingService.getShippingMethods();
-  const pickupInfo = ShippingService.getPickupInfo();
 
   const handleMethodSelect = (methodId: 'shipping' | 'pickup') => {
   if (methodId === 'pickup') {
@@ -137,8 +136,8 @@ const ShippingMethodSelector: React.FC<ShippingMethodSelectorProps> = ({
               </div>
               <div className="space-y-1 text-xs text-green-700">
                 <p><strong>Zonas:</strong> Ituzaingó, Morón, Castelar</p>
-                <p><strong>Horarios:</strong> {pickupInfo.hours}</p>
-                <p><strong>Preparación:</strong> Tu pedido estará listo en {pickupInfo.preparation}</p>
+                <p><strong>Horarios:</strong> Lun a Vie 9:00 - 18-00 | Sab 9:00 - 13:00</p>
+                <p><strong>Preparación:</strong> Tu pedido estará listo en 2-4 horas</p>
                 <p><strong>Importante:</strong> Recordá traer tu DNI para retirar el pedido</p>
               </div>
             </div>
