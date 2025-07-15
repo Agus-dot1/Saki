@@ -1,14 +1,8 @@
 import supabase from "../utils/supabase";
+import { NormalizedCartItem } from "../utils/variantUtils";
 
 export interface CheckoutData {
-  items: Array<{
-    product: {
-      id: number;
-      name: string;
-      price: number;
-    };
-    quantity: number;
-  }>;
+  items: NormalizedCartItem[];
   customer: {
     email: string;
     firstName: string;

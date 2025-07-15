@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { Product, CartItem, SelectedKitItem } from '../types';
 import { useToast } from '../hooks/useToast';
+import { createCartItemKey } from '../utils/variantUtils';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -83,23 +84,21 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     if (!checkStock(product, quantity)) return;
 
     setCartItems(prevItems => {
-      // Check if the product with the same ID, model, size, and selectedItems exists
+      // Create a unique key for the new item
+      const newItemKey = createCartItemKey({ product, quantity, selectedItems });
+      
+      // Check if an item with the same key already exists
       const existingItem = prevItems.find(item => 
-        item.product.id === product.id && 
-        item.product.modelNumber === product.modelNumber &&
-        item.product.selectedSize === product.selectedSize &&
-        areSelectedItemsEqual(item.selectedItems, selectedItems)
+        createCartItemKey(item) === newItemKey
       );
 
       if (existingItem) {
-        const updatedItems = prevItems.map(item =>
-          item.product.id === product.id &&
-          item.product.modelNumber === product.modelNumber &&
-          item.product.selectedSize === product.selectedSize &&
-          areSelectedItemsEqual(item.selectedItems, selectedItems)
+        const updatedItems = prevItems.map(item => {
+          const itemKey = createCartItemKey(item);
+          return itemKey === newItemKey
             ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
+            : item;
+        });
 
         showSuccess(
           'Producto Actualizado',
@@ -120,59 +119,54 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   
   // Also update these functions to consider model and size
   const removeFromCart = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     setCartItems(prevItems =>
-      prevItems.filter(item =>
-        !(
-          item.product.id === productId &&
-          item.product.modelNumber === modelNumber &&
-          item.product.selectedSize === selectedSize &&
-          areSelectedItemsEqual(item.selectedItems, selectedItems)
-        )
-      )
+      prevItems.filter(item => createCartItemKey(item) !== targetKey)
     );
   };
 
   const increaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize &&
-        areSelectedItemsEqual(item.selectedItems, selectedItems)
+      prevItems.map(item => {
+        const itemKey = createCartItemKey(item);
+        return itemKey === targetKey
           ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
+          : item;
+      })
     );
   };
 
   const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     setCartItems(prevItems => {
-      const item = prevItems.find(item =>
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize &&
-        areSelectedItemsEqual(item.selectedItems, selectedItems)
-      );
+      const item = prevItems.find(item => createCartItemKey(item) === targetKey);
 
       if (item?.quantity === 1) {
-        return prevItems.filter(item =>
-          !(
-            item.product.id === productId &&
-            item.product.modelNumber === modelNumber &&
-            item.product.selectedSize === selectedSize &&
-            areSelectedItemsEqual(item.selectedItems, selectedItems)
-          )
-        );
+        return prevItems.filter(item => createCartItemKey(item) !== targetKey);
       }
 
-      return prevItems.map(item =>
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize &&
-        areSelectedItemsEqual(item.selectedItems, selectedItems)
+      return prevItems.map(item => {
+        const itemKey = createCartItemKey(item);
+        return itemKey === targetKey
           ? { ...item, quantity: item.quantity - 1 }
-          : item
-      );
+          : item;
+      });
     });
   };
   

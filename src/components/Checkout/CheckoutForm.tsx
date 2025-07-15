@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, User, MapPin, Mail, Loader2, X, Package, Store, Gift } from 'lucide-react';
+import { CreditCard, User, MapPin, Mail, Loader2, X, Gift } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
 import ShippingMethodSelector from '../Cart/ShippingMethodSelector';
+import OrderSummary from './OrderSummary';
+import { normalizeCartItems } from '../../utils/variantUtils';
 
 interface ShippingOption {
   id: string;
@@ -132,20 +134,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       showInfo(
         'Procesando...',
         'Estamos preparando tu pago con Mercado Pago',
-        { duration: 2, dismissible: false }
+        { duration: 0, dismissible: false }
       );
 
-      // Normalize cart items
-      const normalizedItems = cartItems.map(item => ({
-        product: {
-          id: item.product.id,
-          name: item.product.name,
-          price: item.product.price,
-          description: item.product.description,
-          category_id: item.product.categoryId,
-        },
-        quantity: item.quantity,
-      }));
+      // Normalize cart items with variant data
+      const normalizedItems = normalizeCartItems(cartItems);
 
       const checkoutData = {
         items: normalizedItems,
@@ -290,54 +283,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   );
 
 
-  const OrderSummary = () => (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium text-primary">Resumen del Pedido</h3>
-      <div className="space-y-3">
-        {cartItems.map(item => (
-          <div key={item.product.id} className="flex justify-between text-sm">
-            <span>{item.product.name} x{item.quantity}</span>
-            <span>${(item.product.price * item.quantity).toFixed(2)}</span>
-          </div>
-        ))}
-      </div>
-      
-      {/* Shipping Info */}
-      {shippingMethod && (
-        <div className="pt-3 mt-3 border-t border-gray-200">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center">
-              {shippingMethod === 'pickup' ? (
-                <Store size={14} className="mr-2" />
-              ) : (
-                <Package size={14} className="mr-2" />
-              )}
-              <span>
-                {shippingMethod === 'pickup' 
-                  ? 'Retiro en tienda' 
-                  : selectedShipping?.name || 'Envío'
-                }
-              </span>
-            </div>
-            <span className={shippingCost === 0 ? 'text-green-600 font-medium' : ''}>
-              {shippingCost === 0 ? 'Gratis' : `$${shippingCost.toFixed(2)}`}
-            </span>
-          </div>
-        </div>
-      )}
-      
-      <div className="flex justify-between pt-3 mt-3 text-lg font-medium border-t border-gray-200">
-        <span>Total:</span>
-        <span className="text-accent">${finalTotal.toFixed(2)}</span>
-      </div>
-
-      <div className="p-4 mt-6 rounded-lg bg-blue-50">
-        <p className="text-sm text-blue-800">
-          🔒 <strong>Pago Seguro:</strong> Serás redirigido a Mercado Pago para completar tu compra de forma segura.
-        </p>
-      </div>
-    </div>
-  );
 
   return (
     <motion.div
@@ -366,7 +311,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
           {/* Mobile Order Summary */}
           <div className="block p-4 md:hidden bg-secondary/30">
-            <OrderSummary />
+            <OrderSummary 
+              shippingMethod={shippingMethod}
+              selectedShipping={selectedShipping}
+              shippingCost={shippingCost}
+            />
           </div>
 
           {/* Form Content */}
@@ -486,7 +435,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
         {/* Desktop Order Summary Sidebar */}
         <div className="hidden w-1/3 p-6 space-y-5 border-l border-gray-100 md:block bg-gray-50">
-          <OrderSummary />
+          <OrderSummary 
+            shippingMethod={shippingMethod}
+            selectedShipping={selectedShipping}
+            shippingCost={shippingCost}
+          />
           <PromotionsCheckbox />
         </div>
       </div>

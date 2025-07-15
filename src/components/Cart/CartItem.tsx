@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Minus, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { CartItem as CartItemType } from '../../types';
 import { useCart } from '../../hooks/useCart';
+import { buildVariantLabel } from '../../utils/variantUtils';
 
 interface CartItemProps {
   item: CartItemType;
@@ -11,6 +12,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
   const { product, quantity } = item;
   const [expanded, setExpanded] = useState(false);
+  const variantLabel = buildVariantLabel(item);
 
   // Check if product is a kit (has items array)
   const isKit = Array.isArray(product.items) && product.items.length > 0;
@@ -32,6 +34,11 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       <div className="flex-1">
         <div className="flex items-center">
           <h3 className="font-medium text-primary">{product.name}</h3>
+          {variantLabel && (
+            <span className="ml-2 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+              {variantLabel}
+            </span>
+          )}
           {isKit && (
             <button
               className="p-1 ml-2 text-primary hover:text-accent"
@@ -44,15 +51,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         </div>
         <p className="text-sm text-content">${product.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
 
-        {/* Display selected model and size */}
-        {(product.modelNumber || product.selectedSize) && (
-          <p className="text-sm text-content">
-            {product.modelNumber && <span>Modelo: {product.modelNumber}</span>}
-            {product.modelNumber && product.selectedSize && <span> | </span>}
-            {product.selectedSize && <span>Tamaño: {product.selectedSize}</span>}
-          </p>
-        )}
-        
         {/* Kit items expandable list */}
         {isKit && kitItems && expanded && (
           <ul className="pl-2 mt-2 ml-2 space-y-1 text-sm border-l border-accent/30">
