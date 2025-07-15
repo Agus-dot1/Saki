@@ -22,6 +22,8 @@ export interface CheckoutData {
   };
 }
 
+
+
 export interface PaymentPreference {
   preferenceId: string;
   initPoint: string;

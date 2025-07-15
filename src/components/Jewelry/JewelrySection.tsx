@@ -43,10 +43,8 @@ const JewelrySection: React.FC<JewelrySectionProps> = ({ onItemSelect }) => {
       try {
         setIsLoading(true);
         setError(null);
-        console.log('Loading jewelry items...');
         
         const jewelryData = await fetchJewelryItems();
-        console.log('Loaded jewelry items:', jewelryData);
         
         setItems(jewelryData);
         setFilteredItems(jewelryData);

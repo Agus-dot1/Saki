@@ -12,8 +12,6 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   isProcessingCheckout: boolean;
-  processCheckout: () => Promise<boolean>;
-  openCheckoutForm: () => void;
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -26,8 +24,6 @@ export const CartContext = createContext<CartContextType>({
   totalItems: 0,
   totalPrice: 0,
   isProcessingCheckout: false,
-  processCheckout: async () => false,
-  openCheckoutForm: () => {},
 });
 
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -188,22 +184,6 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       `Se eliminaron ${itemCount} producto${itemCount !== 1 ? 's' : ''} del carrito`
     );
   };
-
-  const openCheckoutForm = () => {
-    document.dispatchEvent(new CustomEvent('openCheckoutForm'));
-  };
-
-  const processCheckout = async (): Promise<boolean> => {
-        if (cartItems.length === 0) {
-          showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
-          return false;
-        }
-
-        // Abrir formulario de checkout en lugar de procesar directamente
-        openCheckoutForm();
-        return true;
-  };
-  
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   
   const totalPrice = cartItems.reduce(
@@ -221,8 +201,6 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     totalItems,
     totalPrice,
     isProcessingCheckout,
-    processCheckout,
-    openCheckoutForm,
   };
   
   return (

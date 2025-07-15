@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, User, MapPin, Mail, Loader2, X } from 'lucide-react';
+import { CreditCard, User, MapPin, Mail, Loader2, X, Package, Store, Gift } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { CheckoutService } from '../../services/checkoutService';
+import ShippingMethodSelector from '../Cart/ShippingMethodSelector';
+
+interface ShippingOption {
+  id: string;
+  name: string;
+  cost: number;
+  estimatedDelivery: string;
+  description: string;
+}
 
 
 interface CheckoutFormProps {
@@ -15,6 +24,17 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const { showSuccess, showError, showInfo } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   
+  // Shipping state
+  const [shippingMethod, setShippingMethod] = useState<'shipping' | 'pickup' | null>(() => {
+    const stored = localStorage.getItem('shippingOption');
+    return stored ? 'shipping' : null;
+  });
+  
+  const [selectedShipping, setSelectedShipping] = useState<ShippingOption | null>(() => {
+    const stored = localStorage.getItem('shippingOption');
+    return stored ? JSON.parse(stored) : null;
+  });
+  
   const [customerData, setCustomerData] = useState({
     email: '',
     firstName: '',
@@ -24,13 +44,31 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     streetName: '',
     streetNumber: '',
     city: '',
-    postalCode: ''
+    postalCode: '',
+    receivePromotions: false,
+    field: ''
   });
+  
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Calculate final total including shipping
+  const shippingCost = selectedShipping?.cost || 0;
+  const finalTotal = totalPrice + shippingCost;
+
+  const handleShippingChange = (method: 'shipping' | 'pickup', option?: ShippingOption) => {
+    setShippingMethod(method);
+    if (method === 'pickup') {
+      setSelectedShipping(null);
+    } else if (option) {
+      setSelectedShipping(option);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
+    // Basic info always required
     if (!customerData.email) {
       newErrors.email = 'El email es requerido';
     } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
@@ -53,16 +91,23 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       newErrors.phoneNumber = 'El número es requerido';
     }
 
-    if (!customerData.streetName) {
-      newErrors.streetName = 'La calle es requerida';
-    }
+    // Address only required for shipping
+    if (shippingMethod === 'shipping') { 
+      if (!customerData.streetName) {
+        newErrors.streetName = 'La calle es requerida para el envío';
+      }
 
-    if (!customerData.streetNumber) {
-      newErrors.streetNumber = 'El número es requerido';
-    }
+      if (!customerData.streetNumber) {
+        newErrors.streetNumber = 'El número es requerido para el envío';
+      }
 
-    if (!customerData.city) {
-      newErrors.city = 'La ciudad es requerida';
+      if (!customerData.city) {
+        newErrors.city = 'La ciudad es requerida para el envío';
+      }
+
+      if (!customerData.postalCode) {
+        newErrors.postalCode = 'El código postal es requerido para el envío';
+      }
     }
 
     setErrors(newErrors);
@@ -70,355 +115,381 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validateForm()) {
-    showError('Datos Incompletos', 'Por favor completá todos los campos requeridos');
-    return;
-  }
+    if (!validateForm()) {
+      showError('Datos Incompletos', 'Por favor completá todos los campos requeridos');
+      return;
+    }
 
-  if (cartItems.length === 0) {
-    showError('Carrito Vacío', 'Agregá productos antes de continuar');
-    return;
-  }
+    if (cartItems.length === 0) {
+      showError('Carrito Vacío', 'Agregá productos antes de continuar');
+      return;
+    }
 
-  setIsProcessing(true);
+    setIsProcessing(true);
 
-  try {
-    showInfo(
-      'Procesando...',
-      'Estamos preparando tu pago con Mercado Pago',
-      { duration: 2, dismissible: false }
-    );
+    try {
+      showInfo(
+        'Procesando...',
+        'Estamos preparando tu pago con Mercado Pago',
+        { duration: 2, dismissible: false }
+      );
 
-    // 🧠 Normalizar carrito
-    const normalizedItems = cartItems.map(item => ({
-      product: {
-        id: item.product.id,
-        name: item.product.name,
-        price: item.product.price,
-        description: item.product.description,
-        category_id: item.product.categoryId,
-      },
-      quantity: item.quantity,
-    }));
+      // Normalize cart items
+      const normalizedItems = cartItems.map(item => ({
+        product: {
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          description: item.product.description,
+          category_id: item.product.categoryId,
+        },
+        quantity: item.quantity,
+      }));
 
-    const checkoutData = {
-      items: normalizedItems,
-      customer: customerData
-    };
+      const checkoutData = {
+        items: normalizedItems,
+        customer: customerData,
+        shipping: {
+          method: shippingMethod,
+          option: selectedShipping,
+          cost: shippingCost
+        }
+      };
 
-    console.log('Sending checkout data:', checkoutData);
+      const preference = await CheckoutService.createPaymentPreference(checkoutData);
+      localStorage.setItem('currentOrderId', preference.orderId);
 
-    const preference = await CheckoutService.createPaymentPreference(checkoutData);
+      showSuccess(
+        'Redirigiendo a Mercado Pago',
+        `Orden #${preference.orderNumber} creada exitosamente`,
+        { duration: 3000 }
+      );
 
-    console.log('Received preference:', preference);
+      clearCart();
 
-    localStorage.setItem('currentOrderId', preference.orderId);
+      setTimeout(() => {
+        CheckoutService.redirectToMercadoPago(preference.initPoint);
+      }, 1000);
 
-    showSuccess(
-      'Redirigiendo a Mercado Pago',
-      `Orden #${preference.orderNumber} creada exitosamente`,
-      { duration: 3000 }
-    );
-
-    clearCart();
-
-    setTimeout(() => {
-      CheckoutService.redirectToMercadoPago(preference.initPoint);
-    }, 1000);
-
-  } catch (error) {
-    console.error('Checkout error:', error);
-    showError(
-      'Error en el Checkout',
-      error instanceof Error ? error.message : 'Ocurrió un error inesperado',
-      {
-        action: {
-          label: 'Contactar Soporte',
-          onClick: () => {
-            const message = `Hola, tuve un problema en el checkout. Total: $${totalPrice.toFixed(2)}`;
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
+    } catch (error) {
+      console.error('Checkout error:', error);
+      showError(
+        'Error en el Checkout',
+        error instanceof Error ? error.message : 'Ocurrió un error inesperado',
+        {
+          action: {
+            label: 'Contactar Soporte',
+            onClick: () => {
+              const message = `Hola, tuve un problema en el checkout. Total: $${finalTotal.toFixed(2)}`;
+              const encodedMessage = encodeURIComponent(message);
+              window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
+            }
           }
         }
-      }
-    );
-  } finally {
-    setIsProcessing(false);
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+  setCustomerData(prev => ({ ...prev, [field]: value }));
+  if (errors[field]) {
+    setErrors(prev => ({ ...prev, [field]: '' }));
   }
 };
 
-  const handleInputChange = (field: string, value: string) => {
-    setCustomerData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+    const InputField = ({
+      label,
+      field,
+      type = 'text',
+      placeholder,
+      maxLength,
+      className = ''
+    }: {
+      label: string;
+      field: string;
+      type?: string;
+      placeholder?: string;
+      maxLength?: number;
+      className?: string;
+    }) => {
+  const fieldValue = customerData[field as keyof typeof customerData];
+  
+  if (type === 'checkbox') {
+    return (
+      <div className={className}>
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={fieldValue as boolean}
+            onChange={(e) => handleInputChange(field, e.target.checked)}
+            className="border-gray-300 rounded text-accent focus:ring-accent"
+            disabled={isProcessing}
+          />
+          <span className="text-sm font-medium text-content">{label}</span>
+        </label>
+        {errors[field] && (
+          <p className="mt-1 text-xs text-red-500">{errors[field]}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      <label className="block mb-1 text-sm font-medium text-content">
+        {label} *
+      </label>
+      <input
+        type={type}
+        value={fieldValue as string}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+          errors[field] ? 'border-red-500' : 'border-gray-200'
+        }`}
+        disabled={isProcessing}
+        placeholder={placeholder}
+        maxLength={maxLength}
+      />
+      {errors[field] && (
+        <p className="mt-1 text-xs text-red-500">{errors[field]}</p>
+      )}
+    </div>
+  );
+};
+
+   const PromotionsCheckbox = () => (
+    <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+      <div className="flex items-start space-x-3">
+        <div className="flex items-center h-5">
+          <input
+            id="promotions-checkbox"
+            type="checkbox"
+            checked={customerData.receivePromotions}
+            onChange={(e) => handleInputChange('receivePromotions', e.target.checked)}
+            className="w-4 h-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+            disabled={isProcessing}
+          />
+        </div>
+        <label htmlFor="promotions-checkbox" className="flex-1 text-sm cursor-pointer">
+          <div className="flex items-center mb-1">
+            <Gift size={16} className="mr-1 text-purple-600" />
+            <span className="font-medium text-purple-800">
+              Quiero recibir ofertas y promociones exclusivas
+            </span>
+          </div>
+          <p className="text-xs text-purple-600">
+            Te enviaremos ofertas especiales, descuentos y novedades por email. 
+            Podés cancelar tu suscripción en cualquier momento.
+          </p>
+        </label>
+      </div>
+    </div>
+  );
+
+
+  const OrderSummary = () => (
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium text-primary">Resumen del Pedido</h3>
+      <div className="space-y-3">
+        {cartItems.map(item => (
+          <div key={item.product.id} className="flex justify-between text-sm">
+            <span>{item.product.name} x{item.quantity}</span>
+            <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Shipping Info */}
+      {shippingMethod && (
+        <div className="pt-3 mt-3 border-t border-gray-200">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center">
+              {shippingMethod === 'pickup' ? (
+                <Store size={14} className="mr-2" />
+              ) : (
+                <Package size={14} className="mr-2" />
+              )}
+              <span>
+                {shippingMethod === 'pickup' 
+                  ? 'Retiro en tienda' 
+                  : selectedShipping?.name || 'Envío'
+                }
+              </span>
+            </div>
+            <span className={shippingCost === 0 ? 'text-green-600 font-medium' : ''}>
+              {shippingCost === 0 ? 'Gratis' : `$${shippingCost.toFixed(2)}`}
+            </span>
+          </div>
+        </div>
+      )}
+      
+      <div className="flex justify-between pt-3 mt-3 text-lg font-medium border-t border-gray-200">
+        <span>Total:</span>
+        <span className="text-accent">${finalTotal.toFixed(2)}</span>
+      </div>
+
+      <div className="p-4 mt-6 rounded-lg bg-blue-50">
+        <p className="text-sm text-blue-800">
+          🔒 <strong>Pago Seguro:</strong> Serás redirigido a Mercado Pago para completar tu compra de forma segura.
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      className="bg-white shadow-2xl w-full max-w-7xl mx-auto overflow-y-scroll rounded-t-2xl md:rounded-2xl max-h-screen md:max-h-[90vh]"
     >
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="flex items-center text-2xl font-medium text-primary">
-          <CreditCard className="mr-3" size={24} />
-          Finalizar Compra
-        </h2>
-        <button
-          onClick={onClose}
-          disabled={isProcessing}
-          className="p-2 transition-colors text-content hover:text-primary disabled:opacity-50"
-        >
-          <X size={24} />
-        </button>
-      </div>
+      <div className="flex flex-col h-full md:flex-row">
+        {/* Form Section */}
+        <div className="flex flex-col w-full md:w-2/3">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 md:p-6">
+            <h2 className="flex items-center text-lg font-medium md:text-2xl text-primary">
+              <CreditCard className="mr-2 md:mr-3" size={20} />
+              Finalizar Compra
+            </h2>
+            <button
+              onClick={onClose}
+              disabled={isProcessing}
+              className="p-2 transition-colors text-content hover:text-primary disabled:opacity-50"
+            >
+              <X size={20} />
+            </button>
+          </div>
 
-      {/* Resumen del pedido */}
-      <div className="p-4 mb-6 rounded-lg bg-secondary/30">
-        <h3 className="mb-3 font-medium text-primary">Resumen del Pedido</h3>
-        <div className="space-y-2">
-          {cartItems.map(item => (
-            <div key={item.product.id} className="flex justify-between text-sm">
-              <span>{item.product.name} x{item.quantity}</span>
-              <span>${(item.product.price * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-between pt-3 mt-3 font-medium border-t border-secondary">
-          <span>Total:</span>
-          <span className="text-accent">${totalPrice.toFixed(2)}</span>
-        </div>
-      </div>
+          {/* Mobile Order Summary */}
+          <div className="block p-4 md:hidden bg-secondary/30">
+            <OrderSummary />
+          </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Datos personales */}
-        <div>
-          <h3 className="flex items-center mb-4 font-medium text-primary">
-            <User className="mr-2" size={20} />
-            Datos Personales
-          </h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-content">
-                Nombre *
-              </label>
-              <input
-                type="text"
-                value={customerData.firstName}
-                onChange={(e) => handleInputChange('firstName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.firstName ? 'border-red-500' : 'border-secondary'
-                }`}
-                disabled={isProcessing}
-              />
-              {errors.firstName && (
-                <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
+          {/* Form Content */}
+          <div className="flex-1 p-4 overflow-y-auto md:p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Personal Data */}
+              <div>
+                <h3 className="flex items-center mb-4 font-medium text-primary">
+                  <User className="mr-2" size={20} />
+                  Datos Personales
+                </h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <InputField label="Nombre" field="firstName" />
+                  <InputField label="Apellido" field="lastName" />
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div>
+                <h3 className="flex items-center mb-4 font-medium text-primary">
+                  <Mail className="mr-2" size={20} />
+                  Información de Contacto
+                </h3>
+                <div className="space-y-4">
+                  <InputField label="Email" field="email" type="email" />
+                  <div className="grid grid-cols-3 gap-2">
+                    <InputField 
+                      label="Área" 
+                      field="areaCode" 
+                      placeholder="Ej: 11" 
+                      maxLength={5} 
+                    />
+                    <InputField 
+                      label="Teléfono" 
+                      field="phoneNumber" 
+                      placeholder="Ej: 12345678" 
+                      className="col-span-2" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Method Selector */}
+              <div>
+                <h3 className="mb-4 text-lg font-medium text-primary">Método de Entrega</h3>
+                <ShippingMethodSelector
+                  cartItems={cartItems}
+                  onShippingChange={handleShippingChange}
+                  selectedMethod={shippingMethod}
+                  selectedShipping={selectedShipping}
+                />
+              </div>
+
+              {/* Shipping Address - Only show for shipping method */}
+              {shippingMethod === 'shipping' && (
+                <div>
+                  <h3 className="flex items-center mb-4 font-medium text-primary">
+                    <MapPin className="mr-2" size={20} />
+                    Dirección de Envío
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <InputField 
+                        label="Calle" 
+                        field="streetName" 
+                        placeholder="Ej: Av. Siempre Viva" 
+                      />
+                      <InputField 
+                        label="Número" 
+                        field="streetNumber" 
+                        placeholder="Ej: 742" 
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <InputField label="Ciudad" field="city" />
+                      <InputField label="Código Postal" field="postalCode" />
+                    </div>
+                  </div>
+                </div>
               )}
-            </div>
-            <div>
-              <label className="block mb-1 text-sm font-medium text-content">
-                Apellido *
-              </label>
-              <input
-                type="text"
-                value={customerData.lastName}
-                onChange={(e) => handleInputChange('lastName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.lastName ? 'border-red-500' : 'border-secondary'
-                }`}
+
+            
+            </form>
+          </div>
+
+          {/* Footer */}
+          <div className="p-4 border-t border-gray-100 md:p-6 bg-gray-50">
+            <div className="flex flex-col gap-3 md:flex-row">
+              <button
+                onClick={handleSubmit}
+                disabled={isProcessing || (shippingMethod === 'shipping' && !customerData.postalCode)}
+                className="flex items-center justify-center flex-1 px-6 py-3 text-white transition-colors rounded-md bg-accent hover:bg-supporting disabled:opacity-50"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 size={20} className="mr-2 animate-spin" />
+                    Procesando...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard size={20} className="mr-2" />
+                    Pagar con Mercado Pago
+                  </>
+                )}
+              </button>
+                            <button
+                type="button"
+                onClick={onClose}
                 disabled={isProcessing}
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
-              )}
+                className="flex-1 px-6 py-3 transition-colors border border-gray-200 rounded-md text-content hover:bg-secondary/50 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Contacto */}
-        <div>
-          <h3 className="flex items-center mb-4 font-medium text-primary">
-            <Mail className="mr-2" size={20} />
-            Información de Contacto
-          </h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-content">
-                Email *
-              </label>
-              <input
-                type="email"
-                value={customerData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                  errors.email ? 'border-red-500' : 'border-secondary'
-                }`}
-                disabled={isProcessing}
-              />
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Área *
-                </label>
-                <input
-                  type="text"
-                  value={customerData.areaCode}
-                  onChange={(e) => handleInputChange('areaCode', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.areaCode ? 'border-red-500' : 'border-secondary'
-                  }`}
-                  disabled={isProcessing}
-                  placeholder="Ej: 11"
-                  maxLength={5}
-                />
-                {errors.areaCode && (
-                  <p className="mt-1 text-xs text-red-500">{errors.areaCode}</p>
-                )}
-              </div>
-              <div className="col-span-2">
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Teléfono *
-                </label>
-                <input
-                  type="text"
-                  value={customerData.phoneNumber}
-                  onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.phoneNumber ? 'border-red-500' : 'border-secondary'
-                  }`}
-                  disabled={isProcessing}
-                  placeholder="Ej: 12345678"
-                />
-                {errors.phoneNumber && (
-                  <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
-                )}
-              </div>
-            </div>
-          </div>
+        {/* Desktop Order Summary Sidebar */}
+        <div className="hidden w-1/3 p-6 space-y-5 border-l border-gray-100 md:block bg-gray-50">
+          <OrderSummary />
+          <PromotionsCheckbox />
         </div>
-
-        {/* Dirección */}
-        <div>
-          <h3 className="flex items-center mb-4 font-medium text-primary">
-            <MapPin className="mr-2" size={20} />
-            Dirección de Envío
-          </h3>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Calle *
-                </label>
-                <input
-                  type="text"
-                  value={customerData.streetName}
-                  onChange={(e) => handleInputChange('streetName', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.streetName ? 'border-red-500' : 'border-secondary'
-                  }`}
-                  disabled={isProcessing}
-                  placeholder="Ej: Av. Siempre Viva"
-                />
-                {errors.streetName && (
-                  <p className="mt-1 text-xs text-red-500">{errors.streetName}</p>
-                )}
-              </div>
-              <div>
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Número *
-                </label>
-                <input
-                  type="text"
-                  value={customerData.streetNumber}
-                  onChange={(e) => handleInputChange('streetNumber', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.streetNumber ? 'border-red-500' : 'border-secondary'
-                  }`}
-                  disabled={isProcessing}
-                  placeholder="Ej: 742"
-                />
-                {errors.streetNumber && (
-                  <p className="mt-1 text-xs text-red-500">{errors.streetNumber}</p>
-                )}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Ciudad *
-                </label>
-                <input
-                  type="text"
-                  value={customerData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-                    errors.city ? 'border-red-500' : 'border-secondary'
-                  }`}
-                  disabled={isProcessing}
-                />
-                {errors.city && (
-                  <p className="mt-1 text-xs text-red-500">{errors.city}</p>
-                )}
-              </div>
-              <div>
-                <label className="block mb-1 text-sm font-medium text-content">
-                  Código Postal
-                </label>
-                <input
-                  type="text"
-                  value={customerData.postalCode}
-                  onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md border-secondary focus:ring-2 focus:ring-accent focus:border-accent"
-                  disabled={isProcessing}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Botones */}
-        <div className="flex flex-col gap-3 pt-6 border-t border-secondary sm:flex-row">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isProcessing}
-            className="flex-1 px-6 py-3 transition-colors border rounded-md border-secondary text-content hover:bg-secondary/50 disabled:opacity-50"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={isProcessing}
-            className="flex items-center justify-center flex-1 px-6 py-3 text-white transition-colors rounded-md bg-accent hover:bg-supporting disabled:opacity-50"
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 size={20} className="mr-2 animate-spin" />
-                Procesando...
-              </>
-            ) : (
-              <>
-                <CreditCard size={20} className="mr-2" />
-                Pagar con Mercado Pago
-              </>
-            )}
-          </button>
-        </div>
-      </form>
-
-      <div className="p-4 mt-6 rounded-lg bg-blue-50">
-        <p className="text-sm text-blue-800">
-          🔒 <strong>Pago Seguro:</strong> Serás redirigido a Mercado Pago para completar tu compra de forma segura.
-          Aceptamos tarjetas de crédito, débito y otros métodos de pago.
-        </p>
       </div>
     </motion.div>
   );
