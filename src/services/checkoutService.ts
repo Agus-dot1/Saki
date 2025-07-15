@@ -1,18 +1,19 @@
 import supabase from "../utils/supabase";
 import { NormalizedCartItem } from "../utils/variantUtils";
+import { NormalizedCartItem } from "../utils/variantUtils";
 
 export interface CheckoutData {
-  items: NormalizedCartItem[];
-  customer: {
-    email: string;
-    firstName: string;
-    lastName: string;
     areaCode: string;
     phoneNumber: string;
     streetName: string;
     streetNumber: string;
     city: string;
     postalCode?: string;
+  };
+  shipping?: {
+    method: 'shipping' | 'pickup' | null;
+    option: any;
+    cost: number;
   };
 }
 

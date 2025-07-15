@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import { Product, CartItem, SelectedKitItem } from '../types';
 import { useToast } from '../hooks/useToast';
 import { createCartItemKey } from '../utils/variantUtils';
+import { createCartItemKey } from '../utils/variantUtils';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -92,6 +93,14 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         createCartItemKey(item) === newItemKey
       );
 
+      // Create a unique key for the new item
+      const newItemKey = createCartItemKey({ product, quantity, selectedItems });
+      
+      // Check if an item with the same key already exists
+      const existingItem = prevItems.find(item => 
+        createCartItemKey(item) === newItemKey
+      );
+
       if (existingItem) {
         const updatedItems = prevItems.map(item => {
           const itemKey = createCartItemKey(item);
@@ -106,7 +115,20 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         );
 
         return updatedItems;
+        });
+
+        showSuccess(
+          'Producto Actualizado',
+          `${product.name} (cantidad: ${existingItem.quantity + quantity})`
+        );
+
+        return updatedItems;
       } else {
+        showSuccess(
+          'Agregado al Carrito',
+          `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`
+        );
+
         showSuccess(
           'Agregado al Carrito',
           `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`
@@ -125,6 +147,12 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       selectedItems 
     });
     
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     setCartItems(prevItems =>
       prevItems.filter(item => createCartItemKey(item) !== targetKey)
     );
@@ -137,9 +165,16 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       selectedItems 
     });
     
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     setCartItems(prevItems =>
       prevItems.map(item => {
         const itemKey = createCartItemKey(item);
+        return itemKey === targetKey
         return itemKey === targetKey
           ? { ...item, quantity: item.quantity + 1 }
           : item;
@@ -148,6 +183,12 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ 
+      product: { id: productId, modelNumber, selectedSize } as Product, 
+      quantity: 1, 
+      selectedItems 
+    });
+    
     const targetKey = createCartItemKey({ 
       product: { id: productId, modelNumber, selectedSize } as Product, 
       quantity: 1, 
@@ -163,6 +204,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
       return prevItems.map(item => {
         const itemKey = createCartItemKey(item);
+        return itemKey === targetKey
         return itemKey === targetKey
           ? { ...item, quantity: item.quantity - 1 }
           : item;

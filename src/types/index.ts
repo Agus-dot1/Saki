@@ -29,6 +29,7 @@ export interface Product {
   selectedTone?: string;
   isNew?: boolean;
   categoryId?: string; 
+  categoryId?: string; 
 }
 
 export interface SelectedKitItem {
@@ -70,6 +71,27 @@ export interface OrderStatus {
 }
 
 
+
+
+export interface NormalizedItem {
+  id: number;
+  product_name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface CheckoutData {
+  items: NormalizedItem[];
+  customer: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    address: string;
+    city: string;
+    postalCode: string;
+  };
+}
 
 export interface NormalizedItem {
   id: number;
