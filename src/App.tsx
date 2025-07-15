@@ -48,7 +48,6 @@ const MainApp: React.FC = () => {
     };
 
     const handleOpenCheckoutForm = () => {
-      setIsCartOpen(false);
       setIsCheckoutOpen(true);
     };
 

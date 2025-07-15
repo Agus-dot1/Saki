@@ -26,6 +26,7 @@ export interface Product {
   modelNumber?: number; 
   selectedSize?: string;
   selectedColor?: string;
+  selectedTone?: string;
   isNew?: boolean;
   categoryId?: string; 
 }

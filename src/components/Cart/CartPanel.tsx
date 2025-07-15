@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { X, ArrowRight, Loader2, MessageCircle } from 'lucide-react';
+import { X, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import CartItem from './CartItem';
 import ShippingLocationsModal from '../Products/ShippingLocationModal';
+
 
 interface CartPanelProps {
   isOpen: boolean;
@@ -12,11 +13,12 @@ interface CartPanelProps {
 
 const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
   const { 
-    cartItems, totalPrice, clearCart, processCheckout, isProcessingCheckout
+    cartItems, totalPrice, clearCart, isProcessingCheckout
   } = useCart();
   const { showInfo } = useToast();
-    const [showShippingModal, setShowShippingModal] = useState(false);
+  const [showShippingModal, setShowShippingModal] = useState(false);
   
+
   // Listen for custom cart opening events
   useEffect(() => {
     const handleOpenCart = () => {
@@ -28,13 +30,6 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
     document.addEventListener('openCart', handleOpenCart);
     return () => document.removeEventListener('openCart', handleOpenCart);
   }, [isOpen]);
-
-    const handleCheckout = async () => {
-      const success = await processCheckout();
-      if (success) {
-        onClose();
-      }
-    };
     
   const devCheckoutEnabled = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -52,7 +47,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       item => `${item.quantity}x ${item.product.name} - $${(item.product.price * item.quantity).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     ).join('\n');
 
-    const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n\nCódigo de Pedido: ${orderCode}`;
+    const message = `Hola, me gustaría hacer un pedido:\n\n${orderSummary}\n\nTotal: $${finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n\nCódigo de Pedido: ${orderCode}`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/541126720095?text=${encodedMessage}`;
     
@@ -63,6 +58,9 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
       'Te estamos conectando con nuestro equipo de ventas'
     );
   };
+
+  // Calculate final total including shipping
+  const finalTotal = totalPrice;
   
   return (
     <div className="flex flex-col h-full bg-white shadow-xl">
@@ -104,6 +102,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+            {/* Cart Items */}
             {cartItems.map((item, index) => (
               <div key={`${item.product.id}-${index}`}>
                 <CartItem item={item} />
@@ -125,26 +124,17 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
               <span>Subtotal</span>
               <span>${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
-            <div className="flex items-center justify-between text-sm text-content">
-              <span>Envío</span>
-              <span className="font-medium text-green-600">Gratis en                   <span 
-                    className="underline cursor-pointer"
-                    onClick={() => setShowShippingModal(true)}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    zonas seleccionadas
-                  </span></span>
-            </div>
+            
             <ShippingLocationsModal
               open={showShippingModal}
               onClose={() => setShowShippingModal(false)}
             />
+            
             <div className="pt-2 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold text-primary">Total</span>
                 <span className="text-xl font-bold text-accent">
-                  ${totalPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  ${finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
@@ -165,21 +155,16 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
             {/* Mercado Pago checkout - Secondary option */}
             {devCheckoutEnabled && (
               <button 
-                onClick={handleCheckout}
+                onClick={() => {
+                  // Dispatch event to open checkout form
+                  document.dispatchEvent(new CustomEvent('openCheckoutForm'));
+                  onClose();
+                }}
                 disabled={isProcessingCheckout}
                 className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium transition-all duration-200 border rounded-xl border-accent text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
-                {isProcessingCheckout ? (
-                  <>
-                    <Loader2 size={18} className="animate-spin" />
-                    <span>Procesando...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Pagar con Mercado Pago</span>
-                    <ArrowRight size={18} />
-                  </>
-                )}
+                <span>Pagar con Mercado Pago</span>
+                <ArrowRight size={18} />
               </button>
             )}
 
