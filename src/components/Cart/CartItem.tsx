@@ -3,7 +3,6 @@ import { Minus, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { CartItem as CartItemType } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { buildVariantLabel } from '../../utils/variantUtils';
-import { buildVariantLabel } from '../../utils/variantUtils';
 
 interface CartItemProps {
   item: CartItemType;
@@ -13,7 +12,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
   const { product, quantity } = item;
   const [expanded, setExpanded] = useState(false);
-  const variantLabel = buildVariantLabel(item);
   const variantLabel = buildVariantLabel(item);
 
   // Check if product is a kit (has items array)
@@ -36,11 +34,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       <div className="flex-1">
         <div className="flex items-center">
           <h3 className="font-medium text-primary">{product.name}</h3>
-          {variantLabel && (
-            <span className="ml-2 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
-              {variantLabel}
-            </span>
-          )}
           {variantLabel && (
             <span className="ml-2 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
               {variantLabel}
