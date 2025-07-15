@@ -46,7 +46,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
     city: '',
     postalCode: '',
     receivePromotions: false,
-    field: ''
   });
   
   
