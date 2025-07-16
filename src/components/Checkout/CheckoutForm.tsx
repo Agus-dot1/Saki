@@ -21,6 +21,114 @@ interface CheckoutFormProps {
   onClose: () => void;
 }
 
+
+interface InputFieldProps {
+  label: string;
+  field: string;
+  type?: string;
+  placeholder?: string;
+  maxLength?: number;
+  className?: string;
+  value: string | boolean;
+  error?: string;
+  onChange: (field: string, value: string | boolean) => void;
+  isProcessing: boolean;
+}
+
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  field,
+  type = 'text',
+  placeholder,
+  maxLength,
+  className = '',
+  value,
+  error,
+  onChange,
+  isProcessing,
+}) => {
+  if (type === 'checkbox') {
+    return (
+      <div className={className}>
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={value as boolean}
+            onChange={(e) => onChange(field, e.target.checked)}
+            className="border-gray-300 rounded text-accent focus:ring-accent"
+            disabled={isProcessing}
+          />
+          <span className="text-sm font-medium text-content">{label}</span>
+        </label>
+        {error && (
+          <p className="mt-1 text-xs text-red-500">{error}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      <label className="block mb-1 text-sm font-medium text-content">
+        {label} *
+      </label>
+      <input
+        type={type}
+        value={value as string}
+        onChange={(e) => onChange(field, e.target.value)}
+        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
+          error ? 'border-red-500' : 'border-gray-200'
+        }`}
+        disabled={isProcessing}
+        placeholder={placeholder}
+        maxLength={maxLength}
+      />
+      {error && (
+        <p className="mt-1 text-xs text-red-500">{error}</p>
+      )}
+    </div>
+  );
+};
+
+interface PromotionsCheckboxProps {
+  receivePromotions: boolean;
+  onChange: (field: string, value: boolean) => void;
+  isProcessing: boolean;
+}
+
+const PromotionsCheckbox: React.FC<PromotionsCheckboxProps> = ({
+  receivePromotions,
+  onChange,
+  isProcessing,
+}) => (
+  <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+    <div className="flex items-start space-x-3">
+      <div className="flex items-center h-5">
+        <input
+          id="promotions-checkbox"
+          type="checkbox"
+          checked={receivePromotions}
+          onChange={(e) => onChange('receivePromotions', e.target.checked)}
+          className="w-4 h-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+          disabled={isProcessing}
+        />
+      </div>
+      <label htmlFor="promotions-checkbox" className="flex-1 text-sm cursor-pointer">
+        <div className="flex items-center mb-1">
+          <Gift size={16} className="mr-1 text-purple-600" />
+          <span className="font-medium text-purple-800">
+            Quiero recibir ofertas y promociones exclusivas
+          </span>
+        </div>
+        <p className="text-xs text-purple-600">
+          Te enviaremos ofertas especiales, descuentos y novedades por email. 
+          Podés cancelar tu suscripción en cualquier momento.
+        </p>
+      </label>
+    </div>
+  </div>
+);
+
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const { cartItems, totalPrice, clearCart } = useCart();
   const { showSuccess, showError, showInfo } = useToast();
@@ -171,14 +279,15 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         'Error en el Checkout',
         error instanceof Error ? error.message : 'Ocurrió un error inesperado',
         {
-          action: {
-            label: 'Contactar Soporte',
-            onClick: () => {
-              const message = `Hola, tuve un problema en el checkout. Total: $${finalTotal.toFixed(2)}`;
-              const encodedMessage = encodeURIComponent(message);
-              window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
+          action:
+            {
+              label: 'Contactar Soporte',
+              onClick: () => {
+                const message = `Hola, tuve un problema en el checkout. Total: $${finalTotal.toFixed(2)}`;
+                const encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/541126720095?text=${encodedMessage}`, '_blank');
+              }
             }
-          }
         }
       );
     } finally {
@@ -193,94 +302,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   }
 };
 
-    const InputField = ({
-      label,
-      field,
-      type = 'text',
-      placeholder,
-      maxLength,
-      className = ''
-    }: {
-      label: string;
-      field: string;
-      type?: string;
-      placeholder?: string;
-      maxLength?: number;
-      className?: string;
-    }) => {
-  const fieldValue = customerData[field as keyof typeof customerData];
-  
-  if (type === 'checkbox') {
-    return (
-      <div className={className}>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={fieldValue as boolean}
-            onChange={(e) => handleInputChange(field, e.target.checked)}
-            className="border-gray-300 rounded text-accent focus:ring-accent"
-            disabled={isProcessing}
-          />
-          <span className="text-sm font-medium text-content">{label}</span>
-        </label>
-        {errors[field] && (
-          <p className="mt-1 text-xs text-red-500">{errors[field]}</p>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className={className}>
-      <label className="block mb-1 text-sm font-medium text-content">
-        {label} *
-      </label>
-      <input
-        type={type}
-        value={fieldValue as string}
-        onChange={(e) => handleInputChange(field, e.target.value)}
-        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
-          errors[field] ? 'border-red-500' : 'border-gray-200'
-        }`}
-        disabled={isProcessing}
-        placeholder={placeholder}
-        maxLength={maxLength}
-      />
-      {errors[field] && (
-        <p className="mt-1 text-xs text-red-500">{errors[field]}</p>
-      )}
-    </div>
-  );
-};
-
-   const PromotionsCheckbox = () => (
-    <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
-      <div className="flex items-start space-x-3">
-        <div className="flex items-center h-5">
-          <input
-            id="promotions-checkbox"
-            type="checkbox"
-            checked={customerData.receivePromotions}
-            onChange={(e) => handleInputChange('receivePromotions', e.target.checked)}
-            className="w-4 h-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
-            disabled={isProcessing}
-          />
-        </div>
-        <label htmlFor="promotions-checkbox" className="flex-1 text-sm cursor-pointer">
-          <div className="flex items-center mb-1">
-            <Gift size={16} className="mr-1 text-purple-600" />
-            <span className="font-medium text-purple-800">
-              Quiero recibir ofertas y promociones exclusivas
-            </span>
-          </div>
-          <p className="text-xs text-purple-600">
-            Te enviaremos ofertas especiales, descuentos y novedades por email. 
-            Podés cancelar tu suscripción en cualquier momento.
-          </p>
-        </label>
-      </div>
-    </div>
-  );
 
 
 
@@ -328,8 +349,22 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   Datos Personales
                 </h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <InputField label="Nombre" field="firstName" />
-                  <InputField label="Apellido" field="lastName" />
+                  <InputField
+                    label="Nombre"
+                    field="firstName"
+                    value={customerData.firstName}
+                    error={errors.firstName}
+                    onChange={handleInputChange}
+                    isProcessing={isProcessing}
+                  />
+                  <InputField
+                    label="Apellido"
+                    field="lastName"
+                    value={customerData.lastName}
+                    error={errors.lastName}
+                    onChange={handleInputChange}
+                    isProcessing={isProcessing}
+                  />
                 </div>
               </div>
 
@@ -340,19 +375,35 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   Información de Contacto
                 </h3>
                 <div className="space-y-4">
-                  <InputField label="Email" field="email" type="email" />
+                  <InputField
+                    label="Email"
+                    field="email"
+                    type="email"
+                    value={customerData.email}
+                    error={errors.email}
+                    onChange={handleInputChange}
+                    isProcessing={isProcessing}
+                  />
                   <div className="grid grid-cols-3 gap-2">
                     <InputField 
                       label="Área" 
                       field="areaCode" 
                       placeholder="Ej: 11" 
                       maxLength={5} 
+                      value={customerData.areaCode}
+                      error={errors.areaCode}
+                      onChange={handleInputChange}
+                      isProcessing={isProcessing}
                     />
                     <InputField 
                       label="Teléfono" 
                       field="phoneNumber" 
                       placeholder="Ej: 12345678" 
                       className="col-span-2" 
+                      value={customerData.phoneNumber}
+                      error={errors.phoneNumber}
+                      onChange={handleInputChange}
+                      isProcessing={isProcessing}
                     />
                   </div>
                 </div>
@@ -382,16 +433,38 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                         label="Calle" 
                         field="streetName" 
                         placeholder="Ej: Av. Siempre Viva" 
+                        value={customerData.streetName}
+                        error={errors.streetName}
+                        onChange={handleInputChange}
+                        isProcessing={isProcessing}
                       />
                       <InputField 
                         label="Número" 
                         field="streetNumber" 
                         placeholder="Ej: 742" 
+                        value={customerData.streetNumber}
+                        error={errors.streetNumber}
+                        onChange={handleInputChange}
+                        isProcessing={isProcessing}
                       />
                     </div>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <InputField label="Ciudad" field="city" />
-                      <InputField label="Código Postal" field="postalCode" />
+                      <InputField
+                        label="Ciudad"
+                        field="city"
+                        value={customerData.city}
+                        error={errors.city}
+                        onChange={handleInputChange}
+                        isProcessing={isProcessing}
+                      />
+                      <InputField
+                        label="Código Postal"
+                        field="postalCode"
+                        value={customerData.postalCode}
+                        error={errors.postalCode}
+                        onChange={handleInputChange}
+                        isProcessing={isProcessing}
+                      />
                     </div>
                   </div>
                 </div>
@@ -440,7 +513,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             selectedShipping={selectedShipping}
             shippingCost={shippingCost}
           />
-          <PromotionsCheckbox />
+          <PromotionsCheckbox
+            receivePromotions={customerData.receivePromotions}
+            onChange={handleInputChange}
+            isProcessing={isProcessing}
+          />
         </div>
       </div>
     </motion.div>
