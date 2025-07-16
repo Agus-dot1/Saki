@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Package } from 'lucide-react';
-import { useCart } from '../../hooks/useCart';
+import { Sparkles } from 'lucide-react';
 
 interface FloatingKitButtonProps {
   onOpenKitBuilder: () => void;
@@ -10,7 +9,6 @@ interface FloatingKitButtonProps {
 const FloatingKitButton: React.FC<FloatingKitButtonProps> = ({ onOpenKitBuilder }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { totalItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +41,7 @@ const FloatingKitButton: React.FC<FloatingKitButtonProps> = ({ onOpenKitBuilder 
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed z-40 bottom-20 right-4 sm:bottom-6 sm:right-6"
+          className="fixed z-40 bottom-24 right-4 sm:bottom-6 sm:right-6"
           onHoverStart={handleHover}
           initial={{ opacity: 0, scale: 0, y: 100 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -90,17 +88,6 @@ const FloatingKitButton: React.FC<FloatingKitButtonProps> = ({ onOpenKitBuilder 
               </AnimatePresence>
             </div>
 
-            {/* Cart indicator */}
-            {totalItems > 0 && !isExpanded && (
-              <motion.div
-                className="absolute flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full -top-2 -right-2"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 15 }}
-              >
-                {totalItems}
-              </motion.div>
-            )}
 
             {/* Sparkle particles */}
             <div className="absolute inset-0 pointer-events-none">

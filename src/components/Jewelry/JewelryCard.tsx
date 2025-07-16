@@ -106,7 +106,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
             <button
               onClick={handleAddToCart}
               disabled={stockStatus.disabled}
-              className="p-2 transition-all duration-200 bg-white rounded-full shadow-lg hover:bg-accent hover:text-white disabled:bg-gray-200 disabled:cursor-not-allowed"
+              className="flex items-center justify-center p-2 transition-all duration-200 bg-white rounded-full shadow-lg hover:bg-accent hover:text-white disabled:bg-gray-200 disabled:cursor-not-allowed"
               aria-label="Agregar al carrito"
             >
               <ShoppingCart size={16} />
@@ -115,7 +115,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
             {item.category === 'anillo' && (
               <button
                 onClick={handleSizeGuide}
-                className="p-2 transition-all duration-200 bg-white rounded-full shadow-lg hover:bg-accent hover:text-white"
+                className="flex items-center justify-center p-2 transition-all duration-200 bg-white rounded-full shadow-lg hover:bg-accent hover:text-white"
                 aria-label="Guía de tallas"
               >
                 <Ruler size={16} />
