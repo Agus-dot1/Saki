@@ -158,15 +158,6 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
           </div>
         </div>
       )}
-
-      {/* Free shipping zones info */}
-      {!hasCalculated && (
-        <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
-          <div className="text-xs text-blue-700">
-            <strong>Envío gratis</strong> en códigos postales: 1000-1009 (CABA Centro)
-          </div>
-        </div>
-      )}
     </div>
   );
 };

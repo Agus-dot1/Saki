@@ -20,7 +20,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'CABA Centro',
     cost: 4500,
     estimatedDelivery: '2-3 días hábiles',
-    description: 'Entrega moto desde Ituzaingó a micro-centro',
+    description: 'Envios por Correo Argentino a zona centro de CABA',
 
   },
   {
@@ -28,7 +28,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'CABA Norte',
     cost: 5000,
     estimatedDelivery: '2-3 días hábiles',
-    description: 'Entrega moto a zona norte de CABA',
+    description: 'Envios por Correo Argentino a zona norte de CABA',
 
   },
   {
@@ -36,7 +36,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'CABA Sur',
     cost: 5000,
     estimatedDelivery: '2-3 días hábiles',
-    description: 'Entrega moto a zona sur de CABA',
+    description: 'Envios por Correo Argentino a zona sur de CABA',
 
   },
 
@@ -46,7 +46,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'GBA Norte',
     cost: 6000,
     estimatedDelivery: '3-4 días hábiles',
-    description: 'Entrega moto a primer cordón norte',
+    description: 'Envios por Correo Argentino a primer cordón norte',
 
   },
   {
@@ -54,7 +54,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'GBA Oeste',
     cost: 3000,
     estimatedDelivery: '1-2 días hábiles',
-    description: 'Zona local y alrededores',
+    description: 'Envios por Correo Argentino a zona local y alrededores',
 
   },
   {
@@ -62,7 +62,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     name: 'GBA Sur',
     cost: 6000,
     estimatedDelivery: '3-4 días hábiles',
-    description: 'Entrega moto a primer cordón sur',
+    description: 'Envios por Correo Argentino a primer cordón sur',
 
   }
 ];
