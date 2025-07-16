@@ -33,7 +33,8 @@ export class CheckoutService {
       const { data: response, error } = await supabase.functions.invoke(
         'create-payment-preference',
         {
-          body: data
+          body: data,
+          headers: import.meta.env.PROD ? { 'x-saki-secret': import.meta.env.VITE_SAKI_SECRET } : {},
         }
       );
 
