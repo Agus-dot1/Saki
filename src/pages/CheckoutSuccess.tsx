@@ -56,7 +56,7 @@ const CheckoutSuccess: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-secondary/30">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-white">
       <div className="w-full max-w-md p-8 text-center bg-white rounded-lg">
         <div className="mb-6">
           <CheckCircle size={64} className="mx-auto mb-4 text-green-500" />
