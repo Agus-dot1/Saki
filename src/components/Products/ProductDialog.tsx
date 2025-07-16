@@ -140,7 +140,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     >
       {/* Mobile Layout */}
       <motion.div 
-        className="relative flex flex-col w-full max-h-screen overflow-hidden bg-white shadow-2xl sm:hidden"
+        className="relative flex flex-col w-full overflow-hidden bg-white shadow-2xl h-dvh sm:hidden"
         onClick={(e) => e.stopPropagation()}
         variants={dialogVariants}
         initial="hidden"
