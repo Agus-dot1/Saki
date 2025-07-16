@@ -34,7 +34,7 @@ export class CheckoutService {
         'create-payment-preference',
         {
           body: data,
-          headers: import.meta.env.PROD ? { 'x-saki-secret': import.meta.env.VITE_SAKI_SECRET } : {},
+          headers: {'x-saki-secret': import.meta.env.VITE_SAKI_SECRET}
         }
       );
 
