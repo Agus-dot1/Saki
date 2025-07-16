@@ -8,6 +8,7 @@ import ShippingMethodSelector from '../Cart/ShippingMethodSelector';
 import OrderSummary from './OrderSummary';
 import { normalizeCartItems } from '../../utils/variantUtils';
 
+
 interface ShippingOption {
   id: string;
   name: string;
@@ -133,7 +134,15 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const { cartItems, totalPrice, clearCart } = useCart();
   const { showSuccess, showError, showInfo } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  
+  const [postalCode, setPostalCode] = useState('');
+
+  // Sync postalCode to customerData.postalCode
+  React.useEffect(() => {
+    if (postalCode && customerData.postalCode !== postalCode) {
+      setCustomerData(prev => ({ ...prev, postalCode }));
+    }
+  }, [postalCode]);
+
   // Shipping state
   const [shippingMethod, setShippingMethod] = useState<'shipping' | 'pickup' | null>(() => {
     const stored = localStorage.getItem('shippingOption');
@@ -242,7 +251,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
       showInfo(
         'Procesando...',
         'Estamos preparando tu pago con Mercado Pago',
-        { duration: 0, dismissible: false }
+        { duration: 2, dismissible: false }
       );
 
       // Normalize cart items with variant data
@@ -304,13 +313,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
 
 
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-white shadow-2xl w-full max-w-7xl mx-auto overflow-y-scroll rounded-t-2xl md:rounded-2xl max-h-screen md:max-h-[90vh]"
+      className="bg-white shadow-2xl w-full max-w-7xl mx-auto overflow-y-scroll rounded-t-2xl md:rounded-2xl h-dvh md:max-h-[90vh]"
     >
       <div className="flex flex-col h-full md:flex-row">
         {/* Form Section */}
@@ -331,7 +339,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
           </div>
 
           {/* Mobile Order Summary */}
-          <div className="block p-4 md:hidden bg-secondary/30">
+          <div className="block p-4 space-y-5 md:hidden bg-secondary/30">
             <OrderSummary 
               shippingMethod={shippingMethod}
               selectedShipping={selectedShipping}
@@ -417,6 +425,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   onShippingChange={handleShippingChange}
                   selectedMethod={shippingMethod}
                   selectedShipping={selectedShipping}
+                  postalCode={postalCode} // <-- pass down
+                  setPostalCode={setPostalCode} // <-- pass down
                 />
               </div>
 
@@ -469,7 +479,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
                   </div>
                 </div>
               )}
-
+              {/* Promotions Checkbox */}
+           <PromotionsCheckbox
+            receivePromotions={customerData.receivePromotions}
+            onChange={handleInputChange}
+            isProcessing={isProcessing}
+          />
             
             </form>
           </div>

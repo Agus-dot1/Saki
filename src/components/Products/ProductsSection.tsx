@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import ProductCard from './ProductCard';
+import MemoizedProductCard from './MemoizedProductCard';
 import LoadingSpinner from '../LoadingSpinner';
 import { Product } from '../../types';
 import { Package, Sparkles } from 'lucide-react';
@@ -124,9 +124,9 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
           >
             {products.map(product => (
               <motion.div key={product.id} variants={itemVariants}>
-                <ProductCard 
+                <MemoizedProductCard
                   product={product}
-                  onClick={() => onProductSelect(product)}
+                  onProductSelect={onProductSelect}
                 />
               </motion.div>
             ))}

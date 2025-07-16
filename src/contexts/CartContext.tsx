@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { Product, CartItem, SelectedKitItem } from '../types';
 import { useToast } from '../hooks/useToast';
 import { createCartItemKey } from '../utils/variantUtils';
@@ -64,128 +64,74 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     return true;
   };
   
-  // Utility to compare selectedItems deeply
-  function areSelectedItemsEqual(a?: SelectedKitItem[], b?: SelectedKitItem[]) {
-    if (!a && !b) return true;
-    if (!a || !b) return false;
-    if (a.length !== b.length) return false;
-    return a.every((item, idx) => {
-      const other = b[idx];
-      return (
-        item.name === other.name &&
-        item.quantity === other.quantity &&
-        item.color === other.color &&
-        item.size === other.size
-      );
-    });
-  }
 
-  const addToCart = (product: Product, quantity: number = 1, selectedItems?: SelectedKitItem[]) => {
+  const addToCart = useCallback((product: Product, quantity: number = 1, selectedItems?: SelectedKitItem[]) => {
     if (!checkStock(product, quantity)) return;
 
     setCartItems(prevItems => {
-      // Create a unique key for the new item
       const newItemKey = createCartItemKey({ product, quantity, selectedItems });
-      
-      // Check if an item with the same key already exists
-      const existingItem = prevItems.find(item => 
-        createCartItemKey(item) === newItemKey
-      );
+      const existingItem = prevItems.find(item => createCartItemKey(item) === newItemKey);
 
       if (existingItem) {
-        const updatedItems = prevItems.map(item => {
-          const itemKey = createCartItemKey(item);
-          return itemKey === newItemKey
+        const updatedItems = prevItems.map(item =>
+          createCartItemKey(item) === newItemKey
             ? { ...item, quantity: item.quantity + quantity }
-            : item;
-        });
-
-        showSuccess(
-          'Producto Actualizado',
-          `${product.name} (cantidad: ${existingItem.quantity + quantity})`
+            : item
         );
-
+        showSuccess('Producto Actualizado', `${product.name} (cantidad: ${existingItem.quantity + quantity})`);
         return updatedItems;
       } else {
-        showSuccess(
-          'Agregado al Carrito',
-          `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`
-        );
-
+        showSuccess('Agregado al Carrito', `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`);
         return [...prevItems, { product, quantity, selectedItems }];
       }
     });
-  };
-  
-  // Also update these functions to consider model and size
-  const removeFromCart = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
-    const targetKey = createCartItemKey({ 
-      product: { id: productId, modelNumber, selectedSize } as Product, 
-      quantity: 1, 
-      selectedItems 
-    });
-    
-    setCartItems(prevItems =>
-      prevItems.filter(item => createCartItemKey(item) !== targetKey)
-    );
-  };
+  }, [showSuccess]);
 
-  const increaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
-    const targetKey = createCartItemKey({ 
-      product: { id: productId, modelNumber, selectedSize } as Product, 
-      quantity: 1, 
-      selectedItems 
-    });
-    
+  const removeFromCart = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
+    setCartItems(prevItems => prevItems.filter(item => createCartItemKey(item) !== targetKey));
+  }, []);
+
+  const increaseQuantity = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
     setCartItems(prevItems =>
-      prevItems.map(item => {
-        const itemKey = createCartItemKey(item);
-        return itemKey === targetKey
+      prevItems.map(item =>
+        createCartItemKey(item) === targetKey
           ? { ...item, quantity: item.quantity + 1 }
-          : item;
-      })
+          : item
+      )
     );
-  };
+  }, []);
 
-  const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
-    const targetKey = createCartItemKey({ 
-      product: { id: productId, modelNumber, selectedSize } as Product, 
-      quantity: 1, 
-      selectedItems 
-    });
-    
+  const decreaseQuantity = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
     setCartItems(prevItems => {
       const item = prevItems.find(item => createCartItemKey(item) === targetKey);
-
       if (item?.quantity === 1) {
-        return prevItems.filter(item => createCartItemKey(item) !== targetKey);
+        return prevItems.filter(i => createCartItemKey(i) !== targetKey);
       }
-
-      return prevItems.map(item => {
-        const itemKey = createCartItemKey(item);
-        return itemKey === targetKey
-          ? { ...item, quantity: item.quantity - 1 }
-          : item;
-      });
+      return prevItems.map(i =>
+        createCartItemKey(i) === targetKey
+          ? { ...i, quantity: i.quantity - 1 }
+          : i
+      );
     });
-  };
-  
-  const clearCart = () => {
+  }, []);
+
+  const clearCart = useCallback(() => {
     const itemCount = cartItems.length;
     setCartItems([]);
-    showInfo(
-      'Carrito Vaciado',
-      `Se eliminaron ${itemCount} producto${itemCount !== 1 ? 's' : ''} del carrito`
-    );
-  };
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+    showInfo('Carrito Vaciado', `Se eliminaron ${itemCount} producto${itemCount !== 1 ? 's' : ''} del carrito`);
+  }, [cartItems.length, showInfo]);
+
+  const totalItems = useMemo(() => cartItems.reduce((total, item) => total + item.quantity, 0), [cartItems]);
   
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.product.price * item.quantity, 
+  const totalPrice = useMemo(() => cartItems.reduce(
+    (total, item) => total + item.product.price * item.quantity,
     0
-  );
+  ), [cartItems]);
   
-  const contextValue: CartContextType = {
+  const contextValue = useMemo(() => ({
     cartItems,
     addToCart,
     removeFromCart,
@@ -195,7 +141,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     totalItems,
     totalPrice,
     isProcessingCheckout,
-  };
+  }), [cartItems, totalItems, totalPrice, isProcessingCheckout, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart]);
   
   return (
     <CartContext.Provider value={contextValue}>

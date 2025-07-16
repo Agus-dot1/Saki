@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus } from 'lucide-react';
+import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus, Maximize2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
@@ -19,6 +19,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [showShippingModal, setShowShippingModal] = useState(false);
   const [itemSelections, setItemSelections] = useState<{ [itemIdx: number]: { color?: string; size?: string } }>({});
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [activeImageIdx, setActiveImageIdx] = useState(0); // Nuevo estado
 
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     product.colors && product.colors.length > 0 ? product.colors[0] : undefined
@@ -50,6 +52,20 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     onClose();
     onOpenCart();
   };
+
+  // Zoom modal
+  const ZoomModal = ({ image }: { image: string }) => (
+    <div className="fixed inset-0 z-[100] p-5 flex items-center justify-center bg-black/50" onClick={() => setZoomedImage(null)}>
+      <button
+        className="absolute p-2 text-white rounded-full top-6 right-6 bg-black/40"
+        onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
+        aria-label="Cerrar zoom"
+      >
+        <X size={28} />
+      </button>
+      <img src={image} alt={product.name} className="max-w-full max-h-full shadow-2xl rounded-xl" />
+    </div>
+  );
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -138,6 +154,9 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       animate="visible"
       exit="exit"
     >
+      {/* Zoom Modal */}
+      {zoomedImage && <ZoomModal image={zoomedImage} />}
+
       {/* Mobile Layout */}
       <motion.div 
         className="relative flex flex-col w-full overflow-hidden bg-white shadow-2xl h-dvh sm:hidden"
@@ -170,16 +189,28 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
           </div>
         </div>
 
+        {zoomedImage && <ZoomModal image={zoomedImage} />}
         {/* Mobile Content */}
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Image Section */}
           <div className="relative flex items-center justify-center p-4 bg-gradient-to-br from-secondary/30 to-secondary/60">
-            <div className="w-full max-w-xs overflow-hidden bg-white shadow-lg rounded-xl aspect-square">
+            <div className="relative w-full max-w-xs overflow-hidden bg-white shadow-lg rounded-xl aspect-square">
               <OptimizedCarousel 
-                images={product.images} 
+                images={product.images}
                 alt={product.name}
                 className="object-contain h-full"
+                // Nuevo: callback para saber la imagen activa
+                onSlideChange={setActiveImageIdx}
               />
+              {/* Botón de zoom para la imagen activa */}
+              <button
+                type="button"
+                className="absolute p-2 text-white transition rounded-full bottom-3 right-3 bg-black/60 hover:bg-black/80"
+                onClick={() => setZoomedImage(product.images[activeImageIdx])}
+                aria-label="Zoom"
+              >
+                <Maximize2 size={18} />
+              </button>
             </div>
             
             {/* Floating stock indicator */}
@@ -452,12 +483,22 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
 
         {/* Left Side - Image */}
         <div className="relative flex items-center justify-center w-1/2 p-8 bg-gradient-to-br from-secondary/30 to-secondary/60">
-          <div className="w-full max-w-md overflow-hidden bg-white shadow-lg rounded-2xl aspect-square">
+          <div className="relative w-full max-w-md overflow-hidden bg-white shadow-lg rounded-2xl aspect-square">
             <OptimizedCarousel 
-              images={product.images} 
+              images={product.images}
               alt={product.name}
               className="object-contain h-full"
+              onSlideChange={setActiveImageIdx}
             />
+            {/* Botón de zoom para la imagen activa */}
+            <button
+              type="button"
+              className="absolute p-1 text-white transition rounded-full bottom-3 right-3 bg-black/60 hover:bg-black/80"
+              onClick={() => setZoomedImage(product.images[activeImageIdx])}
+              aria-label="Zoom"
+            >
+              <Maximize2 size={22} />
+            </button>
           </div>
           
           {/* Floating stock indicator */}

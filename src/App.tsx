@@ -1,10 +1,7 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Layout/Header';
-import Hero from './components/Hero/Hero';
-import ProductsSection from './components/Products/ProductsSection';
-import TestimonialsSection from './components/Testimonials/TestimonialsSection';
 import Footer from './components/Layout/Footer';
 import CartProvider from './contexts/CartContext';
 import ToastProvider from './contexts/ToastContext';
@@ -19,6 +16,10 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
+
+const Hero = lazy(() => import('./components/Hero/Hero'));
+const ProductsSection = lazy(() => import('./components/Products/ProductsSection'));
+const TestimonialsSection = lazy(() => import('./components/Testimonials/TestimonialsSection'));
 
 // Main App Component
 const MainApp: React.FC = () => {

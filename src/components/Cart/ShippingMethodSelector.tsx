@@ -14,16 +14,21 @@ interface ShippingOption {
 
 interface ShippingMethodSelectorProps {
   cartItems: Array<{ product: Product; quantity: number }>;
+
   onShippingChange: (method: 'shipping' | 'pickup', option?: ShippingOption) => void;
   selectedMethod: 'shipping' | 'pickup' | null;
   selectedShipping: ShippingOption | null;
+  postalCode: string; // <-- add
+  setPostalCode: (postal: string) => void; // <-- add
 }
 
 const ShippingMethodSelector: React.FC<ShippingMethodSelectorProps> = ({
   cartItems,
   onShippingChange,
   selectedMethod,
-  selectedShipping
+  selectedShipping,
+  postalCode,
+  setPostalCode
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const shippingMethods = ShippingService.getShippingMethods();
@@ -122,6 +127,8 @@ const ShippingMethodSelector: React.FC<ShippingMethodSelectorProps> = ({
           cartItems={cartItems}
           onShippingSelect={handleShippingOptionSelect}
           selectedShipping={selectedShipping}
+          onPostalCodeChange={setPostalCode} // <-- pass down
+          postalCode={postalCode} // <-- pass down
         />
       )}
 

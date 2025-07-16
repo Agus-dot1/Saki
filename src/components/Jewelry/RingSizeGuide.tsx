@@ -73,7 +73,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
       transition={{ duration: 0.2 }}
     >
       <motion.div
-        className="relative flex flex-col w-full max-w-md bg-white shadow-2xl sm:rounded-2xl sm:max-h-[85vh] max-h-screen overflow-hidden"
+        className="relative flex flex-col w-full max-w-md bg-white shadow-2xl sm:rounded-2xl sm:max-h-[85vh]  h-dvh overflow-hidden"
         onClick={e => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -131,7 +131,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Progress bar */}
-              <div className="w-full h-2 mb-4 overflow-hidden rounded-full bg-gray-200">
+              <div className="w-full h-2 mb-4 overflow-hidden bg-gray-200 rounded-full">
                 <div 
                   className="h-full transition-all duration-300 rounded-full bg-accent"
                   style={{ width: `${((currentStep + 1) / currentMethod.steps.length) * 100}%` }}
@@ -139,7 +139,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Current step */}
-              <div className="p-4 rounded-xl bg-accent/5 border border-accent/20">
+              <div className="p-4 border rounded-xl bg-accent/5 border-accent/20">
                 <p className="text-sm font-medium text-primary sm:text-base">
                   Paso {currentStep + 1}:
                 </p>
@@ -176,9 +176,9 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-accent/10">
-                      <th className="p-3 text-left font-semibold text-primary">Talla</th>
-                      <th className="p-3 text-left font-semibold text-primary">Diámetro</th>
-                      <th className="p-3 text-left font-semibold text-primary">Perímetro</th>
+                      <th className="p-3 font-semibold text-left text-primary">Talla</th>
+                      <th className="p-3 font-semibold text-left text-primary">Diámetro</th>
+                      <th className="p-3 font-semibold text-left text-primary">Perímetro</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -198,7 +198,7 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Tips section */}
-            <div className="p-4 mt-6 rounded-xl bg-blue-50 border border-blue-200">
+            <div className="p-4 mt-6 border border-blue-200 rounded-xl bg-blue-50">
               <h5 className="mb-2 text-sm font-semibold text-blue-800">Consejos útiles:</h5>
               <ul className="space-y-1 text-xs text-blue-700 sm:text-sm">
                 <li>• Medí al final del día cuando tus dedos están más hinchados</li>

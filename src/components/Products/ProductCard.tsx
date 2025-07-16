@@ -180,4 +180,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   );
 };
 
-export default ProductCard;
+export default React.memo(ProductCard);

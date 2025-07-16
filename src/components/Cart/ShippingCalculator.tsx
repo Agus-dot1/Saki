@@ -15,14 +15,16 @@ interface ShippingCalculatorProps {
   cartItems: Array<{ product: Product; quantity: number }>;
   onShippingSelect: (option: ShippingOption | null) => void;
   selectedShipping: ShippingOption | null;
+  onPostalCodeChange?: (postal: string) => void;
+  postalCode?: string; // <-- add
 }
 
 const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
   onShippingSelect,
+  onPostalCodeChange,
+  postalCode = '', // <-- use prop
 }) => {
-  const [postalCode, setPostalCode] = useState(() => {
-  return localStorage.getItem('postalCode') || '';
-  });
+  const [localPostalCode, setLocalPostalCode] = useState(postalCode);
   const [shippingOption, setShippingOption] = useState<ShippingOption | null>(() => {
   const stored = localStorage.getItem('shippingOption');
   return stored ? JSON.parse(stored) : null;
@@ -30,27 +32,33 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
   const [error, setError] = useState('');
   const [hasCalculated, setHasCalculated] = useState(false);
 
+  React.useEffect(() => {
+    setLocalPostalCode(postalCode);
+  }, [postalCode]);
+
   const calculateShipping = () => {
-    if (!postalCode.trim()) {
+    if (!localPostalCode.trim()) {
       setError('Ingresá tu código postal');
       return;
     }
 
-    if (!ShippingService.validatePostalCode(postalCode)) {
+    if (!ShippingService.validatePostalCode(localPostalCode)) {
       setError('Código postal inválido. Ej: 1234 o C1234ABC');
       return;
     }
 
-    const option = ShippingService.calculateShipping(postalCode);
-    
+    const option = ShippingService.calculateShipping(localPostalCode);
+
     if (option) {
       setShippingOption(option);
       setHasCalculated(true);
       setError('');
       onShippingSelect(option);
 
-      localStorage.setItem('postalCode', postalCode);
+      localStorage.setItem('postalCode', localPostalCode);
       localStorage.setItem('shippingOption', JSON.stringify(option));
+
+      if (onPostalCodeChange) onPostalCodeChange(localPostalCode); // <-- notify parent
     } else {
       setError('No se pudo calcular el envío para este código postal');
     }
@@ -59,7 +67,7 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
   const handlePostalCodeChange = (value: string) => {
     // Allow letters and numbers for Argentina postal codes
     const cleanValue = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8);
-    setPostalCode(cleanValue);
+    setLocalPostalCode(cleanValue);
     setError('');
     
     if (hasCalculated) {
@@ -91,8 +99,8 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
           <div className="flex-1">
             <input
               type="text"
-              value={postalCode}
-              onChange={(e) => handlePostalCodeChange(e.target.value)}
+              value={localPostalCode}
+              onChange={(e) => handlePostalCodeChange(e.target.value)} // <-- use your function here
               onKeyPress={handleKeyPress}
               placeholder="Código postal (ej: 1234 o C1234ABC)"
               className={`w-full px-3 py-2 text-sm border rounded-md focus:ring-2 focus:ring-accent focus:border-accent ${
@@ -112,7 +120,7 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({
                 e.preventDefault();
                 calculateShipping();
             }}
-            disabled={!postalCode.trim()}
+            disabled={!localPostalCode.trim()}
             className="px-4 py-2 text-sm font-medium text-white transition-colors rounded-md bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Calcular
