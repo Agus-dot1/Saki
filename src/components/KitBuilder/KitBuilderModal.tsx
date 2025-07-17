@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, Plus, Minus, Package, Star, Check, ShoppingCart, ArrowLeft, ArrowRight, Shuffle, Wand2 } from 'lucide-react';
+import { X, Plus, Minus, Package, Star, Check, ShoppingCart, ArrowLeft, ArrowRight, Shuffle, Sparkles } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
 import { availableItems } from '../../data/builderData';
 import { KitItem, SelectedKitItem, KitBuilderModalProps } from '../../types/builder';
+import { cubicBezier } from "framer-motion";
 
 // Predefined kit names for random selection
 const SUGGESTED_KIT_NAMES = [
@@ -22,7 +23,16 @@ const SUGGESTED_KIT_NAMES = [
   'Piel de Seda',
   'Momento Mágico',
   'Cuidado Divino',
-  'Ritual de Luz'
+  'Ritual de Luz',
+  'Glow Goals',
+  'Self-Care Mode',
+  'Beauty Vibes',
+  'Skin Therapy',
+  'Mi kit esencial',
+  'Glow Session',
+  'Ritual de Belleza',
+  'Skin Love',
+  'Pure Vibes',
 ];
 
 type WizardStep = 'name' | 'select' | 'customize' | 'summary';
@@ -37,9 +47,9 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
   const [step, setStep] = useState<WizardStep>('name');
 
   // Kit configuration
-  const MIN_ORDER_AMOUNT = 50;
-  const MAX_ITEMS = 8;
-  const DISCOUNT_THRESHOLD = 100;
+  const MIN_ORDER_AMOUNT = 10000;
+  const MAX_ITEMS = 8; 
+  const DISCOUNT_THRESHOLD = 20000;
   const DISCOUNT_PERCENTAGE = 15;
 
   const categories = [
@@ -152,34 +162,41 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
   const canContinueFromSelect = selectedItems.length > 0 && finalPrice >= MIN_ORDER_AMOUNT;
 
   // Full-screen wizard animations
-  const wizardVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.4, ease: [0.19, 1.12, 0.7, 0.97] } },
-    exit: { opacity: 0, transition: { duration: 0.3, ease: [0.19, 1.12, 0.7, 0.97] } },
-  };
+const wizardVariants = {
+  initial: { opacity: 0 },
+  animate: { 
+    opacity: 1, 
+    transition: { duration: 0.4, ease: cubicBezier(0.19, 1.12, 0.7, 0.97) }
+  },
+  exit: { 
+    opacity: 0, 
+    transition: { duration: 0.3, ease: cubicBezier(0.19, 1.12, 0.7, 0.97) }
+  },
+};
 
   const stepVariants = {
-    initial: { opacity: 0, x: 60, scale: 0.98 },
-    animate: { 
-      opacity: 1, 
-      x: 0, 
-      scale: 1,
-      transition: { 
-        duration: 0.5, 
-        ease: [0.19, 1.12, 0.7, 0.97],
-        staggerChildren: 0.1
-      } 
-    },
-    exit: { 
-      opacity: 0, 
-      x: -60, 
-      scale: 0.98,
-      transition: { 
-        duration: 0.3, 
-        ease: [0.19, 1.12, 0.7, 0.97] 
-      } 
-    },
-  };
+  initial: { opacity: 0, x: 60, scale: 0.98 },
+  animate: { 
+    opacity: 1, 
+    x: 0, 
+    scale: 1,
+    transition: { 
+      duration: 0.5,
+      delay: 0,
+      ease: cubicBezier(0.19, 1.12, 0.7, 0.97),
+      staggerChildren: 0.1
+    } 
+  },
+  exit: { 
+    opacity: 0, 
+    x: -60, 
+    scale: 0.98,
+    transition: { 
+      duration: 0.3, 
+      ease: cubicBezier(0.19, 1.12, 0.7, 0.97)
+    } 
+  },
+};
 
   const itemVariants = {
     initial: { opacity: 0, y: 20 },
@@ -191,7 +208,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 overflow-x-hidden overflow-y-auto py-14 bg-gradient-to-b from-white via-white to-white/90"
+        className="fixed inset-0 z-50 overflow-x-hidden overflow-y-auto py-14 bg-gradient-to-b from-white to-white/80 backdrop-blur-sm"
         variants={wizardVariants}
         initial="initial"
         animate="animate"
@@ -214,7 +231,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
 
         {/* Progress Indicator */}
         <motion.div 
-            className="absolute z-20 right-1/2 top-4 md:top-6"
+            className="absolute z-20 left-2 md:left-24 top-4 md:top-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -245,6 +262,13 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
         <div className="flex items-center justify-center min-h-screen p-2 overflow-x-hidden md:p-6">
           <div className="w-full max-w-sm mx-auto md:max-w-4xl">
             <AnimatePresence mode="wait">
+                <motion.div
+                key={step}          
+                variants={stepVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
               {/* Step 1: Name Your Kit */}
               {step === 'name' && (
                 <motion.div
@@ -258,7 +282,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                   <motion.div variants={itemVariants} className="mb-6 md:mb-8">
                     <div className="flex items-center justify-center mb-4 md:mb-6">
                       <div className="p-3 rounded-full md:p-4 bg-gradient-to-br from-accent to-supporting">
-                        <Wand2 size={24} className="text-white" />
+                        <Sparkles size={24} className="text-white" />
                       </div>
                     </div>
                     <h1 className="mb-2 text-2xl font-bold md:mb-4 md:text-4xl lg:text-6xl text-primary">
@@ -334,7 +358,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                   {/* Category Selection */}
                   <motion.div variants={itemVariants} className="mb-6 md:mb-8">
                     <div className="flex justify-center">
-                      <div className="flex flex-wrap gap-2 p-2 shadow-lg md:gap-3 md:p-3 bg-white/60 backdrop-blur-sm rounded-xl md:rounded-2xl">
+                      <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 shadow-lg bg-white/60 backdrop-blur-sm rounded-xl md:rounded-2xl md:grid-cols-4 md:grid-rows-1 md:gap-3 md:p-3">
                         {categories.map(category => (
                           <button
                             key={category.id}
@@ -489,6 +513,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                         <span>Continuar</span>
                         <ArrowRight size={16} />
                       </button>
+                      
                   </motion.div>
                 </motion.div>
               )}
@@ -501,7 +526,8 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  className=""
+
+                  onAnimationStart={() => document.body.offsetHeight}
                 >
                   <div className="mb-4 text-center md:mb-8">
                     <motion.div variants={itemVariants}>
@@ -597,7 +623,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                   variants={stepVariants}
                   initial="initial"
                   animate="animate"
-                  exit="exit"
+                  exit={{ opacity: 0, x: 60, scale: 0.95, transition: { duration: 0.4, ease: cubicBezier(0.19, 1.12, 0.7, 0.97) } }}
                   className="max-w-2xl mx-auto"
                 >
                   <div className="mb-8 text-center">
@@ -698,36 +724,37 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
                   </motion.div>
                 </motion.div>
               )}
+              
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
-
-        {/* Kit Summary Bar - Only show after name step */}
-        {step !== 'name' && (
-          <motion.div 
-            className="fixed z-20 transform right-10 bottom-1 md:bottom-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="flex items-center px-4 py-2 space-x-2 text-xs rounded-full shadow-lg md:px-6 md:py-3 md:space-x-4 bg-white/90 md:text-base">
-              <div className="flex items-center space-x-1 text-gray-600">
-                <Package size={14} />
-                <span>{totalItems}/{MAX_ITEMS}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <ShoppingCart size={14} className="text-gray-600" />
-                <span className="font-semibold text-accent">${finalPrice.toFixed(2)}</span>
-              </div>
-              
-              {hasDiscount && (
-                <div className="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                  {DISCOUNT_PERCENTAGE}% OFF
-                </div>
+{/* Kit Summary Bar - Only show after name step */}
+              {step !== 'name' && (
+                <motion.div 
+                  className="z-20 flex items-end justify-end w-full pr-5 mt-5 md:pr-24"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <div className="flex items-center px-4 py-2 space-x-2 text-xs rounded-full shadow-lg md:px-6 md:py-3 md:space-x-4 bg-white/90 md:text-base">
+                    <div className="flex items-center space-x-1 text-gray-600">
+                      <Package size={14} />
+                      <span>{totalItems}/{MAX_ITEMS}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <ShoppingCart size={14} className="text-gray-600" />
+                      <span className="font-semibold text-accent">${finalPrice.toFixed(2)}</span>
+                    </div>
+                    
+                    {hasDiscount && (
+                      <div className="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                        {DISCOUNT_PERCENTAGE}% OFF
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
               )}
-            </div>
-          </motion.div>
-        )}
       </motion.div>
     </AnimatePresence>
   );
