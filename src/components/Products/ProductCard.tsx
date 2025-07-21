@@ -39,6 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   };
 
   const getStockStatus = () => {
+  if (product.stock === undefined || product.stock === null) return null;
     
     if (product.stock <= 0) {
       return { text: 'Sin Stock', color: 'text-red-600 bg-red-50', disabled: true };
