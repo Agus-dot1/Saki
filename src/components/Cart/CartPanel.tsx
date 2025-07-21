@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
@@ -151,7 +151,6 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
                 <ArrowRight size={18} />
               </button>
 
-                          {/* WhatsApp checkout - Primary option */}
             <button 
               onClick={handleWhatsAppCheckout}
               disabled={isProcessingCheckout}
