@@ -31,11 +31,6 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
     return () => document.removeEventListener('openCart', handleOpenCart);
   }, [isOpen]);
     
-  const devCheckoutEnabled = useMemo(() => {
-    if (typeof window === 'undefined') return false
-    const params = new URLSearchParams(window.location.search)
-    return params.get('mp') === 'agus'
-  }, [])
 
   const handleWhatsAppCheckout = () => {
     if (cartItems.length === 0) {
@@ -142,18 +137,7 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
           
           {/* Action buttons - Mobile optimized */}
           <div className="space-y-3">
-            {/* WhatsApp checkout - Primary option */}
-            <button 
-              onClick={handleWhatsAppCheckout}
-              disabled={isProcessingCheckout}
-              className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-            >
-              <MessageCircle size={18} />
-              <span>Pedir por WhatsApp</span>
-            </button>
 
-            {/* Mercado Pago checkout - Secondary option */}
-            {devCheckoutEnabled && (
               <button 
                 onClick={() => {
                   // Dispatch event to open checkout form
@@ -161,12 +145,22 @@ const CartPanel: React.FC<CartPanelProps> = ({ isOpen, onClose }) => {
                   onClose();
                 }}
                 disabled={isProcessingCheckout}
-                className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium transition-all duration-200 border rounded-xl border-accent text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-semibold text-white transition-all duration-200 rounded-xl bg-accent hover:bg-supporting disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
                 <span>Pagar con Mercado Pago</span>
                 <ArrowRight size={18} />
               </button>
-            )}
+
+                          {/* WhatsApp checkout - Primary option */}
+            <button 
+              onClick={handleWhatsAppCheckout}
+              disabled={isProcessingCheckout}
+              className="flex items-center justify-center w-full px-4 py-3 space-x-2 text-base font-medium transition-all duration-200 border rounded-xl border-accent text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+            >
+              <MessageCircle size={18} />
+              <span>Pedir por WhatsApp</span>
+            </button>
+
 
             {/* Clear cart button */}
             <button 
