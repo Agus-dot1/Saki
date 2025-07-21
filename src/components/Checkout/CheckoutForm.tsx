@@ -528,11 +528,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
             selectedShipping={selectedShipping}
             shippingCost={shippingCost}
           />
-          <PromotionsCheckbox
-            receivePromotions={customerData.receivePromotions}
-            onChange={handleInputChange}
-            isProcessing={isProcessing}
-          />
         </div>
       </div>
     </motion.div>
