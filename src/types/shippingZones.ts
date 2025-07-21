@@ -63,14 +63,6 @@ export const SHIPPING_ZONES: ShippingZone[] = [
     cost: 6000,
     estimatedDelivery: '3-4 días hábiles',
     description: 'Envios por Correo Argentino a primer cordón sur',
-  },
-    {
-    postalCodes: [...range(2000, 2999)],
-    name: 'Prueba',
-    cost: 10,
-    estimatedDelivery: '3-4 días hábiles',
-    description: 'Envios por Correo Argentino a primer cordón sur',
-
   }
 ];
 
