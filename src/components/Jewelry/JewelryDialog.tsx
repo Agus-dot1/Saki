@@ -30,7 +30,6 @@ const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart
     });
 
     addToCart(productForCart);
-    showSuccess('Producto Agregado', `${item.name} - Modelo ${selectedModel + 1} fue agregado al carrito`);
     onClose();
     onOpenCart();
   };
