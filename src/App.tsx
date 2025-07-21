@@ -80,7 +80,7 @@ const MainApp: React.FC = () => {
         <div className="max-w-[1920px] mx-auto">
           <Suspense fallback={<LoadingSpinner />}>
             <Hero />
-            <ProductsSection 
+            <ProductsSection
               onProductSelect={setSelectedProduct}
             />
             <JewelryContainer />

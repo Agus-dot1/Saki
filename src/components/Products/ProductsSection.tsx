@@ -21,31 +21,15 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
     threshold: 0.1,
   });
 
-  // Detectar devmode por query param
-  const devCheckoutEnabled = React.useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    const params = new URLSearchParams(window.location.search);
-    return params.get('mp') === 'agus';
-  }, []);
-
   // Fetch products from the server
   useEffect(() => {
     fetchProducts()
       .then(fetchedProducts => {
-        if (fetchedProducts.length === 0) {
-          setProducts([]);
-          return;
-        }
-        // Si NO es devmode, ocultar el último producto
-        if (!devCheckoutEnabled) {
-          setProducts(fetchedProducts.slice(0, -1));
-        } else {
-          setProducts(fetchedProducts);
-        }
+        setProducts(fetchedProducts);
       })
       .catch(() => setProducts([]))
       .finally(() => setIsLoading(false));
-  }, [devCheckoutEnabled]);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
