@@ -52,7 +52,7 @@ export const SHIPPING_ZONES: ShippingZone[] = [
   {
     postalCodes: [...range(1700, 1799)],      
     name: 'GBA Oeste',
-    cost: 3000,
+    cost: 7000,
     estimatedDelivery: '1-2 días hábiles',
     description: 'Envios por Correo Argentino a zona local y alrededores',
 
