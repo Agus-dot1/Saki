@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useCart } from './useCart';
 import { useToast } from './useToast';
-import { availableItems } from '../data/builderData';
-import { KitItem, SelectedKitItem } from '../types/builder';
+import { fetchKitBuilderItems } from '../services/kitbuilderService';
+import { KitItem } from '../services/kitbuilderService';
+import { SelectedKitItem } from '../types/builder';
 import {
   SUGGESTED_KIT_NAMES,
   MIN_ORDER_AMOUNT,
@@ -16,10 +18,34 @@ export const useKitBuilder = (onClose: () => void) => {
   const { addToCart } = useCart();
   const { showError } = useToast();
 
+  const [availableItems, setAvailableItems] = useState<KitItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<SelectedKitItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('limpieza');
   const [kitName, setKitName] = useState('');
   const [step, setStep] = useState<WizardStep>('name');
+
+  // Fetch kit builder items from Supabase
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const items = await fetchKitBuilderItems();
+        setAvailableItems(items);
+      } catch (err) {
+        console.error('Failed to load kit builder items:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load kit builder items');
+        setAvailableItems([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadItems();
+  }, []);
 
   const totalPrice = useMemo(() => selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0), [selectedItems]);
   const totalItems = useMemo(() => selectedItems.reduce((sum, item) => sum + item.quantity, 0), [selectedItems]);
@@ -129,6 +155,9 @@ export const useKitBuilder = (onClose: () => void) => {
 
   return {
     selectedItems,
+    availableItems,
+    isLoading,
+    error,
     activeCategory,
     kitName,
     step,

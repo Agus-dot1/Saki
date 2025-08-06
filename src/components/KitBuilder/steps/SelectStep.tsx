@@ -2,10 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Star, Plus, Minus, Check } from 'lucide-react';
 import { itemVariants, stepVariants, CATEGORIES, MIN_ORDER_AMOUNT } from '../constants';
-import { SelectedKitItem, KitItem } from '../../../types/builder';
+import { SelectedKitItem } from '../../../types/builder';
+import { KitItem } from '../../../services/kitbuilderService';
+import LoadingSpinner from '../../LoadingSpinner';
 
 interface SelectStepProps {
   kitName: string;
+  availableItems: KitItem[];
+  isLoading: boolean;
+  error: string | null;
   activeCategory: string;
   setActiveCategory: (category: string) => void;
   filteredItems: KitItem[];
@@ -23,6 +28,9 @@ interface SelectStepProps {
 
 export const SelectStep: React.FC<SelectStepProps> = ({
   kitName,
+  availableItems,
+  isLoading,
+  error,
   activeCategory,
   setActiveCategory,
   filteredItems,
@@ -37,6 +45,79 @@ export const SelectStep: React.FC<SelectStepProps> = ({
   nextStep,
   canContinueFromSelect,
 }) => {
+  // Show loading state
+  if (isLoading) {
+    return (
+      <motion.div
+        key="step-select-loading"
+        variants={stepVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="flex flex-col items-center justify-center h-full min-h-[60vh]"
+      >
+        <LoadingSpinner />
+        <p className="mt-4 text-lg text-content">Cargando productos...</p>
+      </motion.div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <motion.div
+        key="step-select-error"
+        variants={stepVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center"
+      >
+        <div className="p-8 rounded-2xl bg-red-50">
+          <h3 className="mb-4 text-xl font-semibold text-red-800">
+            Error al cargar productos
+          </h3>
+          <p className="mb-6 text-red-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
+          >
+            Intentar de nuevo
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Show empty state if no items available
+  if (availableItems.length === 0) {
+    return (
+      <motion.div
+        key="step-select-empty"
+        variants={stepVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center"
+      >
+        <div className="p-8 rounded-2xl bg-gray-50">
+          <h3 className="mb-4 text-xl font-semibold text-gray-800">
+            No hay productos disponibles
+          </h3>
+          <p className="mb-6 text-gray-600">
+            No se encontraron productos para armar tu kit en este momento.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
+          >
+            Recargar
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       key="step-select"
@@ -82,11 +163,25 @@ export const SelectStep: React.FC<SelectStepProps> = ({
       {/* Products Grid */}
       <motion.div
         variants={itemVariants}
-        className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-3 md:gap-6 md:mb-8"
+        className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-3 md:gap-6 md:mb-8 min-h-[200px]"
       >
-        {filteredItems.map(item => {
+        {filteredItems.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-lg text-gray-600 mb-4">
+              No hay productos disponibles en esta categoría
+            </p>
+            <button
+              onClick={() => setActiveCategory('limpieza')}
+              className="px-4 py-2 text-accent hover:text-supporting transition-colors"
+            >
+              Ver todas las categorías
+            </button>
+          </div>
+        ) : (
+          filteredItems.map(item => {
           const selectedItem = selectedItems.find(selected => selected.id === item.id);
           const isSelected = !!selectedItem;
+          const isOutOfStock = item.stock <= 0;
 
           return (
             <motion.div
@@ -107,6 +202,13 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   alt={item.name}
                   className="object-cover w-full h-full transition-transform duration-300 hover:scale-110"
                 />
+                {isOutOfStock && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-t-xl md:rounded-t-2xl">
+                    <span className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded-full">
+                      Sin Stock
+                    </span>
+                  </div>
+                )}
                 {isSelected && (
                   <div className="absolute flex items-center justify-center w-6 h-6 rounded-full shadow-lg md:w-8 md:h-8 top-2 right-2 md:top-3 md:right-3 bg-accent">
                     <Check size={14} className="text-white" />
@@ -127,6 +229,11 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                       </li>
                     ))}
                   </ul>
+                </div>
+
+                {/* Stock indicator */}
+                <div className="mb-2 text-xs text-gray-500">
+                  Stock: {item.stock} disponibles
                 </div>
 
                 <div className="flex flex-col items-center justify-between">
@@ -156,7 +263,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   ) : (
                     <button
                       onClick={() => addItemToKit(item)}
-                      disabled={totalItems >= MAX_ITEMS}
+                      disabled={totalItems >= MAX_ITEMS || isOutOfStock}
                       className="flex items-center self-end px-2 py-1 space-x-1 text-xs font-medium text-white transition-all duration-200 rounded-lg md:px-4 md:py-2 md:text-sm bg-accent md:rounded-xl hover:bg-supporting hover:scale-105 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       <Plus size={12} />
@@ -167,7 +274,8 @@ export const SelectStep: React.FC<SelectStepProps> = ({
               </div>
             </motion.div>
           );
-        })}
+        })
+        )}
       </motion.div>
       {selectedItems.length > 0 && (
         <div className="my-4">

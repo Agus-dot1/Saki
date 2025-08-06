@@ -11,6 +11,9 @@ import { KitSummaryBar } from './KitSummaryBar';
 const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) => {
   const {
     selectedItems,
+    availableItems,
+    isLoading,
+    error,
     activeCategory,
     kitName,
     step,
@@ -52,6 +55,9 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
         return (
           <SelectStep
             kitName={kitName}
+            availableItems={availableItems}
+            isLoading={isLoading}
+            error={error}
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
             filteredItems={filteredItems}
