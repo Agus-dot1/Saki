@@ -30,16 +30,19 @@ export const useKitBuilder = (onClose: () => void) => {
   useEffect(() => {
     const loadItems = async () => {
       try {
+        console.log('Loading kit builder items...');
         setIsLoading(true);
         setError(null);
         
         const items = await fetchKitBuilderItems();
+        console.log('Received items:', items);
         setAvailableItems(items);
       } catch (err) {
         console.error('Failed to load kit builder items:', err);
         setError(err instanceof Error ? err.message : 'Failed to load kit builder items');
         setAvailableItems([]);
       } finally {
+        console.log('Finished loading items');
         setIsLoading(false);
       }
     };
@@ -55,7 +58,12 @@ export const useKitBuilder = (onClose: () => void) => {
   const canOrder = useMemo(() => finalPrice >= MIN_ORDER_AMOUNT, [finalPrice]);
   const progress = useMemo(() => Math.min((finalPrice / MIN_ORDER_AMOUNT) * 100, 100), [finalPrice]);
 
-  const filteredItems = useMemo(() => availableItems.filter(item => item.category === activeCategory), [activeCategory]);
+  const filteredItems = useMemo(() => {
+    console.log('Filtering items:', { availableItems: availableItems.length, activeCategory });
+    const filtered = availableItems.filter(item => item.category === activeCategory);
+    console.log('Filtered items count:', filtered.length);
+    return filtered;
+  }, [availableItems, activeCategory]);
 
   const generateRandomName = () => {
     const randomName = SUGGESTED_KIT_NAMES[Math.floor(Math.random() * SUGGESTED_KIT_NAMES.length)];
@@ -139,9 +147,20 @@ export const useKitBuilder = (onClose: () => void) => {
   };
 
   const nextStep = () => {
-    if (step === 'name') setStep('select');
-    else if (step === 'select') setStep('customize');
-    else if (step === 'customize') setStep('summary');
+    console.log('nextStep called, current step:', step);
+    if (step === 'name') {
+      console.log('Transitioning from name to select');
+      setStep('select');
+    } else if (step === 'select') {
+      console.log('Transitioning from select to customize');
+      console.log('Selected items count:', selectedItems.length);
+      console.log('Final price:', finalPrice);
+      console.log('Can continue from select:', canContinueFromSelect);
+      setStep('customize');
+    } else if (step === 'customize') {
+      console.log('Transitioning from customize to summary');
+      setStep('summary');
+    }
   };
 
   const prevStep = () => {
@@ -152,6 +171,17 @@ export const useKitBuilder = (onClose: () => void) => {
 
   const canContinueFromName = kitName.trim().length > 0;
   const canContinueFromSelect = selectedItems.length > 0 && finalPrice >= MIN_ORDER_AMOUNT;
+  
+  // Debug logging for the bug investigation
+  console.log('KitBuilder state:', {
+    step,
+    selectedItemsCount: selectedItems.length,
+    selectedItems,
+    finalPrice,
+    MIN_ORDER_AMOUNT,
+    canContinueFromSelect,
+    activeCategory
+  });
 
   return {
     selectedItems,

@@ -2,14 +2,14 @@ import supabase from '../utils/supabase';
 
 // Database interface that matches your Supabase table structure
 interface KitBuilderDbRow {
-  id: number;
+  id: number | string | BigInt;
   name: string;
   image: string;
   description: string;
   category: string;
   benefits: string[];
-  price: number;
-  stock: number;
+  price: number | string | BigInt | null;
+  stock: number | string | BigInt | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -29,25 +29,27 @@ export interface KitItem {
 // Function to map database row to KitItem interface
 function mapDbRowToKitItem(row: KitBuilderDbRow): KitItem {
   return {
-    id: typeof row.id === 'string' ? Number(row.id) : row.id,
+    id: typeof row.id === 'string' || typeof row.id === 'bigint' ? Number(row.id) : row.id,
     name: row.name,
-    price: Number(row.price),
+    price: row.price !== undefined && row.price !== null ? Number(row.price) : 0,
     image: row.image,
     category: row.category as 'limpieza' | 'hidratacion' | 'tratamiento' | 'accesorios',
     description: row.description,
     benefits: row.benefits || [],
-    stock: row.stock,
+    stock: row.stock !== undefined && row.stock !== null ? Number(row.stock) : 0,
   };
 }
 
 export async function fetchKitBuilderItems(): Promise<KitItem[]> {
   try {
+    console.log('Fetching kit builder items from Supabase...');
     const { data, error } = await supabase
       .from('builder_item')
       .select('*')
-      .gt('stock', 0) // Only fetch items with stock > 0
       .order('category', { ascending: true })
       .order('name', { ascending: true });
+
+    console.log('Supabase response:', { data, error });
 
     if (error) {
       console.error('Supabase error fetching kit builder items:', error);
@@ -59,9 +61,15 @@ export async function fetchKitBuilderItems(): Promise<KitItem[]> {
       return [];
     }
 
+    console.log(`Found ${data.length} items in database`);
+
     // Map the database rows to KitItem objects
-    const mappedItems = data.map(mapDbRowToKitItem);
+    const mappedItems = data.map((row, index) => {
+      console.log(`Mapping item ${index + 1}:`, row);
+      return mapDbRowToKitItem(row);
+    });
     
+    console.log('Mapped items:', mappedItems);
     return mappedItems;
   } catch (error) {
     console.error('Error in fetchKitBuilderItems:', error);
@@ -95,7 +103,6 @@ export async function fetchKitBuilderItemsByCategory(category: string): Promise<
       .from('builder_item')
       .select('*')
       .eq('category', category)
-      .gt('stock', 0)
       .order('name', { ascending: true });
 
     if (error) {

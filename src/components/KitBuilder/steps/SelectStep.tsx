@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Star, Plus, Minus, Check } from 'lucide-react';
 import { itemVariants, stepVariants, CATEGORIES, MIN_ORDER_AMOUNT } from '../constants';
@@ -45,6 +45,14 @@ export const SelectStep: React.FC<SelectStepProps> = ({
   nextStep,
   canContinueFromSelect,
 }) => {
+  // Debug logging
+  console.log('SelectStep render:', {
+    availableItems: availableItems.length,
+    filteredItems: filteredItems.length,
+    activeCategory,
+    isLoading,
+    error
+  });
   // Show loading state
   if (isLoading) {
     return (
@@ -166,22 +174,42 @@ export const SelectStep: React.FC<SelectStepProps> = ({
         className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-3 md:gap-6 md:mb-8 min-h-[200px]"
       >
         {filteredItems.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-lg text-gray-600 mb-4">
-              No hay productos disponibles en esta categoría
-            </p>
-            <button
-              onClick={() => setActiveCategory('limpieza')}
-              className="px-4 py-2 text-accent hover:text-supporting transition-colors"
-            >
-              Ver todas las categorías
-            </button>
-          </div>
+                  <div className="flex flex-col items-center justify-center py-12 text-center col-span-full">
+                    <p className="mb-4 text-lg text-gray-600">
+                      {availableItems.length > 0
+                        ? "No hay productos disponibles en esta categoría"
+                        : "No hay productos disponibles"}
+                    </p>
+                    {availableItems.length > 0 && (
+                                  <div className="flex flex-col gap-2">
+                                    <button
+                                      onClick={() => setActiveCategory('limpieza')}
+                                      className="px-4 py-2 transition-colors text-accent hover:text-supporting"
+                                    >
+                                      Ver categoría de limpieza
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        // Refresh by temporarily changing category and back
+                                        const categories = ['limpieza', 'hidratacion', 'tratamiento', 'accesorios'];
+                                        const nextCategory = categories.find(cat => cat !== activeCategory) || 'limpieza';
+                                        setActiveCategory(nextCategory);
+                                        setTimeout(() => {
+                                          setActiveCategory(activeCategory);
+                                        }, 10);
+                                      }}
+                                      className="px-4 py-2 transition-colors text-accent hover:text-supporting"
+                                    >
+                                      Refrescar productos
+                                    </button>
+                                  </div>
+                                )}
+                  </div>
         ) : (
           filteredItems.map(item => {
           const selectedItem = selectedItems.find(selected => selected.id === item.id);
           const isSelected = !!selectedItem;
-          const isOutOfStock = item.stock <= 0;
+          const isOutOfStock = item.stock < 0; // Allow items with 0 stock to be shown
 
           return (
             <motion.div
@@ -233,7 +261,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
 
                 {/* Stock indicator */}
                 <div className="mb-2 text-xs text-gray-500">
-                  Stock: {item.stock} disponibles
+                  Stock: {item.stock >= 0 ? item.stock : 'Sin stock'} disponibles
                 </div>
 
                 <div className="flex flex-col items-center justify-between">
@@ -312,7 +340,16 @@ export const SelectStep: React.FC<SelectStepProps> = ({
         </button>
 
         <button
-          onClick={nextStep}
+          onClick={() => {
+            console.log('Continue button clicked', {
+              canContinueFromSelect,
+              selectedItemsCount: selectedItems.length,
+              finalPrice
+            });
+            console.log('Selected items:', selectedItems);
+            console.log('Button is disabled:', !canContinueFromSelect);
+            nextStep();
+          }}
           disabled={!canContinueFromSelect}
           className="flex items-center px-6 py-2 space-x-1 text-sm text-white transition-all duration-200 rounded-lg md:px-8 md:py-3 md:space-x-2 bg-gradient-to-r from-accent to-supporting md:rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed md:text-base"
         >

@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import { itemVariants, stepVariants, DISCOUNT_PERCENTAGE } from '../constants';
 import { SelectedKitItem } from '../../../types/builder';
-import { cubicBezier } from 'framer-motion';
 
 interface SummaryStepProps {
   kitName: string;
@@ -36,7 +35,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
       variants={stepVariants}
       initial="initial"
       animate="animate"
-      exit={{ opacity: 0, x: 60, scale: 0.95, transition: { duration: 0.4, ease: cubicBezier(0.19, 1.12, 0.7, 0.97) } }}
       className="max-w-2xl mx-auto"
     >
       <div className="mb-8 text-center">
