@@ -340,16 +340,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
         </button>
 
         <button
-          onClick={() => {
-            console.log('Continue button clicked', {
-              canContinueFromSelect,
-              selectedItemsCount: selectedItems.length,
-              finalPrice
-            });
-            console.log('Selected items:', selectedItems);
-            console.log('Button is disabled:', !canContinueFromSelect);
-            nextStep();
-          }}
+          onClick={nextStep}
           disabled={!canContinueFromSelect}
           className="flex items-center px-6 py-2 space-x-1 text-sm text-white transition-all duration-200 rounded-lg md:px-8 md:py-3 md:space-x-2 bg-gradient-to-r from-accent to-supporting md:rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed md:text-base"
         >
