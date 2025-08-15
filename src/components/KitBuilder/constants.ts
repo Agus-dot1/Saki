@@ -24,7 +24,6 @@ export const SUGGESTED_KIT_NAMES = [
   'Glow Session',
   'Ritual de Belleza',
   'Skin Love',
-  'Pure Vibes',
 ];
 
 export type WizardStep = 'name' | 'select' | 'customize' | 'summary';

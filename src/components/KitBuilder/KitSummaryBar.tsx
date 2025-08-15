@@ -16,12 +16,12 @@ export const KitSummaryBar: React.FC<KitSummaryBarProps> = ({
 }) => {
   return (
     <motion.div
-      className="z-20 flex items-end justify-end w-full pr-5 mt-5 md:pr-24"
+      className="sticky z-20 flex justify-end pr-5 items-enter bottom-3"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
     >
-      <div className="flex items-center px-4 py-2 space-x-2 text-xs rounded-full shadow-lg md:px-6 md:py-3 md:space-x-4 bg-white/90 md:text-base">
+      <div className="flex items-center px-4 py-2 space-x-2 text-xs rounded-full shadow-lg md:px-6 md:py-3 md:space-x-4 bg-white/90 backdrop-blur-md md:text-base">
         <div className="flex items-center space-x-1 text-gray-600">
           <Package size={14} />
           <span>{totalItems}/{MAX_ITEMS}</span>

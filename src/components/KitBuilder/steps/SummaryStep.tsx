@@ -37,9 +37,9 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
       animate="animate"
       className="max-w-2xl mx-auto"
     >
-      <div className="mb-8 text-center">
+      <div className="mb-4 text-center">
         <motion.div variants={itemVariants}>
-          <h2 className="mb-4 text-3xl font-bold lg:text-5xl text-primary">
+          <h2 className="mb-3 text-3xl font-bold lg:text-5xl text-primary">
             Tu Kit Está Listo
           </h2>
           <p className="text-lg text-content">
@@ -48,12 +48,12 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
         </motion.div>
       </div>
 
-      <motion.div variants={itemVariants} className="p-8 mb-8 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl">
-        <div className="p-6 mb-6 bg-gradient-to-r from-accent/10 to-supporting/10 rounded-2xl">
+      <motion.div variants={itemVariants} className="p-6 mb-6 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl">
+        <div className="p-4 mb-4 bg-gradient-to-r from-accent/10 to-supporting/10 rounded-2xl">
           <h4 className="mb-2 text-xl font-semibold text-gray-900">
             {kitName}
           </h4>
-          <p className="mb-4 text-gray-600">
+          <p className="mb-3 text-gray-600">
             {totalItems} productos seleccionados para tu rutina perfecta
           </p>
 
@@ -63,7 +63,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="object-cover w-full rounded-lg aspect-square"
+                  className="object-contain w-full rounded-lg"
                 />
                 {item.quantity > 1 && (
                   <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-1 bg-accent">
@@ -76,9 +76,9 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
         </div>
 
         <div className="p-6 bg-white border border-gray-200 rounded-2xl">
-          <h4 className="mb-4 font-semibold text-gray-900">Detalle del Precio</h4>
+          <h4 className="mb-3 font-semibold text-gray-900">Detalle del Precio</h4>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {selectedItems.map(item => (
               <div key={item.id} className="flex justify-between text-sm">
                 <span className="text-gray-600">

@@ -109,7 +109,7 @@ const KitBuilderModal: React.FC<KitBuilderModalProps> = ({ isOpen, onClose }) =>
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 overflow-x-hidden overflow-y-auto py-14 bg-gradient-to-b from-white to-white/80 backdrop-blur-sm"
+        className="fixed inset-0 z-50 h-full overflow-x-hidden pt-7 bg-gradient-to-b from-white to-white/80 backdrop-blur-sm"
         variants={wizardVariants}
         initial="initial"
         animate="animate"

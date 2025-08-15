@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Star, Plus, Minus, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Star, Plus, Minus, Check, Package } from 'lucide-react';
 import { itemVariants, stepVariants, CATEGORIES, MIN_ORDER_AMOUNT } from '../constants';
 import { SelectedKitItem } from '../../../types/builder';
 import { KitItem } from '../../../services/kitbuilderService';
@@ -45,14 +45,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
   nextStep,
   canContinueFromSelect,
 }) => {
-  // Debug logging
-  console.log('SelectStep render:', {
-    availableItems: availableItems.length,
-    filteredItems: filteredItems.length,
-    activeCategory,
-    isLoading,
-    error
-  });
+
   // Show loading state
   if (isLoading) {
     return (
@@ -125,6 +118,24 @@ export const SelectStep: React.FC<SelectStepProps> = ({
       </motion.div>
     );
   }
+
+  //   const getStockStatus = () => {
+  //   if (!product.stock) return null;
+    
+  //   if (product.stock <= 0) {
+  //     return { text: 'Sin Stock', color: 'text-red-600 bg-red-50', disabled: true };
+  //   } else if (product.stock <= 5) {
+  //     return { text: `Solo ${product.stock} disponibles`, color: 'text-yellow-600 bg-yellow-50', disabled: false };
+  //   } else if (product.stock <= 10) {
+  //     return { text: `${product.stock} disponibles`, color: 'text-blue-600 bg-blue-50', disabled: false };
+  //   }
+    
+  //   return { text: 'En Stock', color: 'text-green-600 bg-green-50', disabled: false };
+  // };
+
+  // const stockStatus = getStockStatus();
+
+
 
   return (
     <motion.div
@@ -211,6 +222,23 @@ export const SelectStep: React.FC<SelectStepProps> = ({
           const isSelected = !!selectedItem;
           const isOutOfStock = item.stock < 0; // Allow items with 0 stock to be shown
 
+          const getStockStatus = () => {
+              if (item.stock == 0) {
+                return { text: 'Sin Stock', color: 'text-gray-800 bg-gray-50', disabled: true };
+              }
+              if (item.stock < 3) {
+                return { text: 'Últimos disponibles', color: 'text-red-600 bg-red-50', disabled: true };
+              }
+              if (item.stock >= 3 && item.stock <= 10) {
+                return { text: 'Poco stock', color: 'text-yellow-600 bg-yellow-50', disabled: false };
+              }
+              if (item.stock > 10) {
+                return { text: 'En Stock', color: 'text-green-600 bg-green-50', disabled: false };
+              }
+          }
+
+          const stockStatus = getStockStatus();
+
           return (
             <motion.div
               key={item.id}
@@ -228,7 +256,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="object-cover w-full h-full transition-transform duration-300 hover:scale-110"
+                  className="object-contain w-full h-full transition-transform duration-300 scale-125 hover:scale-150"
                 />
                 {isOutOfStock && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-t-xl md:rounded-t-2xl">
@@ -238,7 +266,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   </div>
                 )}
                 {isSelected && (
-                  <div className="absolute flex items-center justify-center w-6 h-6 rounded-full shadow-lg md:w-8 md:h-8 top-2 right-2 md:top-3 md:right-3 bg-accent">
+                  <div className="absolute flex items-center justify-center w-6 h-6 rounded-full shadow-lg md:w-8 md:h-8 top-2 right-2 md:top-3 md:left-3 bg-accent">
                     <Check size={14} className="text-white" />
                   </div>
                 )}
@@ -260,10 +288,16 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                 </div>
 
                 {/* Stock indicator */}
-                <div className="mb-2 text-xs text-gray-500">
-                  Stock: {item.stock >= 0 ? item.stock : 'Sin stock'} disponibles
-                </div>
-
+                
+                {stockStatus && (
+                  <div className={`absolute top-3 right-3 lg:top-4 lg:right-4 px-2 py-1 lg:px-3 lg:py-1 rounded-full text-xs font-medium ${stockStatus.color}`}>
+                  <div className="flex items-center space-x-1">
+                    <Package size={12} />
+                    <span>{stockStatus.text}</span>
+                  </div>
+                  </div>
+                )}
+              
                 <div className="flex flex-col items-center justify-between">
                   <span className="self-start font-bold md:text-xl text-accent">
                     ${item.price}
