@@ -143,7 +143,7 @@ const StorySlideshow = () => {
   }, []);
 
   return (
-    <div className="relative w-full max-w-lg mx-auto overflow-hidden bg-white shadow-2xl aspect-video md:aspect-square rounded-3xl">
+    <div className="relative w-full max-w-lg mx-auto overflow-hidden bg-white shadow-2xl aspect-square rounded-3xl">
       <AnimatePresence initial={false}>
         <motion.div
           key={current}
@@ -156,7 +156,7 @@ const StorySlideshow = () => {
           <img
             src={slides[current].image}
             alt={slides[current].title}
-            className="object-contain w-full h-full"
+            className="object-contain "
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </motion.div>
