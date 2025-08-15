@@ -93,7 +93,7 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
     >
       {/* Image container */}
       <div className="relative h-64 overflow-hidden lg:h-72">
-        <img 
+        <img
           src={item.coverImage} 
           alt={item.name} 
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
@@ -182,11 +182,11 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-xl font-medium lg:text-2xl text-primary">
-              ${Number(item.price)}
+              ${item.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             {item.oldPrice && item.oldPrice > item.price && (
               <span className="text-sm line-through lg:text-base text-content">
-                ${Number(item.oldPrice)}
+                ${item.oldPrice.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             )}
           </div>

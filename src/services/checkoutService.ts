@@ -1,19 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import supabase from "../utils/supabase";
+import { NormalizedCartItem } from "../utils/variantUtils";
 
 export interface CheckoutData {
-  items: Array<{
-    product: {
-      id: number;
-      name: string;
-      price: number;
-    };
-    quantity: number;
-  }>;
+  items: NormalizedCartItem[];
   customer: {
     email: string;
     firstName: string;
@@ -26,6 +15,8 @@ export interface CheckoutData {
     postalCode?: string;
   };
 }
+
+
 
 export interface PaymentPreference {
   preferenceId: string;

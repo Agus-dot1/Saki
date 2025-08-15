@@ -18,8 +18,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
 
     const interval = setInterval(() => {
       setProgress(prev => {
-        // 100ms interval, so decrement is (100 / duration) * 100
-        const duration = toast.duration ?? 1000;
+        const duration = toast.duration ?? 2000;
         const decrement = (100 / (duration / 100));
         return Math.max(0, prev - decrement);
       });
@@ -29,24 +28,24 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
   }, [toast.duration]);
 
   const getToastStyles = () => {
-    const baseStyles = "pointer-events-auto relative overflow-hidden rounded-lg shadow-lg border backdrop-blur-sm";
+    const baseStyles = "pointer-events-auto relative overflow-hidden rounded-xl shadow-lg border backdrop-blur-md";
     
     switch (toast.type) {
       case 'success':
-        return `${baseStyles} bg-green-50/95 border-green-200 text-green-800`;
+        return `${baseStyles} bg-white/95 border-green-200/50 text-green-800`;
       case 'error':
-        return `${baseStyles} bg-red-50/95 border-red-200 text-red-800`;
+        return `${baseStyles} bg-white/95 border-red-200/50 text-red-800`;
       case 'warning':
-        return `${baseStyles} bg-yellow-50/95 border-yellow-200 text-yellow-800`;
+        return `${baseStyles} bg-white/95 border-yellow-200/50 text-yellow-800`;
       case 'info':
-        return `${baseStyles} bg-blue-50/95 border-blue-200 text-blue-800`;
+        return `${baseStyles} bg-white/95 border-blue-200/50 text-blue-800`;
       default:
-        return `${baseStyles} bg-white/95 border-gray-200 text-gray-800`;
+        return `${baseStyles} bg-white/95 border-gray-200/50 text-gray-800`;
     }
   };
 
   const getIcon = () => {
-    const iconProps = { size: 20, className: "flex-shrink-0" };
+    const iconProps = { size: 18, className: "flex-shrink-0" };
     
     switch (toast.type) {
       case 'success':
@@ -65,15 +64,15 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
   const getProgressBarColor = () => {
     switch (toast.type) {
       case 'success':
-        return 'bg-green-400';
+        return 'bg-green-500';
       case 'error':
-        return 'bg-red-400';
+        return 'bg-red-500';
       case 'warning':
-        return 'bg-yellow-400';
+        return 'bg-yellow-500';
       case 'info':
-        return 'bg-blue-400';
+        return 'bg-blue-500';
       default:
-        return 'bg-gray-400';
+        return 'bg-gray-500';
     }
   };
 
@@ -97,7 +96,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
     >
       {/* Progress bar */}
       {toast.duration && toast.duration > 0 && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-black/10">
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-black/5">
           <motion.div
             className={`h-full ${getProgressBarColor()}`}
             initial={{ width: '100%' }}
@@ -107,7 +106,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
         </div>
       )}
 
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         <div className="flex items-start space-x-3">
           {/* Icon */}
           <div className="mt-0.5">
@@ -116,36 +115,40 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast }) => {
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <h4 className="mb-1 text-sm font-semibold leading-tight">
-              {toast.title}
-            </h4>
-            <p className="text-sm leading-relaxed opacity-90">
-              {toast.message}
-            </p>
+            <div className="flex items-start justify-between">
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-semibold leading-tight text-primary">
+                  {toast.title}
+                </h4>
+                <p className="mt-1 text-sm leading-relaxed text-content">
+                  {toast.message}
+                </p>
 
-            {/* Action button */}
-            {toast.action && (
-              <button
-                onClick={toast.action.onClick}
-                className="mt-3 text-sm font-medium underline rounded hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current"
-              >
-                {toast.action.label}
-              </button>
-            )}
+                {/* Action button */}
+                {toast.action && (
+                  <button
+                    onClick={toast.action.onClick}
+                    className="mt-2 text-sm font-medium underline text-accent hover:text-supporting focus:outline-none focus:ring-2 focus:ring-accent/20 rounded"
+                  >
+                    {toast.action.label}
+                  </button>
+                )}
+              </div>
+
+              {/* Dismiss button */}
+              {toast.dismissible && (
+                <button
+                  onClick={handleDismiss}
+                  onKeyDown={handleKeyDown}
+                  className="flex-shrink-0 p-1 ml-2 transition-colors rounded-full text-content hover:text-primary hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  aria-label="Cerrar notificación"
+                  type="button"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
           </div>
-
-          {/* Dismiss button */}
-          {toast.dismissible && (
-            <button
-              onClick={handleDismiss}
-              onKeyDown={handleKeyDown}
-              className="flex-shrink-0 p-1 transition-colors rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current"
-              aria-label="Cerrar notificación"
-              type="button"
-            >
-              <X size={16} />
-            </button>
-          )}
         </div>
       </div>
     </div>

@@ -1,10 +1,7 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Layout/Header';
-import Hero from './components/Hero/Hero';
-import ProductsSection from './components/Products/ProductsSection';
-import TestimonialsSection from './components/Testimonials/TestimonialsSection';
 import Footer from './components/Layout/Footer';
 import CartProvider from './contexts/CartContext';
 import ToastProvider from './contexts/ToastContext';
@@ -21,22 +18,28 @@ import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
 import { KitBuilderModal, FloatingKitButton } from './components/KitBuilder';
 
+const Hero = lazy(() => import('./components/Hero/Hero'));
+const ProductsSection = lazy(() => import('./components/Products/ProductsSection'));
+const TestimonialsSection = lazy(() => import('./components/Testimonials/TestimonialsSection'));
+
 // Main App Component
 const MainApp: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isKitBuilderOpen, setIsKitBuilderOpen] = useState(false);
-  
+
+
+  // Mobile-first body scroll management
   useEffect(() => {
-    if (isCartOpen || selectedProduct || isCheckoutOpen || isKitBuilderOpen) {
+    const isModalOpen = isCartOpen || selectedProduct || isCheckoutOpen || isKitBuilderOpen;
+    if (isModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     }
-    
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [isCartOpen, selectedProduct, isCheckoutOpen, isKitBuilderOpen]);
 
@@ -47,7 +50,6 @@ const MainApp: React.FC = () => {
     };
 
     const handleOpenCheckoutForm = () => {
-      setIsCartOpen(false);
       setIsCheckoutOpen(true);
     };
 
@@ -75,12 +77,12 @@ const MainApp: React.FC = () => {
         openKitBuilder={() => setIsKitBuilderOpen(true)}
       />
       
-      {/* Main content with proper mobile spacing */}
-      <main className="pt-5 transition-all duration-300">
+      {/* Main content with mobile-first spacing */}
+      <main className="transition-all duration-300">
         <div className="max-w-[1920px] mx-auto">
           <Suspense fallback={<LoadingSpinner />}>
             <Hero />
-            <ProductsSection 
+            <ProductsSection
               onProductSelect={setSelectedProduct}
             />
             <JewelryContainer />
@@ -99,7 +101,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setIsCartOpen(false)}
             />
             <motion.div
@@ -124,7 +126,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setSelectedProduct(null)}
             />
             <motion.div
@@ -150,7 +152,7 @@ const MainApp: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
+              className="fixed inset-0 z-40 bg-black/60 mobile-backdrop"
               onClick={() => setIsCheckoutOpen(false)}
             />
             <motion.div

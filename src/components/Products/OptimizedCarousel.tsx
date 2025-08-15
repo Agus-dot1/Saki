@@ -6,6 +6,7 @@ interface OptimizedCarouselProps {
   images: string[];
   alt: string;
   className?: string;
+  onSlideChange?: (index: number) => void;
 }
 
 interface TouchState {
@@ -17,7 +18,8 @@ interface TouchState {
 const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({ 
   images, 
   alt, 
-  className = 'object-contain' 
+  className = 'object-contain',
+  onSlideChange 
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]));
@@ -114,18 +116,27 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
 
   // Navigation functions with bounds checking
   const goToNext = useCallback(() => {
-    setCurrentIndex(prev => (prev + 1) % images.length);
-  }, [images.length]);
+    setCurrentIndex(prev => {
+      const next = (prev + 1) % images.length;
+      if (onSlideChange) onSlideChange(next);
+      return next;
+    });
+  }, [images.length, onSlideChange]);
 
   const goToPrevious = useCallback(() => {
-    setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
-  }, [images.length]);
+    setCurrentIndex(prev => {
+      const prevIdx = (prev - 1 + images.length) % images.length;
+      if (onSlideChange) onSlideChange(prevIdx);
+      return prevIdx;
+    });
+  }, [images.length, onSlideChange]);
 
   const goToSlide = useCallback((index: number) => {
     if (index >= 0 && index < images.length) {
       setCurrentIndex(index);
+      if (onSlideChange) onSlideChange(index); // <-- notifica el cambio
     }
-  }, [images.length]);
+  }, [images.length, onSlideChange]);
 
   // Touch/swipe handlers
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
