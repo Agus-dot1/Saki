@@ -112,22 +112,22 @@ const slides = [
   {
     id: 1,
     title: "Pureza que se siente.",
-    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images//nawi%203.jpg",
-    productImage: "https://res.cloudinary.com/do17gdc0b/image/upload/v1750901904/kit_sami_1_p3xqxg.webp",
+    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%201.jpg",
+    productImage: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%201.jpg",
     objectPosition: "center 40%",
   },
   {
     id: 2,
     title: "Resultados que se ven.",
-    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images//sami%202.jpg",
-    productImage: "https://res.cloudinary.com/do17gdc0b/image/upload/v1749864084/KitPaki_1_ujvfwq.webp",
+    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%202.jpg",
+    productImage: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%202.jpg",
     objectPosition: "center 30%",
   },
   {
     id: 3,
     title: "El cuidado como debe ser.",
-    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images//paki%202.jpg",
-    productImage: "https://res.cloudinary.com/do17gdc0b/image/upload/v1750901904/kit_sami_1_p3xqxg.webp",
+    image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%203.jpg",
+    productImage: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%203.jpg",
     objectPosition: "center 50%",
   },
 ];
