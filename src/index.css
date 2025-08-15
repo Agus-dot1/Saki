@@ -85,23 +85,23 @@ img {
 
 /* Mobile-first typography scale */
 h1 {
-  @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-light leading-tight;
+  @apply text-2xl font-light leading-tight sm:text-3xl lg:text-4xl xl:text-5xl;
 }
 
 h2 {
-  @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-light leading-tight;
+  @apply text-xl font-light leading-tight sm:text-2xl lg:text-3xl xl:text-4xl;
 }
 
 h3 {
-  @apply text-lg sm:text-xl lg:text-2xl font-medium leading-tight;
+  @apply text-lg font-medium leading-tight sm:text-xl lg:text-2xl;
 }
 
 h4 {
-  @apply text-base sm:text-lg lg:text-xl font-medium leading-tight;
+  @apply text-base font-medium leading-tight sm:text-lg lg:text-xl;
 }
 
 p {
-  @apply text-sm sm:text-base lg:text-lg leading-relaxed;
+  @apply text-sm leading-relaxed sm:text-base lg:text-lg;
 }
 
 /* Mobile-optimized spacing utilities */
@@ -170,7 +170,7 @@ p {
 
 /* Mobile-optimized card styling */
 .mobile-card {
-  @apply rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8;
+  @apply p-4 border border-gray-100 shadow-sm rounded-xl sm:p-6 lg:p-8;
 }
 
 /* Mobile-optimized button groups */
@@ -181,7 +181,7 @@ p {
 /* Mobile-optimized modal/dialog styling */
 @media (max-width: 768px) {
   .mobile-modal {
-    @apply rounded-t-2xl rounded-b-none;
+    @apply rounded-b-none rounded-t-2xl;
     max-height: 95vh;
     margin: 0;
     width: 100vw;
@@ -223,63 +223,62 @@ p {
   }
 }
 
-/* Better mobile modal/dialog styling */
-@media (max-width: 768px) {
-  .mobile-modal {
-    @apply rounded-b-none rounded-t-2xl;
-    max-height: 95vh;
-
-
-
-/* Kit Builder specific styles */
-.kit-builder-modal {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+/* Mobile-optimized sticky elements */
+.mobile-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.kit-builder-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Mobile-optimized backdrop blur */
+.mobile-backdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.kit-builder-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Mobile-optimized shadows */
+.mobile-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Smooth scrolling for kit builder */
-.kit-builder-scroll {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+.mobile-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Custom scrollbar for kit builder */
-.kit-builder-scroll::-webkit-scrollbar {
-  width: 4px;
+/* Mobile-optimized transitions */
+.mobile-transition {
+  transition: all 0.2s ease-in-out;
 }
 
-.kit-builder-scroll::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 2px;
+/* Mobile-optimized aspect ratios */
+.aspect-mobile-square {
+  aspect-ratio: 1 / 1;
 }
 
-.kit-builder-scroll::-webkit-scrollbar-thumb {
-  background: #2A5A2E;
-  border-radius: 2px;
+.aspect-mobile-video {
+  aspect-ratio: 16 / 9;
 }
 
-.kit-builder-scroll::-webkit-scrollbar-thumb:hover {
-  background: #122514;
+@media (max-width: 640px) {
+  .aspect-mobile-video {
+    aspect-ratio: 4 / 3;
+  }
 }
 
-/* Line clamp utility for kit builder */
-.line-clamp-2 {
+/* Mobile-optimized text truncation */
+.mobile-truncate {
+  @apply truncate;
+}
+
+.mobile-line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.line-clamp-3 {
+.mobile-line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -320,66 +319,9 @@ p {
   animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Mobile-friendly grid layouts */
-.mobile-grid {
-  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
-
-}
-
-/* Mobile-optimized backdrop blur */
-.mobile-backdrop {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* Better mobile card styling */
-.mobile-card {
-  @apply p-4 border border-gray-100 rounded-lg shadow-sm lg:p-6;
-
-
-.mobile-shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Mobile-optimized transitions */
-.mobile-transition {
-  transition: all 0.2s ease-in-out;
-}
-
-/* Mobile-optimized aspect ratios */
-.aspect-mobile-square {
-  aspect-ratio: 1 / 1;
-}
-
-
 /* Improved mobile navigation */
 .mobile-nav {
   @apply fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200;
-
-
-@media (max-width: 640px) {
-  .aspect-mobile-video {
-    aspect-ratio: 4 / 3;
-  }
-}
-
-/* Mobile-optimized text truncation */
-.mobile-truncate {
-  @apply truncate;
-}
-
-.mobile-line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.mobile-line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* Mobile-optimized visibility utilities */
