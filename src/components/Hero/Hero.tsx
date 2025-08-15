@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Star, Users, ArrowDown } from 'lucide-react';
+import { Package, Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
+import { KitBuilderButton } from '../KitBuilder';
 
 const Hero: React.FC = () => {
   const scrollToProducts = () => {
@@ -8,6 +9,10 @@ const Hero: React.FC = () => {
     if (productsSection) {
       productsSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const openKitBuilder = () => {
+    document.dispatchEvent(new CustomEvent('openKitBuilder'));
   };
 
   return (
@@ -69,6 +74,10 @@ const Hero: React.FC = () => {
               >
                 Ver Productos
               </motion.button>
+              <KitBuilderButton 
+            onClick={openKitBuilder}
+            className="lg:w-auto"
+          />
               
               {/* Scroll indicator for mobile */}
               <motion.div 

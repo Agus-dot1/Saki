@@ -16,6 +16,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
+import { KitBuilderModal, FloatingKitButton } from './components/KitBuilder';
 
 const Hero = lazy(() => import('./components/Hero/Hero'));
 const ProductsSection = lazy(() => import('./components/Products/ProductsSection'));
@@ -73,6 +74,7 @@ const MainApp: React.FC = () => {
     <div className="min-h-screen text-primary font-jost">
       <Header 
         toggleCart={() => setIsCartOpen(!isCartOpen)}
+        openKitBuilder={() => setIsKitBuilderOpen(true)}
       />
       
       {/* Main content with mobile-first spacing */}
@@ -164,7 +166,15 @@ const MainApp: React.FC = () => {
             </motion.div>
           </>
         )}
+
+        <KitBuilderModal
+          isOpen={isKitBuilderOpen}
+          onClose={() => setIsKitBuilderOpen(false)}
+        />
       </AnimatePresence>
+
+      {/* Floating Kit Builder Button */}
+      <FloatingKitButton onOpenKitBuilder={() => setIsKitBuilderOpen(true)} />
 
       {/* Toast Container */}
       <ToastContainer />

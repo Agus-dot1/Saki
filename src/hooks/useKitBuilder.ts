@@ -1,0 +1,213 @@
+import { useState, useMemo } from 'react';
+import { useEffect } from 'react';
+import { useCart } from './useCart';
+import { useToast } from './useToast';
+import { fetchKitBuilderItems } from '../services/kitbuilderService';
+import { KitItem } from '../services/kitbuilderService';
+import { SelectedKitItem } from '../types/builder';
+import {
+  SUGGESTED_KIT_NAMES,
+  MIN_ORDER_AMOUNT,
+  MAX_ITEMS,
+  DISCOUNT_THRESHOLD,
+  DISCOUNT_PERCENTAGE,
+  WizardStep,
+} from '../components/KitBuilder/constants';
+
+export const useKitBuilder = (onClose: () => void) => {
+  const { addToCart } = useCart();
+  const { showError } = useToast();
+
+  const [availableItems, setAvailableItems] = useState<KitItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedItems, setSelectedItems] = useState<SelectedKitItem[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>('limpieza');
+  const [kitName, setKitName] = useState('');
+  const [step, setStep] = useState<WizardStep>('name');
+
+  // Fetch kit builder items from Supabase
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        console.log('Loading kit builder items...');
+        setIsLoading(true);
+        setError(null);
+        
+        const items = await fetchKitBuilderItems();
+        console.log('Received items:', items);
+        setAvailableItems(items);
+      } catch (err) {
+        console.error('Failed to load kit builder items:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load kit builder items');
+        setAvailableItems([]);
+      } finally {
+        console.log('Finished loading items');
+        setIsLoading(false);
+      }
+    };
+
+    loadItems();
+  }, []);
+
+  const totalPrice = useMemo(() => selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0), [selectedItems]);
+  const totalItems = useMemo(() => selectedItems.reduce((sum, item) => sum + item.quantity, 0), [selectedItems]);
+  const hasDiscount = useMemo(() => totalPrice >= DISCOUNT_THRESHOLD, [totalPrice]);
+  const discountAmount = useMemo(() => (hasDiscount ? (totalPrice * DISCOUNT_PERCENTAGE) / 100 : 0), [hasDiscount, totalPrice]);
+  const finalPrice = useMemo(() => totalPrice - discountAmount, [totalPrice, discountAmount]);
+  const canOrder = useMemo(() => finalPrice >= MIN_ORDER_AMOUNT, [finalPrice]);
+  const progress = useMemo(() => Math.min((finalPrice / MIN_ORDER_AMOUNT) * 100, 100), [finalPrice]);
+
+  const filteredItems = useMemo(() => {
+    console.log('Filtering items:', { availableItems: availableItems.length, activeCategory });
+    const filtered = availableItems.filter(item => item.category === activeCategory);
+    console.log('Filtered items count:', filtered.length);
+    return filtered;
+  }, [availableItems, activeCategory]);
+
+  const generateRandomName = () => {
+    const randomName = SUGGESTED_KIT_NAMES[Math.floor(Math.random() * SUGGESTED_KIT_NAMES.length)];
+    setKitName(randomName);
+  };
+
+  const addItemToKit = (item: KitItem) => {
+    if (totalItems >= MAX_ITEMS) {
+      showError('Límite Alcanzado', `Máximo ${MAX_ITEMS} productos por kit`);
+      return;
+    }
+
+    setSelectedItems(prev => {
+      const existing = prev.find(selected => selected.id === item.id);
+      if (existing) {
+        return prev.map(selected =>
+          selected.id === item.id
+            ? { ...selected, quantity: selected.quantity + 1 }
+            : selected
+        );
+      } else {
+        return [...prev, { ...item, quantity: 1 }];
+      }
+    });
+  };
+
+  const removeItemFromKit = (itemId: number) => {
+    setSelectedItems(prev => prev.filter(item => item.id !== itemId));
+  };
+
+  const updateItemQuantity = (itemId: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeItemFromKit(itemId);
+      return;
+    }
+
+    if (totalItems >= MAX_ITEMS && newQuantity > (selectedItems.find(item => item.id === itemId)?.quantity || 0)) {
+        showError('Límite Alcanzado', `Máximo ${MAX_ITEMS} productos por kit`);
+        return;
+    }
+
+    setSelectedItems(prev =>
+      prev.map(item =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const handleAddToCart = () => {
+    if (!canOrder) {
+      showError('Monto Mínimo', `El monto mínimo para armar un kit es $${MIN_ORDER_AMOUNT}`);
+      return;
+    }
+
+    const customKit = {
+      id: Date.now(),
+      name: kitName || 'Mi Kit Personalizado',
+      description: `Kit personalizado con ${totalItems} productos seleccionados`,
+      shortDescription: `Kit personalizado - ${totalItems} productos`,
+      price: finalPrice,
+      contents: selectedItems.map(item => `${item.quantity}x ${item.name}`),
+      images: [selectedItems[0]?.image || 'https://images.pexels.com/photos/4465821/pexels-photo-4465821.jpeg'],
+      detailedDescription: `Kit personalizado creado por el usuario con los siguientes productos: ${selectedItems.map(item => `${item.quantity}x ${item.name}`).join(', ')}`,
+      stock: 1,
+      keyBenefits: ['Kit personalizado', 'Productos seleccionados por ti', 'Rutina completa'],
+      featuredIngredients: ['Ingredientes naturales', 'Fórmulas premium'],
+      discountPercentage: hasDiscount ? DISCOUNT_PERCENTAGE : 0,
+      oldPrice: hasDiscount ? totalPrice : finalPrice,
+      items: selectedItems.map(item => ({
+        name: item.name,
+        quantity: item.quantity
+      }))
+    };
+
+    addToCart(customKit);
+    
+    setSelectedItems([]);
+    setKitName('');
+    setStep('name');
+    onClose();
+  };
+
+  const nextStep = () => {
+    console.log('nextStep called, current step:', step);
+    if (step === 'name') {
+      console.log('Transitioning from name to select');
+      setStep('select');
+    } else if (step === 'select') {
+      console.log('Transitioning from select to customize');
+      console.log('Selected items count:', selectedItems.length);
+      console.log('Final price:', finalPrice);
+      console.log('Can continue from select:', canContinueFromSelect);
+      setStep('customize');
+    } else if (step === 'customize') {
+      console.log('Transitioning from customize to summary');
+      setStep('summary');
+    }
+  };
+
+  const prevStep = () => {
+    if (step === 'summary') setStep('customize');
+    else if (step === 'customize') setStep('select');
+    else if (step === 'select') setStep('name');
+  };
+
+  const canContinueFromName = kitName.trim().length > 0;
+  const canContinueFromSelect = selectedItems.length > 0 && finalPrice >= MIN_ORDER_AMOUNT;
+  
+  // Debug logging for the bug investigation
+  console.log('KitBuilder state:', {
+    step,
+    selectedItemsCount: selectedItems.length,
+    selectedItems,
+    finalPrice,
+    MIN_ORDER_AMOUNT,
+    canContinueFromSelect,
+    activeCategory
+  });
+
+  return {
+    selectedItems,
+    availableItems,
+    isLoading,
+    error,
+    activeCategory,
+    kitName,
+    step,
+    totalPrice,
+    totalItems,
+    hasDiscount,
+    discountAmount,
+    finalPrice,
+    canOrder,
+    progress,
+    filteredItems,
+    canContinueFromName,
+    canContinueFromSelect,
+    setActiveCategory,
+    setKitName,
+    generateRandomName,
+    addItemToKit,
+    updateItemQuantity,
+    handleAddToCart,
+    nextStep,
+    prevStep,
+  };
+};

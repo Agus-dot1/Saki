@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Home, Package, Mail, X } from 'lucide-react';
+import { ShoppingCart, Home, Package, Mail, X, Sparkles } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { motion, AnimatePresence } from 'framer-motion';
+import { KitBuilderButton } from '../KitBuilder';
 
 interface HeaderProps {
   toggleCart: () => void;
+  openKitBuilder: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
+const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
   const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -74,7 +76,6 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
             )}
           </button>
 
-      
         </nav>
       </header>
 
@@ -134,7 +135,10 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
             </span>
           )}
         </button>
+
+  
       </nav>
+
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -191,6 +195,16 @@ const Header: React.FC<HeaderProps> = ({ toggleCart }) => {
                     ))}
                   </ul>
 
+                  {/* Kit Builder in Mobile Menu */}
+                  <div className="px-6 mt-6">
+                    <KitBuilderButton 
+                      onClick={() => {
+                        openKitBuilder();
+                        closeMobileMenu();
+                      }}
+                      className="w-full"
+                    />
+                  </div>
                 </nav>
 
                 {/* Mobile Menu Footer */}
