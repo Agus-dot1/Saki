@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
+import { ArrowDown, Package, Play, Sparkles, Star, Users, Volume2, VolumeX } from 'lucide-react';
 import { KitBuilderButton } from '../KitBuilder';
 
 const Hero: React.FC = () => {
