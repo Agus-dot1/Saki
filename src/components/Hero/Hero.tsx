@@ -114,7 +114,7 @@ const slides = [
     title: "Pureza que se siente.",
     image: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%201.jpg",
     productImage: "https://jvrvhoyepfcznosljvjw.supabase.co/storage/v1/object/public/images/hero%201.jpg",
-    objectPosition: "center 40%",
+    objectPosition: "center 10%",
   },
   {
     id: 2,
@@ -156,8 +156,7 @@ const StorySlideshow = () => {
           <img
             src={slides[current].image}
             alt={slides[current].title}
-            className="object-contain w-full h-full scale-[2.4]"
-            style={{ objectPosition: slides[current].objectPosition }}
+            className="object-contain w-full h-full"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </motion.div>
