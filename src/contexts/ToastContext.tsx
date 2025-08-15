@@ -35,12 +35,16 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     const id = generateId();
     const newToast: Toast = {
       id,
-      duration: 2000, // <-- Set default to 2 seconds
+      duration: 3000, // Default 3 seconds for better readability
       dismissible: true,
       ...toast,
     };
 
-    setToasts(prev => [...prev, newToast]);
+    setToasts(prev => {
+      // Limit to 3 toasts maximum to avoid clutter
+      const updatedToasts = [...prev, newToast];
+      return updatedToasts.slice(-3);
+    });
 
     // Auto-dismiss if duration is set
     if (newToast.duration && newToast.duration > 0) {
@@ -58,12 +62,13 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     setToasts([]);
   }, []);
 
-  // Convenience methods
+  // Convenience methods with optimized defaults
   const showSuccess = useCallback((title: string, message: string, options?: Partial<Toast>) => {
     addToast({
       type: 'success',
       title,
       message,
+      duration: 2500, // Shorter for success messages
       ...options,
     });
   }, [addToast]);
@@ -73,7 +78,7 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       type: 'error',
       title,
       message,
-      duration: 7000, // Longer duration for errors
+      duration: 5000, // Longer for errors
       ...options,
     });
   }, [addToast]);
@@ -83,7 +88,7 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       type: 'info',
       title,
       message,
-      duration: 2000, // Default duration for info
+      duration: 3000, // Standard duration for info
       ...options,
     });
   }, [addToast]);
@@ -93,7 +98,7 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       type: 'warning',
       title,
       message,
-      duration: 6000,
+      duration: 4000, // Slightly longer for warnings
       ...options,
     });
   }, [addToast]);

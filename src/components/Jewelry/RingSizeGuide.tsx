@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Ruler } from 'lucide-react';
+import { X, Ruler, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface RingSizeGuideProps {
   isOpen: boolean;
@@ -8,26 +8,21 @@ interface RingSizeGuideProps {
 }
 
 const measurementMethods = [
-    {
-    title: 'Medir el Dedo con una Cinta',
+  {
+    title: 'Medir con Papel',
     steps: [
-      'Cortá una tira fina de papel o usá un hilo.',
-      'Envolvé el papel o hilo alrededor de la base de tu dedo.',
-      'Marcá el punto donde se superpone.',
-      'Medí la longitud con una regla (en mm).',
-      'Dividí la medida por 3.14 para obtener el diámetro aproximado.',
-      'Buscá el diámetro en la tabla para conocer tu talla.'
+      'Cortá una tira fina de papel, envolvé alrededor de tu dedo y marcá donde se superpone',
+      'Medí con regla (en mm) y dividí por 3.14 para el diámetro',
+      'Buscá en la tabla tu talla y listo!'
     ]
   },
   {
-    title: 'Usar un Anillo Existente',
+    title: 'Anillo Existente',
     steps: [
-      'Tomá un anillo que te quede bien en el dedo deseado.',
-      'Medí el diámetro interno del anillo con una regla en milímetros.',
-      'Buscá el diámetro en la tabla para conocer tu talla.'
+      'Tomá un anillo que te quede bien y medí el diámetro interno en mm',
+      'Buscá el diámetro en la tabla y listo!'
     ]
   }
-
 ];
 
 const diameters = [
@@ -42,12 +37,32 @@ const diameters = [
 
 const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
   const [activeMethod, setActiveMethod] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   if (!isOpen) return null;
 
+  const currentMethod = measurementMethods[activeMethod];
+
+  const nextStep = () => {
+    if (currentStep < currentMethod.steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const switchMethod = (methodIndex: number) => {
+    setActiveMethod(methodIndex);
+    setCurrentStep(0);
+  };
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center min-w-full min-h-screen p-2 overflow-hidden backdrop-blur-sm bg-black/70 sm:p-3"
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 backdrop-blur-sm bg-black/70"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
       role="dialog"
       aria-modal="true"
@@ -58,40 +73,42 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
       transition={{ duration: 0.2 }}
     >
       <motion.div
-        className="relative flex flex-col w-full max-w-lg bg-white shadow-2xl rounded-xl"
+        className="relative flex flex-col w-full max-w-md bg-white shadow-2xl sm:rounded-2xl sm:max-h-[85vh]  h-dvh overflow-hidden"
         onClick={e => e.stopPropagation()}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.3 }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-2 border-b border-secondary/20">
+        <div className="flex items-center justify-between p-4 border-b border-secondary/20 sm:p-6">
           <div className="flex items-center space-x-3">
-            <Ruler className="text-accent" size={24} />
-            <h2 id="size-guide-title" className="text-xl font-medium text-primary">
-              Guía de Tallas de Anillos
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10">
+              <Ruler className="w-4 h-4 text-accent" />
+            </div>
+            <h2 id="size-guide-title" className="text-lg font-semibold text-primary sm:text-xl">
+              Guía de Tallas
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 transition-colors rounded-xl text-primary hover:text-accent"
+            className="p-2 transition-colors rounded-xl text-primary hover:text-accent hover:bg-gray-100"
             aria-label="Cerrar guía"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
 
-        {/* Method Tabs */}
-        <div className="flex p-2 border-b border-secondary/20">
+        {/* Method Tabs - Mobile optimized */}
+        <div className="flex p-2 border-b border-secondary/20 bg-gray-50">
           {measurementMethods.map((method, idx) => (
             <button
-              key={method.title}
-              onClick={() => setActiveMethod(idx)}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              key={idx}
+              onClick={() => switchMethod(idx)}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeMethod === idx
-                  ? 'bg-accent text-white shadow-md'
-                  : 'text-content hover:text-primary hover:bg-secondary/50'
+                  ? 'bg-accent text-white shadow-sm'
+                  : 'text-content hover:text-primary hover:bg-white/50'
               }`}
             >
               {method.title}
@@ -99,50 +116,117 @@ const RingSizeGuide: React.FC<RingSizeGuideProps> = ({ isOpen, onClose }) => {
           ))}
         </div>
 
-        {/* Steps */}
-        <div className="p-4">
-          <h3 className="mb-2 text-lg font-medium text-primary">
-            {measurementMethods[activeMethod].title}
-          </h3>
-          <ol className="mb-3 space-y-2 list-decimal list-inside text-content">
-            {measurementMethods[activeMethod].steps.map((step, i) => (
-              <li key={i}>{step}</li>
-            ))}
-          </ol>
+        {/* Content - Scrollable */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Step-by-step guide - Mobile optimized */}
+          <div className="p-4 sm:p-6">
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-base font-semibold text-primary sm:text-lg">
+                  {currentMethod.title}
+                </h3>
+                <span className="px-2 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
+                  {currentStep + 1} de {currentMethod.steps.length}
+                </span>
+              </div>
 
-          {/* Size Table */}
-          <h4 className="mt-4 mb-2 font-medium text-primary">Tabla de Tallas Disponibles</h4>
-          <table className="w-full mb-2 text-sm border rounded-lg border-secondary/20">
-            <thead>
-              <tr className="bg-accent/10">
-                <th className="p-2 text-left border-b border-secondary/20">Talla</th>
-                <th className="p-2 text-left border-b border-secondary/20">Diámetro (mm)</th>
-                <th className="p-2 text-left border-b border-secondary/20">Perímetro (mm)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {diameters.map((row, i) => (
-                <tr key={i} className="hover:bg-accent/5">
-                  <td className="p-2 border-b border-secondary/20">{row.size}</td>
-                  <td className="p-2 border-b border-secondary/20">{row.diameter}</td>
-                  <td className="p-2 border-b border-secondary/20">{row.perimeter}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="text-xs text-gray-500">
-            Si tu medida está entre dos tallas, elegí la más grande para mayor comodidad.
-          </p>
+              {/* Progress bar */}
+              <div className="w-full h-2 mb-4 overflow-hidden bg-gray-200 rounded-full">
+                <div 
+                  className="h-full transition-all duration-300 rounded-full bg-accent"
+                  style={{ width: `${((currentStep + 1) / currentMethod.steps.length) * 100}%` }}
+                />
+              </div>
+
+              {/* Current step */}
+              <div className="p-4 border rounded-xl bg-accent/5 border-accent/20">
+                <p className="text-sm font-medium text-primary sm:text-base">
+                  Paso {currentStep + 1}:
+                </p>
+                <p className="mt-1 text-sm text-content sm:text-base">
+                  {currentMethod.steps[currentStep]}
+                </p>
+              </div>
+
+              {/* Navigation buttons */}
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={prevStep}
+                  disabled={currentStep === 0}
+                  className="flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-lg text-content hover:text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={16} className="mr-1" />
+                  Anterior
+                </button>
+                <button
+                  onClick={nextStep}
+                  disabled={currentStep === currentMethod.steps.length - 1}
+                  className="flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-lg text-content hover:text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Siguiente
+                  <ChevronRight size={16} className="ml-1" />
+                </button>
+              </div>
+            </div>
+
+            {/* Size Table - Mobile optimized */}
+            <div className="mt-6">
+              <h4 className="mb-3 text-base font-semibold text-primary">Tabla de Tallas</h4>
+              <div className="overflow-hidden border rounded-lg border-secondary/20">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-accent/10">
+                      <th className="p-3 font-semibold text-left text-primary">Talla</th>
+                      <th className="p-3 font-semibold text-left text-primary">Diámetro</th>
+                      <th className="p-3 font-semibold text-left text-primary">Perímetro</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {diameters.map((row, i) => (
+                      <tr key={i} className="border-t border-secondary/20 hover:bg-accent/5">
+                        <td className="p-3 font-medium text-primary">{row.size}</td>
+                        <td className="p-3 text-content">{row.diameter} mm</td>
+                        <td className="p-3 text-content">{row.perimeter} mm</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs text-gray-500 sm:text-sm">
+                💡 Si tu medida está entre dos tallas, elegí la más grande para mayor comodidad.
+              </p>
+            </div>
+
+            {/* Tips section */}
+            <div className="p-4 mt-6 border border-blue-200 rounded-xl bg-blue-50">
+              <h5 className="mb-2 text-sm font-semibold text-blue-800">Consejos útiles:</h5>
+              <ul className="space-y-1 text-xs text-blue-700 sm:text-sm">
+                <li>• Medí al final del día cuando tus dedos están más hinchados</li>
+                <li>• Asegurate de que el papel no esté muy apretado ni muy suelto</li>
+                <li>• Para mayor precisión, medí varias veces</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex justify-end p-2 border-t border-secondary/20">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 text-white transition-colors rounded-lg bg-accent hover:bg-supporting"
-          >
-            Cerrar Guía
-          </button>
+        {/* Footer - Fixed at bottom */}
+        <div className="p-4 border-t border-secondary/20 bg-gray-50 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-3 text-sm font-semibold text-white transition-colors rounded-xl bg-accent hover:bg-supporting sm:text-base"
+            >
+              Entendido
+            </button>
+            <a
+              href="https://wa.me/541126720095?text=Hola%2C%20necesito%20ayuda%20con%20las%20tallas%20de%20anillos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 px-4 py-3 text-sm font-medium text-center transition-colors border rounded-xl border-accent text-accent hover:bg-accent/10 sm:text-base"
+            >
+              ¿Necesitás ayuda?
+            </a>
+          </div>
         </div>
       </motion.div>
     </motion.div>

@@ -1,19 +1,18 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { Product, CartItem, SelectedKitItem } from '../types';
 import { useToast } from '../hooks/useToast';
+import { createCartItemKey } from '../utils/variantUtils';
 
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product, quantity?: number, selectedItems?: SelectedKitItem[]) => void;
-  removeFromCart: (productId: number, modelNumber?: number, selectedSize?: string) => void;
-  increaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string) => void;
-  decreaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string) => void;
+  removeFromCart: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
+  increaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
+  decreaseQuantity: (productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
   isProcessingCheckout: boolean;
-  processCheckout: () => Promise<boolean>;
-  openCheckoutForm: () => void;
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -26,8 +25,6 @@ export const CartContext = createContext<CartContextType>({
   totalItems: 0,
   totalPrice: 0,
   isProcessingCheckout: false,
-  processCheckout: async () => false,
-  openCheckoutForm: () => {},
 });
 
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -67,127 +64,74 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     return true;
   };
   
-  const addToCart = (product: Product, quantity: number = 1, selectedItems?: SelectedKitItem[]) => {
+
+  const addToCart = useCallback((product: Product, quantity: number = 1, selectedItems?: SelectedKitItem[]) => {
     if (!checkStock(product, quantity)) return;
 
     setCartItems(prevItems => {
-      // Check if the product with the same ID, model, and size exists
-      const existingItem = prevItems.find(item => 
-        item.product.id === product.id && 
-        item.product.modelNumber === product.modelNumber &&
-        item.product.selectedSize === product.selectedSize
-      );
+      const newItemKey = createCartItemKey({ product, quantity, selectedItems });
+      const existingItem = prevItems.find(item => createCartItemKey(item) === newItemKey);
 
       if (existingItem) {
         const updatedItems = prevItems.map(item =>
-          item.product.id === product.id &&
-          item.product.modelNumber === product.modelNumber &&
-          item.product.selectedSize === product.selectedSize
+          createCartItemKey(item) === newItemKey
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
-
-        showSuccess(
-          'Producto Actualizado',
-          `${product.name} (cantidad: ${existingItem.quantity + quantity})`
-        );
-
+        showSuccess('Producto Actualizado', `${product.name} (cantidad: ${existingItem.quantity + quantity})`);
         return updatedItems;
       } else {
-        showSuccess(
-          'Agregado al Carrito',
-          `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`
-        );
-
+        showSuccess('Agregado al Carrito', `${product.name} ${quantity > 1 ? `(${quantity} unidades)` : ''}`);
         return [...prevItems, { product, quantity, selectedItems }];
       }
     });
-  };
-  
-  // Also update these functions to consider model and size
-  const removeFromCart = (productId: number, modelNumber?: number, selectedSize?: string) => {
-    const item = cartItems.find(item => 
-      item.product.id === productId &&
-      item.product.modelNumber === modelNumber &&
-      item.product.selectedSize === selectedSize
-    );
-    
-    if (item) {
-      setCartItems(prevItems => prevItems.filter(item => 
-        !(item.product.id === productId &&
-          item.product.modelNumber === modelNumber &&
-          item.product.selectedSize === selectedSize)
-      ));
-    }
-  };
+  }, [showSuccess]);
 
-  const increaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
+  const removeFromCart = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
+    setCartItems(prevItems => prevItems.filter(item => createCartItemKey(item) !== targetKey));
+  }, []);
+
+  const increaseQuantity = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        createCartItemKey(item) === targetKey
           ? { ...item, quantity: item.quantity + 1 }
           : item
       )
     );
-  };
+  }, []);
 
-  const decreaseQuantity = (productId: number, modelNumber?: number, selectedSize?: string) => {
+  const decreaseQuantity = useCallback((productId: number, modelNumber?: number, selectedSize?: string, selectedItems?: SelectedKitItem[]) => {
+    const targetKey = createCartItemKey({ product: { id: productId, modelNumber, selectedSize } as Product, quantity: 1, selectedItems });
     setCartItems(prevItems => {
-      const item = prevItems.find(item => 
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
-      );
-
+      const item = prevItems.find(item => createCartItemKey(item) === targetKey);
       if (item?.quantity === 1) {
-        removeFromCart(productId, modelNumber, selectedSize);
-        return prevItems;
+        return prevItems.filter(i => createCartItemKey(i) !== targetKey);
       }
-
-      return prevItems.map(item => 
-        item.product.id === productId &&
-        item.product.modelNumber === modelNumber &&
-        item.product.selectedSize === selectedSize
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
+      return prevItems.map(i =>
+        createCartItemKey(i) === targetKey
+          ? { ...i, quantity: i.quantity - 1 }
+          : i
       );
     });
-  };
-  
-  const clearCart = () => {
+  }, []);
+
+  const clearCart = useCallback(() => {
     const itemCount = cartItems.length;
     setCartItems([]);
-    showInfo(
-      'Carrito Vaciado',
-      `Se eliminaron ${itemCount} producto${itemCount !== 1 ? 's' : ''} del carrito`
-    );
-  };
+    showInfo('Carrito Vaciado', `Se eliminaron ${itemCount} producto${itemCount !== 1 ? 's' : ''} del carrito`);
+  }, [cartItems.length, showInfo]);
 
-  const openCheckoutForm = () => {
-    document.dispatchEvent(new CustomEvent('openCheckoutForm'));
-  };
-
-  const processCheckout = async (): Promise<boolean> => {
-    if (cartItems.length === 0) {
-      showWarning('Carrito Vacío', 'Agregá productos antes de finalizar la compra');
-      return false;
-    }
-
-    // Abrir formulario de checkout en lugar de procesar directamente
-    openCheckoutForm();
-    return true;
-  };
+  const totalItems = useMemo(() => cartItems.reduce((total, item) => total + item.quantity, 0), [cartItems]);
   
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-  
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.product.price * item.quantity, 
+  const totalPrice = useMemo(() => cartItems.reduce(
+    (total, item) => total + item.product.price * item.quantity,
     0
-  );
+  ), [cartItems]);
   
-  const contextValue: CartContextType = {
+  const contextValue = useMemo(() => ({
     cartItems,
     addToCart,
     removeFromCart,
@@ -197,9 +141,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     totalItems,
     totalPrice,
     isProcessingCheckout,
-    processCheckout,
-    openCheckoutForm,
-  };
+  }), [cartItems, totalItems, totalPrice, isProcessingCheckout, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart]);
   
   return (
     <CartContext.Provider value={contextValue}>

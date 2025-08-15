@@ -12,8 +12,23 @@ interface CartItem {
     id: number;
     name: string;
     price: number;
+    description: string;
+    category_id?: string;
+    variant_details: {
+      model?: number;
+      size?: string;
+      color?: string;
+      tone?: string;
+    };
   };
   quantity: number;
+  variantLabel?: string;
+  kitItems?: Array<{
+    name: string;
+    quantity?: number;
+    color?: string;
+    size?: string;
+  }>;
 }
 
 interface CustomerData {
@@ -100,13 +115,16 @@ Deno.serve(async (req: Request) => {
     }
 
     // Crear items de la orden
-    const orderItems = items.map(item => ({
+    const orderItems = items.map((item: CartItem) => ({
       order_id: orderData.id,
       product_id: item.product.id,
       product_name: item.product.name,
       quantity: item.quantity,
       unit_price: item.product.price,
-      total_price: item.product.price * item.quantity
+      total_price: item.product.price * item.quantity,
+      variant_details: item.product.variant_details || {},
+      variant_label: item.variantLabel || null,
+      kit_items: item.kitItems || null
     }));
 
     const { error: itemsError } = await supabase
@@ -135,13 +153,23 @@ Deno.serve(async (req: Request) => {
     });
 
     // Preparar items para Mercado Pago
-    const mpItems = items.map(item => ({
+    const mpItems = items.map((item: CartItem) => {
+      let title = item.product.name;
+      
+      // Add variant information to the title for Mercado Pago
+      if (item.variantLabel) {
+        title += ` (${item.variantLabel})`;
+      }
+      
+      return {
       id: item.product.id.toString(),
-      title: item.product.name,
+      title: title,
       quantity: item.quantity,
       unit_price: item.product.price,
-      currency_id: 'ARS'
-    }));
+      currency_id: 'ARS',
+      description: item.product.description || item.product.name
+      };
+    });
 
     // Crear preferencia de pago
     const preference = new Preference(client);

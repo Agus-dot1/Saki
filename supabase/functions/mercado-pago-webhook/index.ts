@@ -116,9 +116,41 @@ async function sendOrderConfirmationEmail(orderData: any, paymentData: any) {
       return;
     }
 
-    // Preparar detalles de productos
+    // Preparar detalles de productos con variantes
     const productDetails = orderData.order_items
-      .map((item: any) => `- ${item.product_name} (x${item.quantity}) - $${item.total_price}`)
+      .map((item: any) => {
+        let itemText = `- ${item.product_name}`;
+        
+        // Add variant information if available
+        if (item.variant_label) {
+          itemText += ` (${item.variant_label})`;
+        }
+        
+        itemText += ` (x${item.quantity}) - $${item.total_price}`;
+        
+        // Add kit items if available
+        if (item.kit_items && Array.isArray(item.kit_items)) {
+          const kitItemsText = item.kit_items.map((kitItem: any) => {
+            let kitText = `  – ${kitItem.name}`;
+            if (kitItem.quantity && kitItem.quantity > 1) {
+              kitText += ` x${kitItem.quantity}`;
+            }
+            if (kitItem.color || kitItem.size) {
+              const variants = [kitItem.color, kitItem.size].filter(Boolean);
+              if (variants.length > 0) {
+                kitText += ` (${variants.join(', ')})`;
+              }
+            }
+            return kitText;
+          }).join('\n');
+          
+          if (kitItemsText) {
+            itemText += '\n' + kitItemsText;
+          }
+        }
+        
+        return itemText;
+      })
       .join('\n');
 
     const emailContent = `

@@ -25,7 +25,10 @@ export interface Product {
   items?: ProductItemOption[];
   modelNumber?: number; 
   selectedSize?: string;
+  selectedColor?: string;
+  selectedTone?: string;
   isNew?: boolean;
+  categoryId?: string; 
 }
 
 export interface SelectedKitItem {
