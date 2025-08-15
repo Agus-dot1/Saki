@@ -66,18 +66,20 @@ const Hero: React.FC = () => {
             
             {/* CTA Button - Mobile optimized */}
             <div className="flex flex-col items-center gap-4 mb-20 lg:items-start">
+              <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-6">
               <motion.button 
                 onClick={scrollToProducts}
-                className="w-full max-w-xs px-8 py-4 text-lg font-semibold text-white transition-all transform shadow-lg rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 hover:shadow-xl"
+                className="w-full max-w-xs px-4 py-3 text-lg font-semibold text-white transition-all transform shadow-lg rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 hover:shadow-xl"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 Ver Productos
               </motion.button>
-              <KitBuilderButton 
-            onClick={openKitBuilder}
-            className="lg:w-auto"
-          />
+                <KitBuilderButton 
+                  onClick={openKitBuilder}
+                  className="lg:w-auto"
+                />
+              </div>
               
               {/* Scroll indicator for mobile */}
               <motion.div 
