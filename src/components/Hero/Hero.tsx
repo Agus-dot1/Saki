@@ -16,7 +16,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen bg-white overflow-hidde">
+    <section id="home" className="relative min-h-screen p-20 bg-white overflow-hidde md:p-0">
       {/* Mobile-first background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-32 h-32 rounded-full -top-8 -left-8 sm:w-48 sm:h-48 sm:-top-12 sm:-left-12 lg:w-72 lg:h-72 lg:top-20 lg:left-10 blur-2xl animate-pulse bg-emerald-200/30"></div>
