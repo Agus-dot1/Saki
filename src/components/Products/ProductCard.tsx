@@ -3,6 +3,7 @@ import { ShoppingCart, Package, Star } from 'lucide-react';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { motion } from 'framer-motion';
+import LazyImage from '../LazyImage';
 
 interface ProductCardProps {
   product: Product;
@@ -72,13 +73,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           </div>
         )}
 
-        <img 
-          src={product.images[0]} 
-          alt={product.name} 
-          className={`object-contain scale-[2.8]  w-full h-full transition-transform duration-500 ${
+        <LazyImage
+          src={product.images[0]}
+          alt={product.name}
+          className={`object-contain scale-[2.8] w-full h-full transition-transform duration-500 ${
             product.isNew ? 'scale-150' : 'scale-150'
           }`}
-          loading="lazy"
+          threshold={0.1}
+          rootMargin="100px"
         />
         
         {/* Stock indicator - Mobile optimized */}

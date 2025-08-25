@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { CartItem as CartItemType } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { buildVariantLabel } from '../../utils/variantUtils';
+import LazyImage from '../LazyImage';
 
 interface CartItemProps {
   item: CartItemType;
@@ -23,10 +24,12 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
     <div className="flex space-x-4">
       {/* Product image */}
       <div className="w-20 h-20 overflow-hidden rounded-lg">
-        <img 
-          src={item.product.images[0]} 
+        <LazyImage
+          src={item.product.images[0]}
           alt={item.product.name}
           className="object-cover w-full h-full"
+          threshold={0.1}
+          rootMargin="50px"
         />
       </div>
       

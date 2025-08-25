@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
@@ -184,20 +185,22 @@ const MainApp: React.FC = () => {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <ToastProvider>
-        <CartProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<MainApp />} />
-              <Route path="/checkout/success" element={<CheckoutSuccess />} />
-              <Route path="/checkout/failure" element={<CheckoutFailure />} />
-              <Route path="/checkout/pending" element={<CheckoutPending />} />
-            </Routes>
-          </Router>
-        </CartProvider>
-      </ToastProvider>
-    </ErrorBoundary>
+    <HelmetProvider>
+      <ErrorBoundary>
+        <ToastProvider>
+            <CartProvider>
+              <Router>
+              <Routes>
+                <Route path="/" element={<MainApp />} />
+                <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                <Route path="/checkout/failure" element={<CheckoutFailure />} />
+                <Route path="/checkout/pending" element={<CheckoutPending />} />
+              </Routes>
+            </Router>
+            </CartProvider>
+        </ToastProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
   );
 }
 

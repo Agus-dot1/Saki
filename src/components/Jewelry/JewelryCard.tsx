@@ -4,6 +4,7 @@ import { ShoppingCart, Info, Ruler, Package } from 'lucide-react';
 import { JewelryItem } from '../../types/jewelry';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
+import LazyImage from '../LazyImage';
 
 interface JewelryCardProps {
   item: JewelryItem;
@@ -93,11 +94,12 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
     >
       {/* Image container */}
       <div className="relative h-64 overflow-hidden lg:h-72">
-        <img
-          src={item.coverImage} 
-          alt={item.name} 
+        <LazyImage
+          src={item.coverImage}
+          alt={item.name}
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-          loading="lazy"
+          threshold={0.1}
+          rootMargin="100px"
         />
         
         {/* Overlay with quick actions */}
@@ -207,4 +209,4 @@ const JewelryCard: React.FC<JewelryCardProps> = ({ item, onClick }) => {
   );
 };
 
-export default JewelryCard;
+export default React.memo(JewelryCard);

@@ -4,6 +4,7 @@ import { X, ShoppingCart, Info, Package, ZoomIn } from 'lucide-react';
 import { JewelryItem } from '../../types/jewelry';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
+import useSEO, { generateProductSEO } from '../../hooks/useSEO';
 import { mapJewelryToProduct } from '../../utils/mapJewelryToProduct';
 
 interface JewelryDialogProps {
@@ -15,6 +16,9 @@ interface JewelryDialogProps {
 const JewelryDialog: React.FC<JewelryDialogProps> = ({ item, onClose, onOpenCart }) => {
   const { addToCart } = useCart();
   const { showSuccess } = useToast();
+  
+  // SEO optimization
+  useSEO(generateProductSEO(item));
   const [selectedModel, setSelectedModel] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
     item.availableSizes?.[0]

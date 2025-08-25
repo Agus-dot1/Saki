@@ -3,6 +3,7 @@ import { ShoppingCart, Home, Package, Mail, X, Sparkles } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { motion, AnimatePresence } from 'framer-motion';
 import { KitBuilderButton } from '../KitBuilder';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   toggleCart: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
   const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -31,6 +33,8 @@ const Header: React.FC<HeaderProps> = ({ toggleCart, openKitBuilder }) => {
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
+    } else {
+      navigate(href);
     }
   };
 

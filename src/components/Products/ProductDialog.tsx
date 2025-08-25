@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus, Maximize2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
+import useSEO, { generateProductSEO } from '../../hooks/useSEO';
 import OptimizedCarousel from './OptimizedCarousel';
 import ShippingLocationsModal from './ShippingLocationModal';
+import LazyImage from '../LazyImage';
+
 
 interface ProductDialogProps {
   product: Product;
@@ -16,6 +19,9 @@ interface ProductDialogProps {
 const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenCart }) => {
   const { addToCart } = useCart();
   const { showSuccess } = useToast();
+  
+  // SEO optimization
+  useSEO(generateProductSEO(product));
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [showShippingModal, setShowShippingModal] = useState(false);
   const [itemSelections, setItemSelections] = useState<{ [itemIdx: number]: { color?: string; size?: string } }>({});
@@ -63,7 +69,13 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       >
         <X size={28} />
       </button>
-      <img src={image} alt={product.name} className="max-w-full max-h-full shadow-2xl rounded-xl" />
+      <LazyImage
+        src={image}
+        alt={product.name}
+        className="max-w-full max-h-full shadow-2xl rounded-xl"
+        threshold={0}
+        rootMargin="0px"
+      />
     </div>
   );
 
@@ -107,7 +119,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
 
   const stockStatus = getStockStatus();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
@@ -119,7 +131,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
     }
   };
 
-  const dialogVariants = {
+  const dialogVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
     visible: { 
       opacity: 1, 
@@ -733,6 +745,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
                 {product.detailedDescription}
               </p>
             </div>
+
+
           </div>
 
           {/* Fixed Footer - Desktop */}
