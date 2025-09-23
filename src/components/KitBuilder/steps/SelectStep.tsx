@@ -317,7 +317,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   ) : (
                     <button
                       onClick={() => addItemToKit(item)}
-                      disabled={totalItems >= MAX_ITEMS}
+                      disabled={totalItems >= MAX_ITEMS || item.stock === 0}
                       className="flex items-center self-end px-2 py-1 space-x-1 text-xs font-medium text-white transition-all duration-200 rounded-lg md:px-4 md:py-2 md:text-sm bg-accent md:rounded-xl hover:bg-supporting hover:scale-105 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       <Plus size={12} />
