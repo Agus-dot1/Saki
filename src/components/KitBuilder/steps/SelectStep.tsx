@@ -220,7 +220,6 @@ export const SelectStep: React.FC<SelectStepProps> = ({
           filteredItems.map(item => {
           const selectedItem = selectedItems.find(selected => selected.id === item.id);
           const isSelected = !!selectedItem;
-          const isOutOfStock = item.stock <= 0; // Disable button for items with 0 or negative stock
 
           const getStockStatus = () => {
               if (item.stock == 0) {
@@ -258,13 +257,6 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   alt={item.name}
                   className="object-contain w-full h-full transition-transform duration-300 scale-125 hover:scale-150"
                 />
-                {isOutOfStock && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-t-xl md:rounded-t-2xl">
-                    <span className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded-full">
-                      Sin Stock
-                    </span>
-                  </div>
-                )}
                 {isSelected && (
                   <div className="absolute flex items-center justify-center w-6 h-6 rounded-full shadow-lg md:w-8 md:h-8 top-2 right-2 md:top-3 md:left-3 bg-accent">
                     <Check size={14} className="text-white" />
@@ -325,7 +317,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
                   ) : (
                     <button
                       onClick={() => addItemToKit(item)}
-                      disabled={totalItems >= MAX_ITEMS || isOutOfStock}
+                      disabled={totalItems >= MAX_ITEMS}
                       className="flex items-center self-end px-2 py-1 space-x-1 text-xs font-medium text-white transition-all duration-200 rounded-lg md:px-4 md:py-2 md:text-sm bg-accent md:rounded-xl hover:bg-supporting hover:scale-105 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       <Plus size={12} />
