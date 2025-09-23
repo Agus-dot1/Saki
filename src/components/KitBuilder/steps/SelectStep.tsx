@@ -220,7 +220,7 @@ export const SelectStep: React.FC<SelectStepProps> = ({
           filteredItems.map(item => {
           const selectedItem = selectedItems.find(selected => selected.id === item.id);
           const isSelected = !!selectedItem;
-          const isOutOfStock = item.stock < 0; // Allow items with 0 stock to be shown
+          const isOutOfStock = item.stock <= 0; // Disable button for items with 0 or negative stock
 
           const getStockStatus = () => {
               if (item.stock == 0) {
