@@ -57,9 +57,8 @@ export const wizardVariants = {
 };
 
 export const stepVariants = {
-  initial: { opacity: 0, x: 60, scale: 0.98 },
+  initial: { x: 60, scale: 0.98 },
   animate: {
-    opacity: 1,
     x: 0,
     scale: 1,
     transition: {

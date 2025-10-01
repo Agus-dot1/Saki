@@ -7,11 +7,11 @@ interface KitBuilderButtonProps {
   className?: string;
 }
 
-const KitBuilderButton: React.FC<KitBuilderButtonProps> = ({ onClick, className = '' }) => {
+const KitBuilderButton: React.FC<KitBuilderButtonProps> = ({ onClick }) => {
   return (
     <motion.button
       onClick={onClick}
-      className={`relative overflow-hidden bg-gradient-to-r from-accent to-supporting text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 group ${className}`}
+      className={`relative overflow-hidden bg-gradient-to-r from-accent to-supporting text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 group`}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >

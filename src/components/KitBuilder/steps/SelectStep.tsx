@@ -119,6 +119,22 @@ export const SelectStep: React.FC<SelectStepProps> = ({
     );
   }
 
+  //   const getStockStatus = () => {
+  //   if (!product.stock) return null;
+    
+  //   if (product.stock <= 0) {
+  //     return { text: 'Sin Stock', color: 'text-red-600 bg-red-50', disabled: true };
+  //   } else if (product.stock <= 5) {
+  //     return { text: `Solo ${product.stock} disponibles`, color: 'text-yellow-600 bg-yellow-50', disabled: false };
+  //   } else if (product.stock <= 10) {
+  //     return { text: `${product.stock} disponibles`, color: 'text-blue-600 bg-blue-50', disabled: false };
+  //   }
+    
+  //   return { text: 'En Stock', color: 'text-green-600 bg-green-50', disabled: false };
+  // };
+
+  // const stockStatus = getStockStatus();
+
 
 
   return (

@@ -69,7 +69,7 @@ const Hero: React.FC = () => {
               <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-6">
               <motion.button 
                 onClick={scrollToProducts}
-                className="w-full max-w-xs px-4 py-3 text-lg font-semibold text-white transition-all transform shadow-lg rounded-2xl sm:w-auto bg-accent hover:bg-supporting hover:scale-105 active:scale-95 hover:shadow-xl"
+                className="px-6 py-3 overflow-hidden font-medium text-white transition-all duration-300 shadow-lg bg-accent rounded-xl hover:shadow-xl group"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -77,7 +77,6 @@ const Hero: React.FC = () => {
               </motion.button>
                 <KitBuilderButton 
                   onClick={openKitBuilder}
-                  className="lg:w-auto"
                 />
               </div>
               
