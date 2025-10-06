@@ -242,9 +242,6 @@ export const SelectStep: React.FC<SelectStepProps> = ({
             <motion.div
               key={item.id}
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
               className={`relative bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border-2 transition-all duration-300 hover:shadow-xl ${
                 isSelected
                   ? 'border-accent shadow-lg shadow-accent/20 scale-105'
