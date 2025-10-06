@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus, Maximize2 } from 'lucide-react';
-import { cubicBezier, easeInOut, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
