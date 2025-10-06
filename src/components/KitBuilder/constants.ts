@@ -31,10 +31,10 @@ export type WizardStep = 'name' | 'select' | 'customize' | 'summary';
 export const WIZARD_STEPS: WizardStep[] = ['name', 'select', 'customize', 'summary'];
 
 // Kit configuration
-export const MIN_ORDER_AMOUNT = 10000;
+export const MIN_ORDER_AMOUNT = 12000;
 export const MAX_ITEMS = 8;
 export const DISCOUNT_THRESHOLD = 20000;
-export const DISCOUNT_PERCENTAGE = 15;
+export const DISCOUNT_PERCENTAGE = 10;
 
 export const CATEGORIES = [
   { id: 'limpieza', name: 'Limpieza', icon: '🧼', color: 'bg-blue-50 text-blue-700 border-blue-200' },
