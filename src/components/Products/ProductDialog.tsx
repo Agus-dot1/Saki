@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, ShoppingCart, Star, Shield, Truck, Share2, Leaf, Plus, Minus, Maximize2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { cubicBezier, easeInOut, motion } from 'framer-motion';
 import { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useToast } from '../../hooks/useToast';
@@ -127,7 +127,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       y: 0,
       transition: {
         duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        cubicBezier: [0.25, 0.46, 0.45, 0.94]
       }
     },
     exit: { 
@@ -136,7 +136,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       y: 20,
       transition: {
         duration: 0.2,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        cubicBezier: [0.25, 0.46, 0.45, 0.94]
       }
     }
   };
