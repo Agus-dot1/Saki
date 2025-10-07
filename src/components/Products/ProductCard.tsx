@@ -37,16 +37,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   const getStockStatus = () => {
     if (product.stock === undefined || product.stock === null) return null;
-    
+
     if (product.stock <= 0) {
-      return { text: 'Sin Stock', color: 'text-red-400 bg-red-500/20', disabled: true };
+      return { text: 'Sin Stock', color: 'text-white bg-red-500/80', disabled: true };
     } else if (product.stock <= 5) {
-      return { text: `Solo ${product.stock}`, color: 'text-yellow-400 bg-yellow-500/20', disabled: false };
+      return { text: `Solo ${product.stock}`, color: 'text-black bg-yellow-300/80', disabled: false };
     } else if (product.stock <= 10) {
-      return { text: `${product.stock} disponibles`, color: 'text-blue-400 bg-blue-500/20', disabled: false };
+      return { text: `${product.stock} disponibles`, color: 'text-white bg-blue-600/80', disabled: false };
     }
-    
-    return { text: 'En Stock', color: 'text-green-400 bg-green-500/20', disabled: false };
+
+    return { text: 'En Stock', color: 'text-white bg-green-500/80', disabled: false };
   };
 
   const stockStatus = getStockStatus();
@@ -68,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         loading="lazy"
       />
       {/* Black gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent"></div>
       </div>
 
       {/* Content overlay */}
