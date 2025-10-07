@@ -35,7 +35,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <div className="flex items-center">
           <h3 className="font-medium text-primary">{product.name}</h3>
           {variantLabel && (
-            <span className="ml-2 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+            <span className="px-2 py-1 ml-2 text-xs text-gray-600 bg-gray-100 rounded">
               {variantLabel}
             </span>
           )}
@@ -97,8 +97,9 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                 product.selectedSize,
                 item.selectedItems
               )}
-              className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80"
+              className="p-1 transition-colors rounded-full bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Aumentar cantidad"
+              disabled={typeof product.stock === 'number' && quantity >= product.stock}
             >
               <Plus size={16} className="text-primary" />
             </button>

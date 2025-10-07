@@ -68,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         loading="lazy"
       />
       {/* Black gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/70 to-transparent"></div>
       </div>
 
       {/* Content overlay */}
