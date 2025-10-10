@@ -20,7 +20,7 @@ const KitBuilderButton: React.FC<KitBuilderButtonProps> = ({ onClick }) => {
       
       {/* Content */}
       <div className="relative flex items-center justify-center space-x-2 lg:justify-normal">
-        <span>Arma tu Kit</span>
+        <span>Ver Kits</span>
         <Sparkles size={16} className="animate-pulse" />
       </div>
       

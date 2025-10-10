@@ -16,7 +16,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Product } from './types';
 import JewelryContainer from './components/Jewelry/JewelryContainer';
-import { KitBuilderModal, FloatingKitButton } from './components/KitBuilder';
+import { PreMadeKitsModal, FloatingKitButton } from './components/KitBuilder';
 
 const Hero = lazy(() => import('./components/Hero/Hero'));
 const ProductsSection = lazy(() => import('./components/Products/ProductsSection'));
@@ -167,7 +167,7 @@ const MainApp: React.FC = () => {
           </>
         )}
 
-        <KitBuilderModal
+        <PreMadeKitsModal
           isOpen={isKitBuilderOpen}
           onClose={() => setIsKitBuilderOpen(false)}
         />
