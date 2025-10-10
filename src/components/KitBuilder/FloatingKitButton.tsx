@@ -29,17 +29,16 @@ const FloatingKitButton: React.FC<FloatingKitButtonProps> = ({ onOpenKitBuilder 
       {isVisible && (
         <motion.div
           className="fixed z-40 bottom-24 right-4 sm:bottom-6 sm:right-6"
-          initial={{ opacity: 0, scale: 0, y: 80 }}
+          initial={{ opacity: 0, scale: 0, y: 100 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0, y: 80 }}
-          transition={{ type: "spring", stiffness: 400, damping: 22 }}
+          exit={{ opacity: 0, scale: 0, y: 100 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
           <motion.button
             onClick={handleClick}
-            className="relative overflow-hidden text-white rounded-full shadow-2xl bg-gradient-to-r from-accent to-supporting w-14 h-14 sm:w-16 sm:h-16"
-            whileHover={{ scale: 1.12, boxShadow: "0 20px 40px rgba(42, 90, 46, 0.4)" }}
-            whileTap={{ scale: 0.92 }}
-            transition={{ duration: 0.2 }}
+            className="relative overflow-hidden text-white transition-all duration-300 rounded-full shadow-2xl bg-gradient-to-r from-accent to-supporting w-14 h-14 sm:w-16 sm:h-16"
+            whileHover={{ scale: 1.1, boxShadow: "0 20px 40px rgba(42, 90, 46, 0.3)" }}
+            whileTap={{ scale: 0.9 }}
             layout
           >
             {/* Animated background */}
@@ -61,14 +60,13 @@ const FloatingKitButton: React.FC<FloatingKitButtonProps> = ({ onOpenKitBuilder 
                     left: `${20 + i * 20}%`,
                   }}
                   animate={{
-                    scale: [0, 1.2, 0],
+                    scale: [0, 1, 0],
                     opacity: [0, 1, 0],
                   }}
                   transition={{
-                    duration: 1.5,
+                    duration: 2,
                     repeat: Infinity,
-                    delay: i * 0.4,
-                    ease: [0.16, 1, 0.3, 1]
+                    delay: i * 0.5,
                   }}
                 />
               ))}

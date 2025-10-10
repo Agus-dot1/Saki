@@ -127,7 +127,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       y: 0,
       transition: {
         duration: 0.3,
-        cubicBezier: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
     exit: { 
@@ -136,7 +136,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose, onOpenC
       y: 20,
       transition: {
         duration: 0.2,
-        cubicBezier: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   };
